@@ -1,4 +1,4 @@
-package ru.mareanexx.travelogue.ui.theme
+package ru.mareanexx.travelogue.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

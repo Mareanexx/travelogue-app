@@ -1,4 +1,4 @@
-package ru.mareanexx.travelogue.ui.theme
+package ru.mareanexx.travelogue.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

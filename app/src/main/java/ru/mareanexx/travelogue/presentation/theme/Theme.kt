@@ -1,4 +1,4 @@
-package ru.mareanexx.travelogue.ui.theme
+package ru.mareanexx.travelogue.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
