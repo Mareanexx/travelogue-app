@@ -1,0 +1,26 @@
+package ru.mareanexx.travelogue.utils
+
+import android.content.Context
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.first
+
+val Context.dataStore by preferencesDataStore(name = "settings")
+
+class DataStore(private val context: Context) {
+    private object PreferencesKeys {
+        val USER_TOKEN = stringPreferencesKey("user_token")
+    }
+
+    suspend fun saveToken(token: String) {
+        context.dataStore.edit { prefs ->
+            prefs[PreferencesKeys.USER_TOKEN] = token
+        }
+    }
+
+    suspend fun getToken(): String {
+        val prefs = context.dataStore.data.first()
+        return prefs[PreferencesKeys.USER_TOKEN] ?: ""
+    }
+}
