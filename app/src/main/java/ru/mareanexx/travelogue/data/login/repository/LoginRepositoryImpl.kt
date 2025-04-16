@@ -22,9 +22,9 @@ class LoginRepositoryImpl @Inject constructor(private val loginApi: LoginApi): L
                 emit(BaseResult.Success(loginEntity))
             }
             else {
-                emit(BaseResult.Error(WrappedResponse(
-                            code = response.code(),
-                            message = "Login error: ${response.message()}")
+                emit(BaseResult.Error(
+                    WrappedResponse(
+                        message = "Login error: ${response.message()}")
                     )
                 )
             }

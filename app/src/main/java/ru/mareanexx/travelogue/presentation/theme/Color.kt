@@ -11,3 +11,4 @@ val unfocusedIndicatorTextField = Color(0xFFDBDBDD)
 val textFieldText = Color(0xFF818181)
 
 val blueSmallText = Color(0xFF006CAF)
+val greenCircle = Color(0xFF589C18)
