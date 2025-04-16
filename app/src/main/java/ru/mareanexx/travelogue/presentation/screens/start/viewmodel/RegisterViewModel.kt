@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import ru.mareanexx.travelogue.data.register.remote.dto.RegisterRequest
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.register.usecase.RegisterUseCase
-import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.AuthUiState
+import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.UiState
 import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.RegisterFormState
 import javax.inject.Inject
 
@@ -22,14 +22,14 @@ class RegisterViewModel @Inject constructor(
     private val _formState = MutableStateFlow(RegisterFormState())
     val formState: StateFlow<RegisterFormState> get() = _formState
 
-    private val _registerState = MutableStateFlow<AuthUiState>(AuthUiState.Init)
-    val registerState: StateFlow<AuthUiState> get() = _registerState
+    private val _registerState = MutableStateFlow<UiState>(UiState.Init)
+    val registerState: StateFlow<UiState> get() = _registerState
 
     private val _loadingState = MutableStateFlow(false)
     val loadingState: StateFlow<Boolean> get() = _loadingState
 
     fun onEmailChanged(value: String) {
-        _registerState.value = AuthUiState.Init
+        _registerState.value = UiState.Init
         _formState.value = _formState.value.copy(
             email = value,
             enabledButton = false
@@ -39,7 +39,7 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun onPasswordChanged(value: String) {
-        _registerState.value = AuthUiState.Init
+        _registerState.value = UiState.Init
         _formState.value = _formState.value.copy(
             password = value,
             enabledButton = false
@@ -101,8 +101,8 @@ class RegisterViewModel @Inject constructor(
                 .collect { baseResult ->
                     setLoading(false)
                     when(baseResult) {
-                        is BaseResult.Error -> _registerState.value = AuthUiState.Error
-                        is BaseResult.Success -> _registerState.value = AuthUiState.Success(baseResult.data)
+                        is BaseResult.Error -> _registerState.value = UiState.Error
+                        is BaseResult.Success -> _registerState.value = UiState.Success
                     }
                 }
         }
@@ -113,6 +113,6 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun showToast(message: String) {
-        _registerState.value = AuthUiState.ShowToast(message)
+        _registerState.value = UiState.ShowToast(message)
     }
 }

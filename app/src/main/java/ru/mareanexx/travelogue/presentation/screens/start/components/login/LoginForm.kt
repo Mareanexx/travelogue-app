@@ -24,12 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.presentation.screens.start.components.AuthButton
-import ru.mareanexx.travelogue.presentation.screens.start.components.AuthOutlinedTextField
+import ru.mareanexx.travelogue.presentation.screens.start.components.CustomOutlinedTextField
 import ru.mareanexx.travelogue.presentation.screens.start.components.ForgotPassword
 import ru.mareanexx.travelogue.presentation.screens.start.components.SupportingText
 import ru.mareanexx.travelogue.presentation.screens.start.components.TrailingIconComponent
 import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.LoginViewModel
-import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.AuthUiState
+import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.UiState
 import ru.mareanexx.travelogue.presentation.theme.enabledButtonContainer
 
 
@@ -44,12 +44,12 @@ fun LoginForm(
     val passwordVisible = remember { mutableStateOf(false) }
 
     when(loginState.value) {
-        is AuthUiState.Init -> {}
-        is AuthUiState.ShowToast -> {
-            Toast.makeText(LocalContext.current, (loginState.value as AuthUiState.ShowToast).message, Toast.LENGTH_SHORT).show()
+        is UiState.Init -> {}
+        is UiState.ShowToast -> {
+            Toast.makeText(LocalContext.current, (loginState.value as UiState.ShowToast).message, Toast.LENGTH_SHORT).show()
         }
-        is AuthUiState.Success -> { onLoginSuccess() }
-        is AuthUiState.Error -> { viewModel.onCheckButtonEnable() }
+        is UiState.Success -> { onLoginSuccess() }
+        is UiState.Error -> { viewModel.onCheckButtonEnable() }
     }
 
     Column(
@@ -64,32 +64,32 @@ fun LoginForm(
         )
         Spacer(modifier = Modifier.height(20.dp))
 
-        AuthOutlinedTextField(
-            text = "Email",
+        CustomOutlinedTextField(
+            textRes = R.string.email_tf_label,
             value = formState.value.email,
             onValueChanged = {
                 viewModel.onEmailChanged(it)
                 viewModel.onCheckButtonEnable()
             },
-            authState = loginState,
+            uiState = loginState,
             imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Email
         )
 
-        AuthOutlinedTextField(
-            text = "Password",
+        CustomOutlinedTextField(
+            textRes = R.string.password_tf_label,
             value = formState.value.password,
             onValueChanged = {
                 viewModel.onPasswordChanged(it)
                 viewModel.onCheckButtonEnable()
             },
-            authState = loginState,
+            uiState = loginState,
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Password,
             trailingIcon = { TrailingIconComponent(passwordVisible) },
             visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
             supportingText = {
-                if (loginState.value == AuthUiState.Error) {
+                if (loginState.value == UiState.Error) {
                     SupportingText(R.string.incorrect_credentials)
                 }
             }

@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import ru.mareanexx.travelogue.data.login.remote.dto.LoginRequest
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.login.usecase.LoginUseCase
-import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.AuthUiState
+import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.UiState
 import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.LoginFormState
 import javax.inject.Inject
 
@@ -19,8 +19,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase
 ): ViewModel() {
-    private val _loginState = MutableStateFlow<AuthUiState>(AuthUiState.Init)
-    val loginState: StateFlow<AuthUiState> get() = _loginState
+    private val _loginState = MutableStateFlow<UiState>(UiState.Init)
+    val loginState: StateFlow<UiState> get() = _loginState
 
     private val _formState = MutableStateFlow(LoginFormState())
     val formState: StateFlow<LoginFormState> get() = _formState
@@ -29,14 +29,14 @@ class LoginViewModel @Inject constructor(
     val loadingState: StateFlow<Boolean> get() = _loadingState
 
     fun onEmailChanged(value: String) {
-        _loginState.value = AuthUiState.Init
+        _loginState.value = UiState.Init
         _formState.value = _formState.value.copy(
             email = value,
         )
     }
 
     fun onPasswordChanged(value: String) {
-        _loginState.value = AuthUiState.Init
+        _loginState.value = UiState.Init
         _formState.value = _formState.value.copy(
             password = value
         )
@@ -58,7 +58,7 @@ class LoginViewModel @Inject constructor(
     private fun setLoading(setValue: Boolean) { _loadingState.value = setValue }
 
     private fun showToast(message: String) {
-        _loginState.value = AuthUiState.ShowToast(message)
+        _loginState.value = UiState.ShowToast(message)
     }
 
     fun login() {
@@ -76,8 +76,8 @@ class LoginViewModel @Inject constructor(
                 .collect { baseResult ->
                     setLoading(false)
                     when(baseResult) {
-                        is BaseResult.Error -> _loginState.value = AuthUiState.Error
-                        is BaseResult.Success -> _loginState.value = AuthUiState.Success(baseResult.data)
+                        is BaseResult.Error -> _loginState.value = UiState.Error
+                        is BaseResult.Success -> _loginState.value = UiState.Success
                     }
                 }
         }

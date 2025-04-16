@@ -1,5 +1,6 @@
 package ru.mareanexx.travelogue.presentation.screens.start.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,11 +18,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.AuthUiState
+import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.UiState
 import ru.mareanexx.travelogue.presentation.theme.blueSmallText
 import ru.mareanexx.travelogue.presentation.theme.focusedTextField
 import ru.mareanexx.travelogue.presentation.theme.textFieldText
@@ -42,10 +44,10 @@ fun authTextFieldColors(): TextFieldColors {
 }
 
 @Composable
-fun AuthOutlinedTextField(
-    text: String, value: String,
+fun CustomOutlinedTextField(
+    @StringRes textRes: Int, value: String,
     onValueChanged: (String) -> Unit,
-    authState: State<AuthUiState>,
+    uiState: State<UiState>,
     imeAction: ImeAction, keyboardType: KeyboardType,
     visualTransformation: VisualTransformation? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -56,9 +58,9 @@ fun AuthOutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = value,
         onValueChange = { onValueChanged(it) },
-        isError = authState.value == AuthUiState.Error,
+        isError = uiState.value == UiState.Error,
         keyboardOptions = KeyboardOptions(imeAction = imeAction, keyboardType = keyboardType),
-        label = { Text(text = text) },
+        label = { Text(text = stringResource(textRes)) },
         textStyle = MaterialTheme.typography.bodyMedium,
         shape = RoundedCornerShape(15.dp),
         supportingText = supportingText,

@@ -6,11 +6,11 @@ import ru.mareanexx.travelogue.data.register.remote.dto.RegisterRequest
 import ru.mareanexx.travelogue.data.register.remote.dto.RegisterResponse
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.register.RegisterRepository
-import ru.mareanexx.travelogue.domain.register.entity.RegisterEntity
+import ru.mareanexx.travelogue.domain.register.entity.Register
 import javax.inject.Inject
 
 class RegisterUseCase @Inject constructor(private val registerRepository: RegisterRepository) {
-    suspend operator fun invoke(registerRequest: RegisterRequest): Flow<BaseResult<RegisterEntity, WrappedResponse<RegisterResponse>>> {
+    suspend operator fun invoke(registerRequest: RegisterRequest): Flow<BaseResult<Register, WrappedResponse<RegisterResponse>>> {
         return registerRepository.register(registerRequest)
     }
 }
