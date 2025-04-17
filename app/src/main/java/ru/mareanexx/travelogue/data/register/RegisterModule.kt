@@ -9,6 +9,7 @@ import ru.mareanexx.travelogue.data.register.remote.api.RegisterApi
 import ru.mareanexx.travelogue.data.register.repository.RegisterRepositoryImpl
 import ru.mareanexx.travelogue.di.NetworkModule
 import ru.mareanexx.travelogue.domain.register.RegisterRepository
+import ru.mareanexx.travelogue.utils.UserSessionManager
 import javax.inject.Singleton
 
 @Module(includes = [NetworkModule::class])
@@ -23,7 +24,10 @@ class RegisterModule {
 
     @Singleton
     @Provides
-    fun provideRegisterRepository(registerApi: RegisterApi): RegisterRepository {
-        return RegisterRepositoryImpl(registerApi)
+    fun provideRegisterRepository(
+        userSessionManager: UserSessionManager,
+        registerApi: RegisterApi
+    ): RegisterRepository {
+        return RegisterRepositoryImpl(userSessionManager, registerApi)
     }
 }

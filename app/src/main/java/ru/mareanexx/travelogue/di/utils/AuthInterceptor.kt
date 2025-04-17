@@ -4,8 +4,9 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 import ru.mareanexx.travelogue.utils.DataStore
+import javax.inject.Inject
 
-class AuthInterceptor(private val dataStore: DataStore) : Interceptor {
+class AuthInterceptor @Inject constructor(private val dataStore: DataStore) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = runBlocking {
             dataStore.getToken()

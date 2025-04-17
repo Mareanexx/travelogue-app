@@ -9,6 +9,7 @@ import ru.mareanexx.travelogue.data.login.remote.api.LoginApi
 import ru.mareanexx.travelogue.data.login.repository.LoginRepositoryImpl
 import ru.mareanexx.travelogue.di.NetworkModule
 import ru.mareanexx.travelogue.domain.login.LoginRepository
+import ru.mareanexx.travelogue.utils.UserSessionManager
 import javax.inject.Singleton
 
 @Module(includes = [NetworkModule::class])
@@ -23,7 +24,10 @@ class LoginModule {
 
     @Singleton
     @Provides
-    fun provideLoginRepository(loginApi: LoginApi): LoginRepository {
-        return LoginRepositoryImpl(loginApi)
+    fun provideLoginRepository(
+        userSessionManager: UserSessionManager,
+        loginApi: LoginApi
+    ): LoginRepository {
+        return LoginRepositoryImpl(userSessionManager, loginApi)
     }
 }

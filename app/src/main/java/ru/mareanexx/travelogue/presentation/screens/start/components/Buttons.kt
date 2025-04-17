@@ -25,9 +25,9 @@ import ru.mareanexx.travelogue.presentation.theme.enabledButtonContainer
 
 
 @Composable
-fun AuthButton(
-    containerColor: Color,
-    contentColor: Color,
+fun CheckFieldsButton(
+    containerColor: Color = enabledButtonContainer,
+    contentColor: Color = Color.White,
     @StringRes textRes: Int,
     enabled: Boolean = true,
     showLoading: Boolean = false,
@@ -71,13 +71,13 @@ fun ButtonsColumn(
             .padding(vertical = 50.dp, horizontal = 15.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        AuthButton(
+        CheckFieldsButton(
             containerColor = enabledButtonContainer,
             contentColor = Color.White,
             R.string.create_account_button,
             onClick = onOpenRegisterPanel
         )
-        AuthButton(
+        CheckFieldsButton(
             containerColor = Color.White,
             contentColor = Color.Black,
             R.string.log_in_button,

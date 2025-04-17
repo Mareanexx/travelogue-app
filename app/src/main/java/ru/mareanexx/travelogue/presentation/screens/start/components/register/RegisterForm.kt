@@ -13,7 +13,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -23,13 +22,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.travelogue.R
-import ru.mareanexx.travelogue.presentation.screens.start.components.AuthButton
+import ru.mareanexx.travelogue.presentation.screens.start.components.CheckFieldsButton
 import ru.mareanexx.travelogue.presentation.screens.start.components.CustomOutlinedTextField
 import ru.mareanexx.travelogue.presentation.screens.start.components.SupportingText
 import ru.mareanexx.travelogue.presentation.screens.start.components.TrailingIconComponent
 import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.RegisterViewModel
 import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.UiState
-import ru.mareanexx.travelogue.presentation.theme.enabledButtonContainer
 
 
 @Composable
@@ -94,9 +92,7 @@ fun RegisterForm(
 
         CheckersGrid(formState)
 
-        AuthButton(
-            containerColor = enabledButtonContainer,
-            contentColor = Color.White,
+        CheckFieldsButton(
             textRes = R.string.continue_button_text,
             showLoading = loadingState.value,
             enabled = formState.value.enabledButton

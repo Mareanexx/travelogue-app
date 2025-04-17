@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 import ru.mareanexx.travelogue.data.login.remote.dto.LoginRequest
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.login.usecase.LoginUseCase
-import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.UiState
 import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.LoginFormState
+import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.UiState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,16 +43,9 @@ class LoginViewModel @Inject constructor(
     }
 
     fun onCheckButtonEnable() {
-        if (_formState.value.email.isNotBlank() && _formState.value.password.isNotBlank()) {
-            _formState.value = _formState.value.copy(
-                enabledButton = true
-            )
-        }
-        else {
-            _formState.value = _formState.value.copy(
-                enabledButton = false
-            )
-        }
+        _formState.value = _formState.value.copy(
+            enabledButton = _formState.value.email.isNotBlank() && _formState.value.password.isNotBlank()
+        )
     }
 
     private fun setLoading(setValue: Boolean) { _loadingState.value = setValue }
