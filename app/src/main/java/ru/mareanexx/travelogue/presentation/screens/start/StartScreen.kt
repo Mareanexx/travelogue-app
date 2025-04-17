@@ -2,7 +2,6 @@ package ru.mareanexx.travelogue.presentation.screens.start
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -20,6 +19,7 @@ import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.presentation.screens.start.components.ButtonsColumn
 import ru.mareanexx.travelogue.presentation.screens.start.components.LogoAndSloganTextColumn
 import ru.mareanexx.travelogue.presentation.screens.start.components.login.LoginForm
+import ru.mareanexx.travelogue.presentation.screens.start.components.profile.ProfileForm
 import ru.mareanexx.travelogue.presentation.screens.start.components.register.RegisterForm
 
 enum class SheetType {
@@ -65,8 +65,15 @@ fun StartScreen(onNavigateToProfile: () -> Unit) {
                     showBottomSheet.value = false
                     onNavigateToProfile()
                 })
-                SheetType.Register -> RegisterForm(onOpenProfileCreatePanel = { sheetType.value = SheetType.Profile })
-                SheetType.Profile -> Spacer(modifier = Modifier) // TODO() ProfileForm()
+                SheetType.Register -> RegisterForm(
+                    onOpenProfileCreatePanel = { sheetType.value = SheetType.Profile }
+                )
+                SheetType.Profile -> ProfileForm(
+                    onSuccessfulProfileCreation = {
+                        showBottomSheet.value = false
+                        onNavigateToProfile()
+                    }
+                )
                 SheetType.None -> {}
             }
         }

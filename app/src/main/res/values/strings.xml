@@ -5,6 +5,8 @@
     <string name="app_slogan">Mark your journeys. Share your world.</string>
     <string name="create_account_button">Create a new account</string>
     <string name="log_in_button">Log In</string>
+    <string name="email_tf_label">Email*</string>
+    <string name="password_tf_label">Password*</string>
 
     <!--Login Bottom Sheet-->
     <string name="login_sheet_title">Welcome back!</string>
@@ -27,7 +29,9 @@
     <string name="create_profile_title">Fill in your profile</string>
     <string name="finish_button_text">Finish</string>
     <string name="pick_photo">Pick your best photo</string>
-    <string name="username_tf_label">Pick a username</string>
-    <string name="fullname_tf_label">Write your fullname</string>
+    <string name="username_tf_label">Pick a username*</string>
+    <string name="fullname_tf_label">Write your fullname*</string>
     <string name="bio_tf_label">Write a short bio</string>
+    <string name="username_requirement">Username should be at least 3 characters long</string>
+    <string name="fullname_requirement">Fullname should be your firstname and lastname</string>
 </resources>
