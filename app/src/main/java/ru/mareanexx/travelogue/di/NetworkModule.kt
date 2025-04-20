@@ -1,5 +1,7 @@
 package ru.mareanexx.travelogue.di
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,6 +13,8 @@ import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.di.utils.AuthInterceptor
 import ru.mareanexx.travelogue.di.utils.TokenAuthenticator
 import ru.mareanexx.travelogue.utils.DataStore
+import ru.mareanexx.travelogue.utils.LocalDateAdapter
+import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -19,12 +23,19 @@ import javax.inject.Singleton
 object NetworkModule {
     @Singleton
     @Provides
-    fun provideRetrofit(okHttp: OkHttpClient): Retrofit {
+    fun provideRetrofit(okHttp: OkHttpClient, gson: Gson): Retrofit {
         return Retrofit.Builder().apply {
-            addConverterFactory(GsonConverterFactory.create())
+            addConverterFactory(GsonConverterFactory.create(gson))
             client(okHttp)
             baseUrl(BuildConfig.API_BASE_URL)
         }.build()
+    }
+
+    @Provides
+    fun provideGson(): Gson {
+        return GsonBuilder()
+            .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
+            .create()
     }
 
     @Singleton

@@ -19,6 +19,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/v1/\"")
+        buildConfigField("String", "API_FILES_URL", "\"http://10.0.2.2:8080\"")
     }
 
     buildTypes {
@@ -52,6 +53,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    // Skeleton with shimmer effect
+    implementation(libs.compose.shimmer)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)

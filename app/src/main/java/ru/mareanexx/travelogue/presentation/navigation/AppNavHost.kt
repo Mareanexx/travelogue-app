@@ -12,13 +12,25 @@ import ru.mareanexx.travelogue.presentation.screens.start.StartScreen
 fun AppNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = "start",
+        startDestination = "start", // FIX THIS START
     ) {
         composable("start") {
             StartScreen(
                 onNavigateToProfile = { navController.navigate(route = "profile") }
             )
         }
-        composable("profile") { ProfileScreen() }
+        composable("profile") {
+            ProfileScreen(
+                navigateToActivity = { },
+                navigateToNotifications = { },
+                navigateToExplore = { },
+                navigateToStartScreen = {
+                    navController.navigate("start") {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
     }
 }

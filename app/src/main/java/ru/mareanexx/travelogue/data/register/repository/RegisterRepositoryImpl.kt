@@ -24,7 +24,7 @@ class RegisterRepositoryImpl @Inject constructor(
                 val bodyData = response.body()!!.data
                 val registerEntity = bodyData!!.mapToEntity()
 
-                userSessionManager.saveSession(registerEntity.token, registerEntity.userUuid)
+                userSessionManager.saveSession(registerEntity.token, registerEntity.userUuid, registerRequest.email)
 
                 emit(BaseResult.Success(registerEntity))
             }

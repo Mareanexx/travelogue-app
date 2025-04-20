@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,10 +44,10 @@ fun SupportingText(@StringRes supportText: Int) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
+        Icon(
             modifier = Modifier.size(20.dp).padding(end = 5.dp),
             painter = painterResource(R.drawable.error_icon),
-            contentDescription = null
+            contentDescription = null,
         )
         Text(text = stringResource(supportText))
     }

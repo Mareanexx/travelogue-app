@@ -47,7 +47,7 @@ fun authTextFieldColors(): TextFieldColors {
 fun CustomOutlinedTextField(
     @StringRes textRes: Int, value: String,
     onValueChanged: (String) -> Unit,
-    uiState: State<UiState>,
+    uiState: State<UiState>? = null,
     imeAction: ImeAction, keyboardType: KeyboardType,
     visualTransformation: VisualTransformation? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -58,7 +58,7 @@ fun CustomOutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = value,
         onValueChange = { onValueChanged(it) },
-        isError = uiState.value == UiState.Error,
+        isError = if(uiState == null) false else uiState.value == UiState.Error,
         keyboardOptions = KeyboardOptions(imeAction = imeAction, keyboardType = keyboardType),
         label = { Text(text = stringResource(textRes)) },
         textStyle = MaterialTheme.typography.bodyMedium,

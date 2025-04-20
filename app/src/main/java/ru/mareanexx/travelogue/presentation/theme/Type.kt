@@ -22,6 +22,12 @@ val MontserratFamily = FontFamily(
 )
 
 val Typography = Typography(
+    displaySmall = TextStyle(
+        fontFamily = MontserratFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+        lineHeight = 18.sp,
+    ),
     titleLarge = TextStyle(
         fontFamily = MontserratFamily,
         fontSize = 22.sp,
@@ -36,6 +42,13 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
         color = primaryText,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp
+    ),
+    titleSmall = TextStyle(
+        fontFamily = MontserratFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
@@ -58,7 +71,8 @@ val Typography = Typography(
         fontFamily = MontserratFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
-        letterSpacing = 0.1.sp
+        letterSpacing = 0.1.sp,
+        lineHeight = 12.sp
     ),
     bodyLarge = TextStyle(
         fontFamily = MontserratFamily,
@@ -70,5 +84,11 @@ val Typography = Typography(
         fontSize = 13.sp,
         fontWeight = FontWeight.SemiBold,
         lineHeight = 13.sp
+    ),
+    labelLarge = TextStyle(
+        fontFamily = MontserratFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        lineHeight = 24.sp
     )
 )

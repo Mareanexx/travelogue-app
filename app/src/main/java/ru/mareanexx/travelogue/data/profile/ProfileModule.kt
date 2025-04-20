@@ -8,13 +8,14 @@ import retrofit2.Retrofit
 import ru.mareanexx.travelogue.data.profile.local.dao.ProfileDao
 import ru.mareanexx.travelogue.data.profile.remote.api.ProfileApi
 import ru.mareanexx.travelogue.data.profile.repository.ProfileRepositoryImpl
+import ru.mareanexx.travelogue.data.trip.local.dao.TripDao
 import ru.mareanexx.travelogue.domain.profile.ProfileRepository
 import ru.mareanexx.travelogue.utils.UserSessionManager
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ProfileModule {
+object ProfileModule {
 
     @Singleton
     @Provides
@@ -27,8 +28,9 @@ class ProfileModule {
     fun provideProfileRepository(
         userSession: UserSessionManager,
         profileApi: ProfileApi,
-        profileDao: ProfileDao
+        profileDao: ProfileDao,
+        tripDao: TripDao
     ): ProfileRepository {
-        return ProfileRepositoryImpl(userSession, profileApi, profileDao)
+        return ProfileRepositoryImpl(userSession, profileApi, profileDao, tripDao)
     }
 }

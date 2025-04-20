@@ -24,7 +24,7 @@ class LoginRepositoryImpl @Inject constructor(
                 val bodyData = response.body()!!.data
                 val loginEntity = bodyData!!.mapToEntity()
 
-                userSession.saveSession(loginEntity.token, loginEntity.userUuid)
+                userSession.saveSession(loginEntity.token, loginEntity.userUuid, loginRequest.email)
 
                 emit(BaseResult.Success(loginEntity))
             }

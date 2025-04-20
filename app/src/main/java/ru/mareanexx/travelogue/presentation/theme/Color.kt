@@ -14,3 +14,8 @@ val blueSmallText = Color(0xFF006CAF)
 val greenCircle = Color(0xFF589C18)
 val choosePicBackground = Color(0xFFDBFAFF)
 val mainBorderColor = Color(0xFF178FC5)
+
+val profilePrimaryText = Color(0xFF031446)
+val profileSecondaryText = Color(0xFF3A4861)
+
+val unfocusedNavBarItem = Color(0xFF7E8C99)

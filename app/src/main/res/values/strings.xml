@@ -34,4 +34,51 @@
     <string name="bio_tf_label">Write a short bio</string>
     <string name="username_requirement">Username should be at least 3 characters long</string>
     <string name="fullname_requirement">Fullname should be your firstname and lastname</string>
+    
+    <!--Profile Screen-->
+    <string name="user_profile_avatar">Profile avatar</string>
+    <string name="trips">Trips</string>
+    <string name="followers">Followers</string>
+    <string name="followings">Followings</string>
+    <string name="add_trip">Add trip</string>
+    <string name="travel_stats">Travel stats</string>
+    <string name="cd_cover_photo">User\'s profile cover photo</string>
+    <string name="cd_avatar_photo">User\'s profile avatar photo</string>
+
+    <!--Trip card-->
+    <string name="cd_trip_cover_photo">User\'s trip cover photo</string>
+    <string name="cd_points_settings">Clickable trip settings</string>
+    <string name="now_on_a_trip">NOW ON A TRIP</string>
+    <string name="days">DAYS</string>
+    <string name="kilometers">KILOMETERS</string>
+    <string name="steps">STEPS</string>
+    <string name="cd_trip_visibility">Trip visibility type</string>
+
+    <!--Profile settings Dropdown Menu-->
+    <string name="edit_profile">Edit profile</string>
+    <string name="account">Account</string>
+    <string name="edit_trip">Edit trip</string>
+    <string name="delete_trip">Delete trip</string>
+    <string name="save_changes">Save changes</string>
+
+    <!--Profile Settings-->
+    <string name="profile_settings">Profile settings</string>
+    <string name="hint_change_avatar">Tap to change your avatar</string>
+    <string name="fullname">Fullname</string>
+    <string name="username">Username</string>
+    <string name="bio">Bio</string>
+    
+    <!--Account Settings-->
+    <string name="account_settings">Account settings</string>
+    <string name="log_out">Log out</string>
+    <string name="delete_account">Delete account</string>
+
+    <!--Navigation Bottom Bar-->
+    <string name="my_profile">My Profile</string>
+    <string name="activity">Activity</string>
+    <string name="notifications">Notifications</string>
+    <string name="explore">Explore</string>
+
+    <!--Not implemented feature Toast-->
+    <string name="not_implemented">This feature isn\'t implemented yet!</string>
 </resources>
