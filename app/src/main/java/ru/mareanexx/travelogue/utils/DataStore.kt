@@ -2,6 +2,7 @@ package ru.mareanexx.travelogue.utils
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
@@ -14,6 +15,7 @@ class DataStore(private val context: Context) {
         val USER_TOKEN = stringPreferencesKey("user_token")
         val USER_UUID = stringPreferencesKey("user_uuid")
         val USER_EMAIL = stringPreferencesKey("email")
+        val PROFILE_ID = intPreferencesKey("profileId")
     }
 
     suspend fun saveToken(token: String) {
@@ -43,6 +45,7 @@ class DataStore(private val context: Context) {
             prefs[PreferencesKeys.USER_EMAIL] = ""
             prefs[PreferencesKeys.USER_UUID] = ""
             prefs[PreferencesKeys.USER_TOKEN] = ""
+            prefs[PreferencesKeys.PROFILE_ID] = -1
         }
     }
 
@@ -55,5 +58,16 @@ class DataStore(private val context: Context) {
     suspend fun getUserEmail(): String {
         val prefs = context.dataStore.data.first()
         return prefs[PreferencesKeys.USER_EMAIL] ?: ""
+    }
+
+    suspend fun saveProfileId(value: Int) {
+        context.dataStore.edit { prefs ->
+            prefs[PreferencesKeys.PROFILE_ID] = value
+        }
+    }
+
+    suspend fun getProfileId(): Int {
+        val prefs = context.dataStore.data.first()
+        return prefs[PreferencesKeys.PROFILE_ID] ?: -1
     }
 }

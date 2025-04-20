@@ -7,7 +7,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import ru.mareanexx.travelogue.data.profile.local.dao.ProfileDao
 import ru.mareanexx.travelogue.data.tag.local.dao.TagDao
 import ru.mareanexx.travelogue.data.tag.mapper.toEntity
 import ru.mareanexx.travelogue.data.trip.local.dao.TripDao
@@ -19,6 +18,7 @@ import ru.mareanexx.travelogue.data.trip.remote.dto.NewTripRequest
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.trip.TripRepository
 import ru.mareanexx.travelogue.domain.trip.entity.Trip
+import ru.mareanexx.travelogue.utils.UserSessionManager
 import java.io.File
 import javax.inject.Inject
 
@@ -26,7 +26,7 @@ class TripRepositoryImpl @Inject constructor(
     private val tripApi: TripApi,
     private val tripDao: TripDao,
     private val tagDao: TagDao,
-    private val profileDao: ProfileDao
+    private val userSessionManager: UserSessionManager
 ): TripRepository {
     override suspend fun getAuthorsTrips(): Flow<List<TripEntity>> {
         return flow {
@@ -40,7 +40,7 @@ class TripRepositoryImpl @Inject constructor(
         coverPhoto: File
     ): Flow<BaseResult<Trip, String>> {
         return flow {
-            val profileId = profileDao.getProfileId()
+            val profileId = userSessionManager.getProfileId()
             newTripRequest.profileId = profileId
 
             val jsonBody = Gson().toJson(newTripRequest).toRequestBody("application/json".toMediaTypeOrNull())

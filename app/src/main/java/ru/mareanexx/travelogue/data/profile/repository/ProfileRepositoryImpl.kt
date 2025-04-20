@@ -47,6 +47,9 @@ class ProfileRepositoryImpl @Inject constructor(
             if (response.isSuccessful) {
                 val profile = response.body()!!.data!!
                 profileDao.insert(profile.toEntity())
+
+                userSession.saveProfileId(profile.id)
+
                 emit(BaseResult.Success(profile))
             } else {
                 emit(BaseResult.Error("Error uploading profile: ${response.message()}"))

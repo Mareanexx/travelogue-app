@@ -12,9 +12,6 @@ interface ProfileDao {
     @Query("SELECT * FROM profile LIMIT 1")
     suspend fun getProfile(): ProfileEntity?
 
-    @Query("SELECT id FROM profile LIMIT 1")
-    suspend fun getProfileId(): Int
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(profile: ProfileEntity)
 

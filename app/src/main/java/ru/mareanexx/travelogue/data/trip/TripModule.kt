@@ -11,6 +11,7 @@ import ru.mareanexx.travelogue.data.trip.local.dao.TripDao
 import ru.mareanexx.travelogue.data.trip.remote.api.TripApi
 import ru.mareanexx.travelogue.data.trip.repository.TripRepositoryImpl
 import ru.mareanexx.travelogue.domain.trip.TripRepository
+import ru.mareanexx.travelogue.utils.UserSessionManager
 import javax.inject.Singleton
 
 @Module
@@ -22,9 +23,9 @@ object TripModule {
         tripApi: TripApi,
         tripDao: TripDao,
         tagDao: TagDao,
-        profileDao: ProfileDao
+        userSessionManager: UserSessionManager
     ): TripRepository {
-        return TripRepositoryImpl(tripApi, tripDao, tagDao, profileDao)
+        return TripRepositoryImpl(tripApi, tripDao, tagDao, userSessionManager)
     }
 
     @Singleton

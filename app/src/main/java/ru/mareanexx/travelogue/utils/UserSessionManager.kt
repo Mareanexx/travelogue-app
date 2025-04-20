@@ -12,6 +12,8 @@ class UserSessionManager @Inject constructor(
         dataStore.saveUserEmail(email)
     }
 
+    suspend fun saveProfileId(value: Int) = dataStore.saveProfileId(value)
+
     suspend fun saveNewEmail(email: String) {
         dataStore.saveUserEmail(email)
     }
@@ -25,15 +27,18 @@ class UserSessionManager @Inject constructor(
         val uuidString = dataStore.getUserUuid()
         val uuid = uuidString?.let { UUID.fromString(it) }
         val email = dataStore.getUserEmail()
+        val profileId = dataStore.getProfileId()
 
-        return UserSession(token = token, userUuid = uuid, email = email)
+        return UserSession(token = token, userUuid = uuid, email = email, profileId = profileId)
     }
 
+    suspend fun getProfileId(): Int = dataStore.getProfileId()
     suspend fun getUserEmail(): String = dataStore.getUserEmail()
 }
 
 data class UserSession(
     val token: String,
     val userUuid: UUID?,
-    val email: String
+    val email: String,
+    val profileId: Int
 )
