@@ -59,9 +59,6 @@ fun MainTabScreen(rootNavController: NavHostController) {
                         when (tab) {
                             "profile" -> composable("profile") {
                                 ProfileScreen(
-                                    navigateToActivity = { selectedTab = "activity" },
-                                    navigateToNotifications = { selectedTab = "notifications" },
-                                    navigateToExplore = { selectedTab = "explore" },
                                     navigateToStartScreen = {
                                         rootNavController.navigate("auth") {
                                             popUpTo("main") { inclusive = true }
@@ -71,11 +68,7 @@ fun MainTabScreen(rootNavController: NavHostController) {
                             }
 
                             "notifications" -> composable("notifications") {
-                                NotificationsScreen(
-                                    navigateToProfile = { selectedTab = "profile" },
-                                    navigateToActivity = { selectedTab = "activity" },
-                                    navigateToExplore = { selectedTab = "explore" }
-                                )
+                                NotificationsScreen()
                             }
 
                             "activity" -> composable("activity") {

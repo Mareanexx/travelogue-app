@@ -16,10 +16,7 @@ import ru.mareanexx.travelogue.presentation.screens.profile.components.trips.Tri
 
 @Composable
 fun ProfileScreen(
-    navigateToStartScreen: () -> Unit,
-    navigateToActivity: () -> Unit,
-    navigateToNotifications: () -> Unit,
-    navigateToExplore: () -> Unit
+    navigateToStartScreen: () -> Unit
 ) {
     var canShowTrips by remember { mutableStateOf(false) }
 
