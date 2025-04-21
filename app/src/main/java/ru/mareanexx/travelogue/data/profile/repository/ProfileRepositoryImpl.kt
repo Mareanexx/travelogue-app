@@ -69,6 +69,7 @@ class ProfileRepositoryImpl @Inject constructor(
                         is BaseResult.Success -> {
                             profileDao.insert(result.data.profile.toEntity(userSession.getSession().userUuid!!))
                             tripDao.insertTrips(result.data.trips.map { it.toEntity(result.data.profile.id) })
+                            userSession.saveProfileId(result.data.profile.id)
                             emit(BaseResult.Success(result.data.profile))
                         }
                         is BaseResult.Error -> {

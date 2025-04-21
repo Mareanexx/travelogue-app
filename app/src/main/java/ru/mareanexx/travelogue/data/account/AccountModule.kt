@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 import ru.mareanexx.travelogue.data.account.remote.api.AccountApi
 import ru.mareanexx.travelogue.data.account.repository.AccountRepositoryImpl
 import ru.mareanexx.travelogue.domain.account.AccountRepository
+import ru.mareanexx.travelogue.utils.DatabaseCleaner
 import ru.mareanexx.travelogue.utils.UserSessionManager
 import javax.inject.Singleton
 
@@ -18,9 +19,10 @@ object AccountModule {
     @Provides
     fun provideAccountRepository(
         userSessionManager: UserSessionManager,
-        accountApi: AccountApi
+        accountApi: AccountApi,
+        databaseCleaner: DatabaseCleaner
     ): AccountRepository {
-        return AccountRepositoryImpl(userSessionManager, accountApi)
+        return AccountRepositoryImpl(userSessionManager, accountApi, databaseCleaner)
     }
 
     @Provides

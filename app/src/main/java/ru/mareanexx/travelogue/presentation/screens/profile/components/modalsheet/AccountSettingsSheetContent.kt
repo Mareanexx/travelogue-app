@@ -49,6 +49,13 @@ fun AccountSettingsSheetContent(
         viewModel.getEmail()
     }
 
+    LaunchedEffect(accountUiState.value) {
+        if (accountUiState.value == AccountUiState.ReturnToStart) {
+            closeModalBottomSheet()
+            navigateToStartScreen()
+        }
+    }
+
     if (accountUiState.value == AccountUiState.ReturnToStart) {
         closeModalBottomSheet()
         navigateToStartScreen()

@@ -6,12 +6,14 @@ import ru.mareanexx.travelogue.data.account.remote.api.AccountApi
 import ru.mareanexx.travelogue.data.account.remote.dto.NewEmailResponse
 import ru.mareanexx.travelogue.domain.account.AccountRepository
 import ru.mareanexx.travelogue.domain.common.BaseResult
+import ru.mareanexx.travelogue.utils.DatabaseCleaner
 import ru.mareanexx.travelogue.utils.UserSessionManager
 import javax.inject.Inject
 
 class AccountRepositoryImpl @Inject constructor(
     private val userSessionManager: UserSessionManager,
-    private val accountApi: AccountApi
+    private val accountApi: AccountApi,
+    private val databaseCleaner: DatabaseCleaner
 ): AccountRepository {
     override suspend fun updateEmail(newEmail: String): Flow<BaseResult<NewEmailResponse, String>> {
         return flow {
@@ -34,6 +36,7 @@ class AccountRepositoryImpl @Inject constructor(
 
             if (response.isSuccessful) {
                 userSessionManager.clearSession()
+                databaseCleaner.cleanAll()
                 emit(BaseResult.Success("Successfully deleted account"))
             } else {
                 emit(BaseResult.Error(response.body().toString()))
@@ -48,6 +51,7 @@ class AccountRepositoryImpl @Inject constructor(
     override suspend fun logOut(): Flow<String> {
         return flow {
             userSessionManager.clearSession()
+            databaseCleaner.cleanAll()
             emit("All Cleared")
         }
     }
