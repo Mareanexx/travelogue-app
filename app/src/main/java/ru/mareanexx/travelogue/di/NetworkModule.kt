@@ -14,7 +14,9 @@ import ru.mareanexx.travelogue.di.utils.AuthInterceptor
 import ru.mareanexx.travelogue.di.utils.TokenAuthenticator
 import ru.mareanexx.travelogue.utils.DataStore
 import ru.mareanexx.travelogue.utils.LocalDateAdapter
+import ru.mareanexx.travelogue.utils.OffsetDateTimeAdapter
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -35,6 +37,7 @@ object NetworkModule {
     fun provideGson(): Gson {
         return GsonBuilder()
             .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
+            .registerTypeAdapter(OffsetDateTime::class.java, OffsetDateTimeAdapter())
             .create()
     }
 
