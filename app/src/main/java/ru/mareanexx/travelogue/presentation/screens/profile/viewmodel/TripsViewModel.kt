@@ -22,13 +22,17 @@ class TripsViewModel @Inject constructor(
     private val _tripsData = MutableStateFlow<List<TripEntity>>(emptyList())
     val tripsData: StateFlow<List<TripEntity>> get() = _tripsData
 
+    init {
+        loadTrips()
+    }
+
     private fun setLoading() { _uiState.value = ProfileUiState.IsLoading }
 
     private fun setShowing() { _uiState.value = ProfileUiState.Showing }
 
     private fun showToast(message: String) { _uiState.value = ProfileUiState.ShowToast(message) }
 
-    fun getTrips() {
+    private fun loadTrips() {
         viewModelScope.launch {
             getAuthorsTripsUseCase()
                 .onStart {

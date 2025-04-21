@@ -1,6 +1,5 @@
 package ru.mareanexx.travelogue.presentation.screens.profile.components.profile
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +16,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -57,14 +55,9 @@ fun ProfileContent(
     val sheetExpanded = viewModel.sheetExpandedState.collectAsState()
     val bottomSheetType = viewModel.sheetType.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.getProfile()
-    }
-
     when (uiState.value) {
         is ProfileUiState.Init -> {}
         is ProfileUiState.ShowToast -> {
-            Log.d("TOAST_TEXT", (uiState.value as ProfileUiState.ShowToast).message)
             Toast.makeText(LocalContext.current, (uiState.value as ProfileUiState.ShowToast).message, Toast.LENGTH_SHORT).show()
         }
         is ProfileUiState.IsLoading -> ProfileContentSkeleton()

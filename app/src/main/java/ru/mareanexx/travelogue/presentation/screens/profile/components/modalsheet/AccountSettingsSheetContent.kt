@@ -45,20 +45,11 @@ fun AccountSettingsSheetContent(
     val accountUiState = viewModel.uiState.collectAsState()
     val buttonEnabled = viewModel.buttonEnabled.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.getEmail()
-    }
-
     LaunchedEffect(accountUiState.value) {
         if (accountUiState.value == AccountUiState.ReturnToStart) {
             closeModalBottomSheet()
             navigateToStartScreen()
         }
-    }
-
-    if (accountUiState.value == AccountUiState.ReturnToStart) {
-        closeModalBottomSheet()
-        navigateToStartScreen()
     }
 
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp)) {
@@ -74,7 +65,7 @@ fun AccountSettingsSheetContent(
             onValueChanged = { viewModel.onEmailChanged(it) },
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Email,
-            supportingText = { if(accountUiState.value == AccountUiState.ShowToast("")) SupportingText(supportText = R.string.unavailable_email) }
+            supportingText = { if(accountUiState.value is AccountUiState.ShowToast) SupportingText(supportText = R.string.unavailable_email) }
         )
         Row(
             modifier = Modifier.fillMaxWidth().padding(top = 15.dp, bottom = 30.dp),

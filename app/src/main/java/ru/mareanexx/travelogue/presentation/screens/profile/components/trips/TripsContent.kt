@@ -31,7 +31,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -69,10 +68,6 @@ import java.time.LocalDate
 fun TripsContent(viewModel: TripsViewModel = hiltViewModel()) {
     val tripsData = viewModel.tripsData.collectAsState()
     val uiState = viewModel.uiState.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.getTrips()
-    }
 
     when (uiState.value) {
         is ProfileUiState.Init -> {}

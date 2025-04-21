@@ -43,6 +43,10 @@ class ProfileViewModel @Inject constructor(
     private val _sheetExpandedState = MutableStateFlow(false)
     val sheetExpandedState: StateFlow<Boolean> get() = _sheetExpandedState
 
+    init {
+        loadProfile()
+    }
+
     fun closeBottomSheet() { _sheetExpandedState.value = false }
 
     fun changeBottomSheetType(newType: ProfileSettingsSheet) {
@@ -61,7 +65,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun showToast(message: String) { _uiState.value = ProfileUiState.ShowToast(message) }
 
-    fun getProfile() {
+    private fun loadProfile() {
         viewModelScope.launch {
             getProfileWithTripsUseCase()
                 .onStart { setLoading() }

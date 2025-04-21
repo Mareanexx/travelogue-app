@@ -40,6 +40,10 @@ class AccountSettingsViewModel @Inject constructor(
     private val _buttonEnabled = MutableStateFlow(false)
     val buttonEnabled: StateFlow<Boolean> get() = _buttonEnabled
 
+    init {
+        getEmail()
+    }
+
     fun onEmailChanged(newValue: String) {
         _userEmail.value = newValue
         validateEmail()
