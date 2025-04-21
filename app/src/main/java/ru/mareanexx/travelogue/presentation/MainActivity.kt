@@ -16,8 +16,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TravelogueTheme {
-                val navController = rememberNavController()
-                AppNavHost(navController)
+                val rootNavController = rememberNavController()
+                AppNavHost(rootNavController)
             }
         }
     }

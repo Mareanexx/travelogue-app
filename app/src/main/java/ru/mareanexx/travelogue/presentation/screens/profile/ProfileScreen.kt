@@ -9,11 +9,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import ru.mareanexx.travelogue.presentation.components.BottomNavBar
-import ru.mareanexx.travelogue.presentation.components.FocusedNavItem
 import ru.mareanexx.travelogue.presentation.screens.profile.components.profile.ProfileContent
 import ru.mareanexx.travelogue.presentation.screens.profile.components.trips.TripsContent
 
@@ -26,19 +23,10 @@ fun ProfileScreen(
 ) {
     var canShowTrips by remember { mutableStateOf(false) }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.White)) {
+    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
         Column {
             ProfileContent(navigateToStartScreen, onLoadTrips = { canShowTrips = true })
             if (canShowTrips) { TripsContent() }
         }
-        BottomNavBar(
-            Modifier.align(Alignment.BottomCenter),
-            FocusedNavItem.Profile,
-            navigateToActivity = navigateToActivity,
-            navigateToNotifications = navigateToNotifications,
-            navigateToExplore = navigateToExplore
-        )
     }
 }

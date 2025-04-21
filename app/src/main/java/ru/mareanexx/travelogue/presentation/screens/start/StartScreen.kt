@@ -28,7 +28,7 @@ enum class SheetType {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartScreen(onNavigateToProfile: () -> Unit) {
+fun StartScreen(onNavigateToMain: () -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val showBottomSheet = remember { mutableStateOf(false) }
     val sheetType = remember { mutableStateOf(SheetType.None) }
@@ -63,7 +63,7 @@ fun StartScreen(onNavigateToProfile: () -> Unit) {
             when(sheetType.value) {
                 SheetType.Login -> LoginForm(onLoginSuccess = {
                     showBottomSheet.value = false
-                    onNavigateToProfile()
+                    onNavigateToMain()
                 })
                 SheetType.Register -> RegisterForm(
                     onOpenProfileCreatePanel = { sheetType.value = SheetType.Profile }
@@ -71,7 +71,7 @@ fun StartScreen(onNavigateToProfile: () -> Unit) {
                 SheetType.Profile -> ProfileForm(
                     onSuccessfulProfileCreation = {
                         showBottomSheet.value = false
-                        onNavigateToProfile()
+                        onNavigateToMain()
                     }
                 )
                 SheetType.None -> {}

@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.mareanexx.travelogue.R
@@ -30,48 +29,37 @@ import ru.mareanexx.travelogue.presentation.theme.MontserratFamily
 import ru.mareanexx.travelogue.presentation.theme.enabledButtonContainer
 import ru.mareanexx.travelogue.presentation.theme.unfocusedNavBarItem
 
-
-enum class FocusedNavItem {
-    Profile, Activity, Notifications, Explore
-}
-
 @Composable
 fun BottomNavBar(
-    modifier: Modifier,
-    tempItemState: FocusedNavItem,
-    navigateToProfile: (() -> Unit)? = null,
-    navigateToActivity: (() -> Unit)? = null,
-    navigateToNotifications: (() -> Unit)? = null,
-    navigateToExplore: (() -> Unit)? = null
+    selectedTab: String,
+    onTabSelected: (String) -> Unit
 ) {
     Row(
-        modifier = modifier
-            .systemBarsPadding()
-            .fillMaxWidth().background(color = Color.White)
+        modifier = Modifier.systemBarsPadding().fillMaxWidth().background(Color.White)
             .padding(vertical = 8.dp, horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        OneNavComponent(tempItemState, FocusedNavItem.Profile, R.drawable.my_profile_icon, R.string.my_profile) {
-            navigateToProfile?.invoke()
+        NavItem("profile", R.drawable.my_profile_icon, R.string.my_profile, selectedTab == "profile") {
+            onTabSelected("profile")
         }
-        OneNavComponent(tempItemState, FocusedNavItem.Activity, R.drawable.group_icon, R.string.activity) {
-            navigateToActivity?.invoke()
+        NavItem("activity", R.drawable.group_icon, R.string.activity, selectedTab == "activity") {
+            onTabSelected("activity")
         }
-        OneNavComponent(tempItemState, FocusedNavItem.Notifications, R.drawable.notifs_icon, R.string.notifications) {
-            navigateToNotifications?.invoke()
+        NavItem("notifications", R.drawable.notifs_icon, R.string.notifications, selectedTab == "notifications") {
+            onTabSelected("notifications")
         }
-        OneNavComponent(tempItemState, FocusedNavItem.Explore, R.drawable.explore_icon, R.string.explore) {
-            navigateToExplore?.invoke()
+        NavItem("explore", R.drawable.explore_icon, R.string.explore, selectedTab == "explore") {
+            onTabSelected("explore")
         }
     }
 }
 
 @Composable
-fun OneNavComponent(
-    tempItemState: FocusedNavItem,
-    requiredItemState: FocusedNavItem,
+fun NavItem(
+    route: String,
     @DrawableRes icon: Int,
-    @StringRes routeName: Int,
+    @StringRes label: Int,
+    selected: Boolean,
     navigateTo: () -> Unit
 ) {
     Column(
@@ -79,29 +67,22 @@ fun OneNavComponent(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
-            ) {
-                navigateTo()
-            },
+            ) { navigateTo() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             modifier = Modifier.size(35.dp),
-            painter = painterResource(icon), contentDescription = stringResource(routeName),
-            tint = if (requiredItemState == tempItemState) enabledButtonContainer else unfocusedNavBarItem
+            painter = painterResource(icon),
+            contentDescription = stringResource(label),
+            tint = if (selected) enabledButtonContainer else unfocusedNavBarItem
         )
         Text(
-            text = stringResource(routeName),
-            color = if (requiredItemState == tempItemState) Color.Black else unfocusedNavBarItem,
+            text = stringResource(label),
+            color = if (selected) Color.Black else unfocusedNavBarItem,
             fontFamily = MontserratFamily,
             fontSize = 10.sp,
             lineHeight = 11.sp,
             fontWeight = FontWeight.SemiBold
         )
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewBottomNavBar() {
-    BottomNavBar(Modifier, FocusedNavItem.Profile, {}, {}, {}, {})
 }
