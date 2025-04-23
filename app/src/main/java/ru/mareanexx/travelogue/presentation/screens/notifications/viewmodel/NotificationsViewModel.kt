@@ -38,6 +38,12 @@ class NotificationsViewModel @Inject constructor(
         loadNotifications()
     }
 
+    fun onDeleteVariantClicked() {
+        viewModelScope.launch {
+            _eventFlow.emit(NotificationsEvent.ShowDeleteDialog)
+        }
+    }
+
     fun refresh() {
         viewModelScope.launch {
             _isRefreshing.value = true

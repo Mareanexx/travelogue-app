@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,7 +36,7 @@ fun NotificationsDropdownMenuAndButton(
 ) {
     val menuExpanded = remember { mutableStateOf(false) }
 
-    Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 5.dp), horizontalArrangement = Arrangement.End) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
         Box {
             Button(
                 shape = Shapes.small,

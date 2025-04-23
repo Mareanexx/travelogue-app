@@ -12,7 +12,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,10 +22,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.travelogue.R
+import ru.mareanexx.travelogue.presentation.components.CustomOutlinedTextField
+import ru.mareanexx.travelogue.presentation.screens.profile.components.account.AccountSettingsEventHandler
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.AccountSettingsViewModel
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.AccountUiState
 import ru.mareanexx.travelogue.presentation.screens.start.components.CheckFieldsButton
-import ru.mareanexx.travelogue.presentation.components.CustomOutlinedTextField
 import ru.mareanexx.travelogue.presentation.screens.start.components.SupportingText
 import ru.mareanexx.travelogue.presentation.theme.Shapes
 import ru.mareanexx.travelogue.presentation.theme.disabledButtonContainer
@@ -45,12 +45,12 @@ fun AccountSettingsSheetContent(
     val accountUiState = viewModel.uiState.collectAsState()
     val buttonEnabled = viewModel.buttonEnabled.collectAsState()
 
-    LaunchedEffect(accountUiState.value) {
-        if (accountUiState.value == AccountUiState.ReturnToStart) {
-            closeModalBottomSheet()
-            navigateToStartScreen()
-        }
-    }
+    AccountSettingsEventHandler(
+        eventFlow = viewModel.eventFlow,
+        onDeleteConfirmed = { viewModel.deleteAccount() },
+        navigateToStartScreen = navigateToStartScreen,
+        closeModalBottomSheet = closeModalBottomSheet
+    )
 
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp)) {
         Text(
@@ -65,7 +65,7 @@ fun AccountSettingsSheetContent(
             onValueChanged = { viewModel.onEmailChanged(it) },
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Email,
-            supportingText = { if(accountUiState.value is AccountUiState.ShowToast) SupportingText(supportText = R.string.unavailable_email) }
+            supportingText = { if(accountUiState.value is AccountUiState.Error) SupportingText(supportText = R.string.unavailable_email) }
         )
         Row(
             modifier = Modifier.fillMaxWidth().padding(top = 15.dp, bottom = 30.dp),
@@ -79,7 +79,7 @@ fun AccountSettingsSheetContent(
             Button(
                 colors = ButtonDefaults.buttonColors(disabledButtonContainer, disabledButtonContent),
                 shape = Shapes.medium, modifier = Modifier.weight(0.5f),
-                onClick = { viewModel.deleteAccount() }
+                onClick = { viewModel.onDeleteAccountClicked() }
             ) { Text(text = stringResource(R.string.delete_account), style = MaterialTheme.typography.labelMedium) }
         }
 

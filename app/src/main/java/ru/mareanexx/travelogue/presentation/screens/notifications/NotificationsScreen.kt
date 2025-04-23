@@ -11,6 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -18,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.travelogue.R
+import ru.mareanexx.travelogue.presentation.components.AreYouSureDialog
 import ru.mareanexx.travelogue.presentation.screens.notifications.components.NotificationsScreenContent
 import ru.mareanexx.travelogue.presentation.screens.notifications.components.skeleton.NotificationsScreenSkeleton
 import ru.mareanexx.travelogue.presentation.screens.notifications.viewmodel.NotificationsViewModel
@@ -30,6 +35,7 @@ fun NotificationsScreen(viewModel: NotificationsViewModel = hiltViewModel()) {
     val uiState = viewModel.uiState.collectAsState()
     val isRefreshing = viewModel.isRefreshing.collectAsState()
     val context = LocalContext.current
+    var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collect { event ->
@@ -37,9 +43,19 @@ fun NotificationsScreen(viewModel: NotificationsViewModel = hiltViewModel()) {
                 is NotificationsEvent.ShowToast -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
+                NotificationsEvent.ShowDeleteDialog -> { showDialog = true }
             }
         }
     }
+
+    if (showDialog) { AreYouSureDialog(
+        additional = R.string.all_notifications_variant_del,
+        onCancelClicked = { showDialog = false },
+        onDeleteClicked = {
+            viewModel.deleteAll()
+            showDialog = false
+        },
+    )}
 
     Column(
         modifier = Modifier.fillMaxSize().background(Color.White).systemBarsPadding()
@@ -52,7 +68,7 @@ fun NotificationsScreen(viewModel: NotificationsViewModel = hiltViewModel()) {
             is NotificationsUiState.Success -> NotificationsScreenContent(
                 notifications = state.notifications,
                 isRefreshing = isRefreshing.value,
-                onDeleteNotifications = { viewModel.deleteAll() },
+                onDeleteNotifications = { viewModel.onDeleteVariantClicked() },
                 onRefresh = { viewModel.refresh() }
             )
             is NotificationsUiState.Error -> {} // TODO() реализовать показ диалога

@@ -55,13 +55,14 @@ fun NotificationsScreenContent(
         if (notifications.isEmpty()) {
             EmptyNotificationsTexts()
         } else {
-            NotificationsDropdownMenuAndButton(onDeleteNotifications = onDeleteNotifications)
-
             LazyColumn(
-                contentPadding = PaddingValues(vertical = 10.dp),
+                contentPadding = PaddingValues(top = 20.dp, bottom = 10.dp),
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                item {
+                    NotificationsDropdownMenuAndButton(onDeleteNotifications = onDeleteNotifications)
+                }
                 items(notifications) { notification ->
                     NotificationCard(notification)
                 }

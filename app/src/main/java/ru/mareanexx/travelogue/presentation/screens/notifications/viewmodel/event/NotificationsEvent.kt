@@ -2,4 +2,5 @@ package ru.mareanexx.travelogue.presentation.screens.notifications.viewmodel.eve
 
 sealed class NotificationsEvent {
     data class ShowToast(val message: String) : NotificationsEvent()
+    data object ShowDeleteDialog : NotificationsEvent()
 }
