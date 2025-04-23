@@ -1,11 +1,11 @@
 package ru.mareanexx.travelogue.data.trip
 
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
-import ru.mareanexx.travelogue.data.profile.local.dao.ProfileDao
 import ru.mareanexx.travelogue.data.tag.local.dao.TagDao
 import ru.mareanexx.travelogue.data.trip.local.dao.TripDao
 import ru.mareanexx.travelogue.data.trip.remote.api.TripApi
@@ -20,12 +20,13 @@ object TripModule {
     @Singleton
     @Provides
     fun provideTripRepository(
+        gson: Gson,
         tripApi: TripApi,
         tripDao: TripDao,
         tagDao: TagDao,
         userSessionManager: UserSessionManager
     ): TripRepository {
-        return TripRepositoryImpl(tripApi, tripDao, tagDao, userSessionManager)
+        return TripRepositoryImpl(gson, tripApi, tripDao, tagDao, userSessionManager)
     }
 
     @Singleton

@@ -1,6 +1,5 @@
 package ru.mareanexx.travelogue.presentation.screens.profile.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -63,7 +62,6 @@ class AccountSettingsViewModel @Inject constructor(
             getAccountInfoUseCase()
                 .catch { exception -> showToast(exception.message.toString()) }
                 .collect {
-                    Log.d("EMAIL_TEST", it)
                     _userEmail.value = it
                 }
         }

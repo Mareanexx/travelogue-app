@@ -94,4 +94,24 @@
     <string name="trip">trip</string>
     <string name="added_a_new">added a new</string>
     <string name="map_point">map point</string>
+
+    <!--Add trip Bottom Sheet-->
+    <string name="kind_of_trip_label">What kind of trip do you want to add?</string>
+    <string name="create_trip">Create trip</string>
+    <string name="current_travel">I’m currently travelling</string>
+    <string name="past_trip">I want to add a past trip</string>
+    <string name="new_trip_title">New trip</string>
+    <string name="pick_a_cover_photo">Pick a cover photo</string>
+    <string name="name_your_trip">Name your trip*</string>
+    <string name="add_a_short_description">Add a short description*</string>
+    <string name="add_up_to_three_tags">Add up to 3 tags (optional)</string>
+    <string name="add_tag">Add tag</string>
+    <string name="trip_visibility">Who can see this trip?</string>
+    <string name="trip_visibility_only_me">Only me</string>
+    <string name="trip_visibility_only_me_desc">This trip, including all details like your current location, is only visible to you</string>
+    <string name="trip_visibility_everyone">Everyone</string>
+    <string name="trip_visibility_everyone_desc">This trip and all related content will be visible to anyone, anywhere</string>
+    <string name="start_date">Start date</string>
+    <string name="end_date">End date</string>
+    <string name="trip_dates">Trip dates</string>
 </resources>

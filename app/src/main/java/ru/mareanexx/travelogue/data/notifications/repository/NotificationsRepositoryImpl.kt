@@ -1,6 +1,5 @@
 package ru.mareanexx.travelogue.data.notifications.repository
 
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.mareanexx.travelogue.data.common.WrappedResponse
@@ -21,10 +20,8 @@ class NotificationsRepositoryImpl @Inject constructor(
             val response = notificationsApi.getAll(profileId)
             if (response.isSuccessful) {
                 val data = response.body()!!.data!!
-                Log.d("NOTIFICATION_SUCCESS", "Response : ${data}")
                 emit(BaseResult.Success(data))
             } else {
-                Log.d("NOTIFICATION_ERROR", "Response : ${response.body()!!.message}")
                 emit(BaseResult.Error(WrappedResponse(message = response.body()!!.message)))
             }
         }

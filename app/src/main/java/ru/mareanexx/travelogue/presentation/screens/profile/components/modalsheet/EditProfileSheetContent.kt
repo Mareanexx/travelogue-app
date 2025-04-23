@@ -38,10 +38,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.ProfileUiState
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.ProfileViewModel
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 import ru.mareanexx.travelogue.presentation.screens.start.components.CheckFieldsButton
-import ru.mareanexx.travelogue.presentation.screens.start.components.CustomOutlinedTextField
+import ru.mareanexx.travelogue.presentation.components.CustomOutlinedTextField
 import ru.mareanexx.travelogue.presentation.screens.start.components.SupportingText
 import ru.mareanexx.travelogue.presentation.theme.Shapes
 import ru.mareanexx.travelogue.presentation.theme.primaryText

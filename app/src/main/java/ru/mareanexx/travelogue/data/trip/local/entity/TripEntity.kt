@@ -3,6 +3,7 @@ package ru.mareanexx.travelogue.data.trip.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import ru.mareanexx.travelogue.data.profile.local.entity.ProfileEntity
@@ -17,8 +18,8 @@ import java.time.LocalDate
         entity = ProfileEntity::class,
         parentColumns = ["id"],
         childColumns = ["profile_id"],
-        onDelete = ForeignKey.CASCADE)
-    ]
+        onDelete = ForeignKey.CASCADE)],
+    indices = [Index(value = ["profile_id"])]
 )
 @TypeConverters(value = [LocalDateConverter::class])
 data class TripEntity(

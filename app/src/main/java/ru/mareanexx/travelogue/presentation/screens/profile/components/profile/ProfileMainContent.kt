@@ -16,6 +16,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -32,35 +33,46 @@ import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.data.profile.remote.dto.ProfileDto
 import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.AccountSettingsSheetContent
+import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.AddTripSheetContent
 import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.EditProfileSheetContent
+import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.TripTypeSheetContent
 import ru.mareanexx.travelogue.presentation.screens.profile.components.skeleton.ProfileContentSkeleton
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.ProfileUiState
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.ProfileViewModel
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 import ru.mareanexx.travelogue.presentation.theme.profilePrimaryText
 import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 
 enum class ProfileSettingsSheet {
-    None, EditProfile, Account, AddTrip
+    None, EditProfile, Account, TripType, AddTrip
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileContent(
+fun ProfileMainContent(
     navigateToStartScreen: () -> Unit,
     onLoadTrips: () -> Unit, viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val uiState = viewModel.uiState.collectAsState()
     val profileData = viewModel.profileData.collectAsState()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val sheetExpanded = viewModel.sheetExpandedState.collectAsState()
     val bottomSheetType = viewModel.sheetType.collectAsState()
 
-    when (uiState.value) {
-        is ProfileUiState.Init -> {}
-        is ProfileUiState.ShowToast -> {
-            Toast.makeText(LocalContext.current, (uiState.value as ProfileUiState.ShowToast).message, Toast.LENGTH_SHORT).show()
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collect { event ->
+            when (event) {
+                is ProfileEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
-        is ProfileUiState.IsLoading -> ProfileContentSkeleton()
+    }
+
+    when (uiState.value) {
+        ProfileUiState.Init -> {}
+        ProfileUiState.IsLoading -> ProfileContentSkeleton()
         ProfileUiState.Showing -> {
             onLoadTrips()
             ProfileLoadedContent(profileData, onOpenModalSheet = { type ->
@@ -68,6 +80,7 @@ fun ProfileContent(
             })
         }
     }
+
     if (sheetExpanded.value) {
         ModalBottomSheet(
             sheetState = bottomSheetState,
@@ -78,7 +91,10 @@ fun ProfileContent(
                 ProfileSettingsSheet.None -> {}
                 ProfileSettingsSheet.EditProfile -> EditProfileSheetContent()
                 ProfileSettingsSheet.Account -> AccountSettingsSheetContent(navigateToStartScreen, { viewModel.closeBottomSheet() })
-                ProfileSettingsSheet.AddTrip -> TODO()
+                ProfileSettingsSheet.TripType -> TripTypeSheetContent(
+                    onChangeBottomSheetType = { type -> viewModel.changeBottomSheetType(type) }
+                )
+                ProfileSettingsSheet.AddTrip -> AddTripSheetContent()
             }
         }
     }

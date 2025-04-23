@@ -9,9 +9,10 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import ru.mareanexx.travelogue.data.tag.local.dao.TagDao
 import ru.mareanexx.travelogue.data.tag.mapper.toEntity
+import ru.mareanexx.travelogue.data.tag.remote.dto.NewTagResponse
 import ru.mareanexx.travelogue.data.trip.local.dao.TripDao
-import ru.mareanexx.travelogue.data.trip.local.entity.TripEntity
 import ru.mareanexx.travelogue.data.trip.mapper.toEntity
+import ru.mareanexx.travelogue.data.trip.mapper.toTrip
 import ru.mareanexx.travelogue.data.trip.remote.api.TripApi
 import ru.mareanexx.travelogue.data.trip.remote.dto.EditTripRequest
 import ru.mareanexx.travelogue.data.trip.remote.dto.NewTripRequest
@@ -23,40 +24,46 @@ import java.io.File
 import javax.inject.Inject
 
 class TripRepositoryImpl @Inject constructor(
+    private val gson: Gson,
     private val tripApi: TripApi,
     private val tripDao: TripDao,
     private val tagDao: TagDao,
     private val userSessionManager: UserSessionManager
 ): TripRepository {
-    override suspend fun getAuthorsTrips(): Flow<List<TripEntity>> {
-        return flow {
-            val trips = tripDao.getTrips()
-            emit(trips)
+    override suspend fun getAuthorsTrips(): Flow<List<Trip>> = flow {
+        val tripEntities = tripDao.getTrips()
+        val tripIds = tripEntities.map { it.id }
+
+        val tags = tagDao.getTagsForTrips(tripIds)
+            .groupBy { it.tripId } // Map<Int, List<TagWithTripId>>
+
+        val trips = tripEntities.map { tripEntity ->
+            val tagList = tags[tripEntity.id].orEmpty().map { NewTagResponse(it.id, it.name) }
+            tripEntity.toTrip(tagList)
         }
+
+        emit(trips)
     }
 
-    override suspend fun addNewTrip(
-        newTripRequest: NewTripRequest,
-        coverPhoto: File
-    ): Flow<BaseResult<Trip, String>> {
+    override suspend fun addNewTrip(newTripRequest: NewTripRequest, coverPhoto: File): Flow<BaseResult<Trip, String>> {
         return flow {
             val profileId = userSessionManager.getProfileId()
             newTripRequest.profileId = profileId
 
-            val jsonBody = Gson().toJson(newTripRequest).toRequestBody("application/json".toMediaTypeOrNull())
+            val jsonBody = gson.toJson(newTripRequest).toRequestBody("application/json".toMediaTypeOrNull())
             val coverPart = coverPhoto.let {
                 val requestFile = it.asRequestBody("image/*".toMediaTypeOrNull())
-                MultipartBody.Part.createFormData("avatar", it.name, requestFile)
+                MultipartBody.Part.createFormData("cover", it.name, requestFile)
             }
 
             val response = tripApi.addNewTrip(jsonBody, coverPart)
             if (response.isSuccessful) {
-                val trip = response.body()!!.data
-                tripDao.insert(trip!!.toEntity())
+                val trip = response.body()!!.data!!
+                tripDao.insert(trip.toEntity())
                 if (trip.tagList != null) tagDao.insertTags(trip.tagList.map { it.toEntity(trip.id) })
                 emit(BaseResult.Success(trip))
             } else {
-                emit(BaseResult.Error(response.message()))
+                emit(BaseResult.Error(response.body()?.message ?: "Unknown error"))
             }
         }
     }
@@ -66,7 +73,7 @@ class TripRepositoryImpl @Inject constructor(
         coverPhoto: File?
     ): Flow<BaseResult<Trip, String>> {
         return flow {
-            val jsonBody = Gson().toJson(editTripRequest).toRequestBody("application/json".toMediaTypeOrNull())
+            val jsonBody = gson.toJson(editTripRequest).toRequestBody("application/json".toMediaTypeOrNull())
             val coverPart = coverPhoto?.let {
                 val requestFile = it.asRequestBody("image/*".toMediaTypeOrNull())
                 MultipartBody.Part.createFormData("cover", it.name, requestFile)
@@ -82,7 +89,7 @@ class TripRepositoryImpl @Inject constructor(
                 }
                 emit(BaseResult.Success(trip))
             } else {
-                emit(BaseResult.Error(response.message()))
+                emit(BaseResult.Error(response.body()?.message ?: "Unknown error"))
             }
         }
     }

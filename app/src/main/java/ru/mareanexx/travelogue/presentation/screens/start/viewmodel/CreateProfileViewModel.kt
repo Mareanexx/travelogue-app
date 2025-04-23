@@ -1,6 +1,5 @@
 package ru.mareanexx.travelogue.presentation.screens.start.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -83,7 +82,6 @@ class CreateProfileViewModel @Inject constructor(
                 }
                 .catch { exception ->
                     setLoading(false)
-                    Log.d("PHOTO", exception.message.toString())
                     showToast(exception.message.toString())
                 }
                 .collect { baseResult ->

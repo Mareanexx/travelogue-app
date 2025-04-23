@@ -1,4 +1,4 @@
-package ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state
+package ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.form
 
 import java.io.File
 

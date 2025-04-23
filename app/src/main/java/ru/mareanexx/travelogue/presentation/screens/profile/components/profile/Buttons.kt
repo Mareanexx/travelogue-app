@@ -45,7 +45,7 @@ fun ProfileButtonsRow(onOpenModalSheet: (ProfileSettingsSheet) -> Unit) {
             text = R.string.add_trip,
             containerColor = primaryText,
             contentColor = Color.White,
-            onOpenModalSheet = { onOpenModalSheet(ProfileSettingsSheet.AddTrip) }
+            onOpenModalSheet = { onOpenModalSheet(ProfileSettingsSheet.TripType) }
         )
         ProfileButton(
             icon = R.drawable.stats_icon,

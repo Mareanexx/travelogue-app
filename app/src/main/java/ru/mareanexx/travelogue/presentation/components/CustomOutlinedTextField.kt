@@ -1,12 +1,15 @@
-package ru.mareanexx.travelogue.presentation.screens.start.components
+package ru.mareanexx.travelogue.presentation.components
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -18,6 +21,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,14 +31,14 @@ import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.UiStat
 import ru.mareanexx.travelogue.presentation.theme.blueSmallText
 import ru.mareanexx.travelogue.presentation.theme.focusedTextField
 import ru.mareanexx.travelogue.presentation.theme.textFieldText
-import ru.mareanexx.travelogue.presentation.theme.unfocusedIndicatorTextField
+import ru.mareanexx.travelogue.presentation.theme.unfocusedIndicator
 
 
 @Composable
 fun authTextFieldColors(): TextFieldColors {
     return TextFieldDefaults.colors(
         errorContainerColor = Color.White,
-        unfocusedIndicatorColor = unfocusedIndicatorTextField,
+        unfocusedIndicatorColor = unfocusedIndicator,
         unfocusedLabelColor = textFieldText,
         focusedContainerColor = Color.White,
         unfocusedContainerColor = Color.White,
@@ -51,6 +55,7 @@ fun CustomOutlinedTextField(
     imeAction: ImeAction, keyboardType: KeyboardType,
     visualTransformation: VisualTransformation? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
     supportingText: @Composable (() -> Unit)? = null
 ) {
     OutlinedTextField(
@@ -64,13 +69,14 @@ fun CustomOutlinedTextField(
         textStyle = MaterialTheme.typography.bodyMedium,
         shape = RoundedCornerShape(15.dp),
         supportingText = supportingText,
+        leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
         visualTransformation = visualTransformation ?: VisualTransformation.None
     )
 }
 
 @Composable
-fun TrailingIconComponent(passwordVisible: MutableState<Boolean>) {
+fun TrailingIcon(passwordVisible: MutableState<Boolean>) {
     Text(
         modifier = Modifier
             .padding(end = 15.dp)
@@ -83,5 +89,14 @@ fun TrailingIconComponent(passwordVisible: MutableState<Boolean>) {
         text =  if (!passwordVisible.value) "Show" else "Hide",
         style = MaterialTheme.typography.labelSmall,
         color = blueSmallText
+    )
+}
+
+@Composable
+fun LeadingIcon(@DrawableRes iconRes: Int) {
+    Icon(
+        modifier = Modifier.size(25.dp),
+        painter = painterResource(iconRes),
+        contentDescription = null
     )
 }

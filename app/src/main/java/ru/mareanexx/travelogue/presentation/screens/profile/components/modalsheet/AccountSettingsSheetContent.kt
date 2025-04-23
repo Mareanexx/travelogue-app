@@ -26,7 +26,7 @@ import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.AccountSettingsViewModel
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.AccountUiState
 import ru.mareanexx.travelogue.presentation.screens.start.components.CheckFieldsButton
-import ru.mareanexx.travelogue.presentation.screens.start.components.CustomOutlinedTextField
+import ru.mareanexx.travelogue.presentation.components.CustomOutlinedTextField
 import ru.mareanexx.travelogue.presentation.screens.start.components.SupportingText
 import ru.mareanexx.travelogue.presentation.theme.Shapes
 import ru.mareanexx.travelogue.presentation.theme.disabledButtonContainer

@@ -1,8 +1,12 @@
 package ru.mareanexx.travelogue.data.trip.mapper
 
 import ru.mareanexx.travelogue.data.profile.remote.dto.AuthorTrip
+import ru.mareanexx.travelogue.data.tag.remote.dto.NewTagRequest
+import ru.mareanexx.travelogue.data.tag.remote.dto.NewTagResponse
 import ru.mareanexx.travelogue.data.trip.local.entity.TripEntity
+import ru.mareanexx.travelogue.data.trip.remote.dto.NewTripRequest
 import ru.mareanexx.travelogue.domain.trip.entity.Trip
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.form.TripForm
 
 fun TripEntity.toDto() = AuthorTrip(
     id = id,
@@ -43,4 +47,29 @@ fun Trip.toEntity() = TripEntity(
     status = status,
     coverPhoto = coverPhoto,
     profileId = profileId
+)
+
+fun TripEntity.toTrip(tagList: List<NewTagResponse>) = Trip(
+    id = id,
+    name = name,
+    description = description,
+    startDate = startDate,
+    endDate = endDate,
+    stepsNumber = stepsNumber,
+    daysNumber = daysNumber,
+    type = type,
+    status = status,
+    coverPhoto = coverPhoto,
+    profileId = profileId,
+    tagList = tagList,
+)
+
+fun TripForm.toRequest() = NewTripRequest(
+    name = name,
+    description = description,
+    startDate = startDate,
+    endDate = endDate,
+    type = type,
+    status = status,
+    tagList = tagList.map { NewTagRequest(it) }
 )

@@ -3,8 +3,11 @@ package ru.mareanexx.travelogue.presentation.screens.profile.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -14,16 +17,11 @@ import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.profile.usecase.GetProfileWithTripsUseCase
 import ru.mareanexx.travelogue.domain.profile.usecase.UpdateProfileUseCase
 import ru.mareanexx.travelogue.presentation.screens.profile.components.profile.ProfileSettingsSheet
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.UpdateProfileForm
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.form.UpdateProfileForm
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 import java.io.File
 import javax.inject.Inject
-
-sealed class ProfileUiState {
-    data object Init : ProfileUiState()
-    data object IsLoading : ProfileUiState()
-    data class ShowToast(val message: String) : ProfileUiState()
-    data object Showing : ProfileUiState()
-}
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -33,6 +31,9 @@ class ProfileViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<ProfileUiState>(ProfileUiState.Init)
     val uiState: StateFlow<ProfileUiState> get() = _uiState
+
+    private val _eventFlow = MutableSharedFlow<ProfileEvent>()
+    val eventFlow: SharedFlow<ProfileEvent> = _eventFlow.asSharedFlow()
 
     private val _profileData = MutableStateFlow<ProfileDto?>(null)
     val profileData: StateFlow<ProfileDto?> get() = _profileData
@@ -63,16 +64,14 @@ class ProfileViewModel @Inject constructor(
 
     private fun setLoading() { _uiState.value = ProfileUiState.IsLoading }
 
-    private fun showToast(message: String) { _uiState.value = ProfileUiState.ShowToast(message) }
-
     private fun loadProfile() {
         viewModelScope.launch {
             getProfileWithTripsUseCase()
                 .onStart { setLoading() }
-                .catch { exception -> showToast(exception.message.toString()) }
+                .catch { exception -> _eventFlow.emit(ProfileEvent.ShowToast(exception.message ?: "Error message")) }
                 .collect { baseResult ->
                     when(baseResult) {
-                        is BaseResult.Error -> showToast(baseResult.error)
+                        is BaseResult.Error -> _eventFlow.emit(ProfileEvent.ShowToast(baseResult.error))
                         is BaseResult.Success -> {
                             _uiState.value = ProfileUiState.Showing
                             _profileData.value = baseResult.data
@@ -144,7 +143,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             updateProfile(updateProfileRequest, _updatedProfileData.value.avatar, _updatedProfileData.value.coverPhoto)
                 .onStart { setLoading() }
-                .catch { exception -> showToast(exception.message.toString()) }
+                .catch { exception -> _eventFlow.emit(ProfileEvent.ShowToast(exception.message ?: "Unknown error")) }
                 .collect { result ->
                     when (result) {
                         is BaseResult.Success -> {
@@ -154,7 +153,7 @@ class ProfileViewModel @Inject constructor(
                             _sheetType.value = ProfileSettingsSheet.None
                         }
                         is BaseResult.Error -> {
-                            showToast(result.error)
+                            _eventFlow.emit(ProfileEvent.ShowToast(result.error))
                             _uiState.value = ProfileUiState.Showing
                         }
                     }

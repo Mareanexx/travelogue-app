@@ -31,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -51,12 +52,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
-import ru.mareanexx.travelogue.data.trip.local.entity.TripEntity
 import ru.mareanexx.travelogue.data.trip.local.type.TripTimeStatus
 import ru.mareanexx.travelogue.data.trip.local.type.TripVisibilityType
+import ru.mareanexx.travelogue.domain.trip.entity.Trip
 import ru.mareanexx.travelogue.presentation.screens.profile.components.skeleton.TripsContentSkeleton
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.ProfileUiState
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.TripsViewModel
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 import ru.mareanexx.travelogue.presentation.theme.MontserratFamily
 import ru.mareanexx.travelogue.presentation.theme.Shapes
 import ru.mareanexx.travelogue.presentation.theme.enabledButtonContainer
@@ -65,22 +67,30 @@ import java.time.LocalDate
 
 
 @Composable
-fun TripsContent(viewModel: TripsViewModel = hiltViewModel()) {
+fun TripsListMainContent(viewModel: TripsViewModel = hiltViewModel()) {
+    val context = LocalContext.current
     val tripsData = viewModel.tripsData.collectAsState()
     val uiState = viewModel.uiState.collectAsState()
 
-    when (uiState.value) {
-        is ProfileUiState.Init -> {}
-        is ProfileUiState.ShowToast -> {
-            Toast.makeText(LocalContext.current, (uiState.value as ProfileUiState.ShowToast).message, Toast.LENGTH_SHORT).show()
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collect { event ->
+            when (event) {
+                is ProfileEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
-        is ProfileUiState.IsLoading -> TripsContentSkeleton()
+    }
+
+    when (uiState.value) {
+        ProfileUiState.Init -> {}
+        ProfileUiState.IsLoading -> TripsContentSkeleton()
         ProfileUiState.Showing -> TripsLoadedContent(tripsData)
     }
 }
 
 @Composable
-fun TripsLoadedContent(tripsData: State<List<TripEntity>>) {
+fun TripsLoadedContent(tripsData: State<List<Trip>>) {
     LazyColumn(
         contentPadding = PaddingValues(start = 15.dp, end = 15.dp, bottom = 100.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
@@ -93,7 +103,7 @@ fun TripsLoadedContent(tripsData: State<List<TripEntity>>) {
 
 
 @Composable
-fun TripCard(trip: TripEntity) {
+fun TripCard(trip: Trip) {
     Box(modifier = Modifier.fillMaxWidth().height(255.dp).clip(Shapes.medium)) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
@@ -112,7 +122,7 @@ fun TripCard(trip: TripEntity) {
 }
 
 @Composable
-fun BottomTripMainInfo(modifier: Modifier, trip: TripEntity) {
+fun BottomTripMainInfo(modifier: Modifier, trip: Trip) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier.padding(bottom = 20.dp),

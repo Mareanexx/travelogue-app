@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.presentation.screens.start.components.CheckFieldsButton
-import ru.mareanexx.travelogue.presentation.screens.start.components.CustomOutlinedTextField
+import ru.mareanexx.travelogue.presentation.components.CustomOutlinedTextField
 import ru.mareanexx.travelogue.presentation.screens.start.components.SupportingText
 import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.CreateProfileViewModel
 import ru.mareanexx.travelogue.presentation.screens.start.viewmodel.state.UiState
