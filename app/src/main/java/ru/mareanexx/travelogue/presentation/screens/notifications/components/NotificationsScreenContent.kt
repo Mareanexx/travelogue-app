@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,20 +34,15 @@ import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 fun NotificationsScreenContent(
     isRefreshing: Boolean,
     notifications: List<Notification>,
+    onDeleteNotifications: () -> Unit,
     onRefresh: () -> Unit
 ) {
     val pullState = rememberPullToRefreshState()
 
-    if (notifications.isEmpty()) {
-        EmptyNotificationsTexts()
-        return
-    }
-
-    NotificationsDropdownMenuAndButton()
 
     PullToRefreshBox(
         state = pullState,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxSize(),
         isRefreshing = isRefreshing,
         indicator = {
             Indicator(
@@ -55,13 +52,19 @@ fun NotificationsScreenContent(
         },
         onRefresh = { onRefresh() }
     ) {
-        LazyColumn(
-            contentPadding = PaddingValues(vertical = 10.dp),
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            items(notifications) { notification ->
-                NotificationCard(notification)
+        if (notifications.isEmpty()) {
+            EmptyNotificationsTexts()
+        } else {
+            NotificationsDropdownMenuAndButton(onDeleteNotifications = onDeleteNotifications)
+
+            LazyColumn(
+                contentPadding = PaddingValues(vertical = 10.dp),
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(notifications) { notification ->
+                    NotificationCard(notification)
+                }
             }
         }
     }
@@ -69,10 +72,14 @@ fun NotificationsScreenContent(
 
 @Composable
 fun EmptyNotificationsTexts() {
-    Box(modifier = Modifier.fillMaxSize().padding(horizontal = 57.dp)) {
-        Column(modifier = Modifier.align(Alignment.Center), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())
+        .padding(horizontal = 57.dp)
+    ) {
+        Column(modifier = Modifier.align(Alignment.Center), verticalArrangement = Arrangement.Center) {
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
                 text = stringResource(R.string.no_notifications),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.labelLarge, color = primaryText

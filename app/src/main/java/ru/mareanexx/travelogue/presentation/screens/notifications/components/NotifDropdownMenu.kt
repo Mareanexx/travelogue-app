@@ -32,7 +32,9 @@ import ru.mareanexx.travelogue.presentation.theme.primaryText
 
 
 @Composable
-fun NotificationsDropdownMenuAndButton() {
+fun NotificationsDropdownMenuAndButton(
+    onDeleteNotifications: () -> Unit
+) {
     val menuExpanded = remember { mutableStateOf(false) }
 
     Row(modifier = Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 5.dp), horizontalArrangement = Arrangement.End) {
@@ -65,7 +67,7 @@ fun NotificationsDropdownMenuAndButton() {
                 HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
                 DropdownMenuItem(
                     text = { Text(text = stringResource(R.string.clear_all_notifications), style = MaterialTheme.typography.bodyMedium, color = deleteText, fontWeight = FontWeight.SemiBold) },
-                    onClick = { TODO("Нужно сделать фоновый запрос на удаление всех уведомлений") },
+                    onClick = { onDeleteNotifications() },
                     trailingIcon = { Icon(painter = painterResource(R.drawable.delete_icon), contentDescription = null, tint = deleteText) }
                 )
             }

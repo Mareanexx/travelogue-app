@@ -26,4 +26,17 @@ class NotificationsRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun deleteAll(): Flow<BaseResult<String, WrappedResponse<String>>> {
+        return flow {
+            val profileId = userSessionManager.getProfileId()
+            val response = notificationsApi.deleteAll(profileId)
+            if (response.isSuccessful) {
+                val message = response.body()?.message ?: "Success"
+                emit(BaseResult.Success(data = message))
+            } else {
+                emit(BaseResult.Error(WrappedResponse(message = response.body()?.message ?: "Unknown error")))
+            }
+        }
+    }
 }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import ru.mareanexx.travelogue.domain.common.BaseResult
+import ru.mareanexx.travelogue.domain.notifications.usecase.DeleteAllNotificationsUseCase
 import ru.mareanexx.travelogue.domain.notifications.usecase.GetNotificationsUseCase
 import ru.mareanexx.travelogue.presentation.screens.notifications.viewmodel.event.NotificationsEvent
 import ru.mareanexx.travelogue.presentation.screens.notifications.viewmodel.state.NotificationsUiState
@@ -20,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotificationsViewModel @Inject constructor(
-    private val getNotificationsUseCase: GetNotificationsUseCase
+    private val getNotificationsUseCase: GetNotificationsUseCase,
+    private val deleteAllNotificationsUseCase: DeleteAllNotificationsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<NotificationsUiState>(NotificationsUiState.Loading)
@@ -58,6 +60,29 @@ class NotificationsViewModel @Inject constructor(
                     when (result) {
                         is BaseResult.Success -> {
                             _uiState.value = NotificationsUiState.Success(result.data)
+                        }
+                        is BaseResult.Error -> {
+                            val errorMsg = result.error.message ?: "Unknown error"
+                            _uiState.value = NotificationsUiState.Error(errorMsg)
+                            _eventFlow.emit(NotificationsEvent.ShowToast(errorMsg))
+                        }
+                    }
+                }
+        }
+    }
+
+    fun deleteAll() {
+        viewModelScope.launch {
+            deleteAllNotificationsUseCase()
+                .onStart { _uiState.value = NotificationsUiState.Loading }
+                .catch { exception ->
+                    _uiState.value = NotificationsUiState.Error(exception.message ?: "Unknown error")
+                    _eventFlow.emit(NotificationsEvent.ShowToast(exception.message ?: "Unexpected error"))
+                }
+                .collect { result ->
+                    when (result) {
+                        is BaseResult.Success -> {
+                            _uiState.value = NotificationsUiState.Success(emptyList())
                         }
                         is BaseResult.Error -> {
                             val errorMsg = result.error.message ?: "Unknown error"

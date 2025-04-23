@@ -52,6 +52,7 @@ fun NotificationsScreen(viewModel: NotificationsViewModel = hiltViewModel()) {
             is NotificationsUiState.Success -> NotificationsScreenContent(
                 notifications = state.notifications,
                 isRefreshing = isRefreshing.value,
+                onDeleteNotifications = { viewModel.deleteAll() },
                 onRefresh = { viewModel.refresh() }
             )
             is NotificationsUiState.Error -> {} // TODO() реализовать показ диалога
