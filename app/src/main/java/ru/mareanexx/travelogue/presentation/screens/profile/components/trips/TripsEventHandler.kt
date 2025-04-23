@@ -1,0 +1,72 @@
+package ru.mareanexx.travelogue.presentation.screens.profile.components.trips
+
+import android.widget.Toast
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.flow.Flow
+import ru.mareanexx.travelogue.R
+import ru.mareanexx.travelogue.presentation.components.AreYouSureDialog
+import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.TripSheetContent
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TripsEventHandler(
+    eventFlow: Flow<ProfileEvent>,
+    onDeleteConfirmed: (Int) -> Unit,
+) {
+    val context = LocalContext.current
+    var showDialog by remember { mutableStateOf(false) }
+    val deletedTrip = remember { mutableIntStateOf(-1) }
+    var showEditTripSheet by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        eventFlow.collect { event ->
+            when (event) {
+                is ProfileEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+                is ProfileEvent.ShowDeleteDialog -> {
+                    deletedTrip.intValue = event.id
+                    showDialog = true
+                }
+                ProfileEvent.ShowEditBottomSheet -> { showEditTripSheet = true }
+                ProfileEvent.CloseEditBottomSheet -> { showEditTripSheet = false }
+            }
+        }
+    }
+
+    if (showDialog) {
+        AreYouSureDialog(
+            additional = R.string.this_trip_variant_del,
+            onCancelClicked = { showDialog = false },
+            onDeleteClicked = {
+                onDeleteConfirmed(deletedTrip.intValue)
+                showDialog = false
+            },
+        )
+    }
+
+    if (showEditTripSheet) {
+        ModalBottomSheet(
+            containerColor = Color.White,
+            onDismissRequest = { showEditTripSheet = false }
+        ) {
+            TripSheetContent(
+                buttonText = R.string.save_changes, titleText = R.string.edit_trip,
+                onAction = { viewModel -> viewModel.updateTrip() },
+                isEditing = true
+            )
+        }
+    }
+}

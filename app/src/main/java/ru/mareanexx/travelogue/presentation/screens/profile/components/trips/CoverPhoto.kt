@@ -23,20 +23,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.form.TripForm
 import ru.mareanexx.travelogue.presentation.theme.Shapes
 import ru.mareanexx.travelogue.presentation.theme.choosePicBackground
 import ru.mareanexx.travelogue.presentation.theme.mainBorderColor
-import java.io.File
 
 
 @Composable
-fun CoverPhotoImage(coverPhoto: File) {
+fun CoverPhotoImage(tripForm: TripForm, isEditing: Boolean) {
     Box(modifier = Modifier.clip(Shapes.medium)) {
         AsyncImage(
             modifier = Modifier.fillMaxWidth().height(206.dp),
-            contentDescription = "${coverPhoto.name} selected pic",
-            model = coverPhoto,
+            contentDescription = "Selected pic",
+            model = if (isEditing && tripForm.coverPhoto == null) "${BuildConfig.API_FILES_URL}${tripForm.coverPhotoPath}" else tripForm.coverPhoto,
             placeholder = painterResource(R.drawable.cover_placeholder),
             error = painterResource(R.drawable.cover_placeholder),
             contentScale = ContentScale.Crop

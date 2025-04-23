@@ -33,8 +33,8 @@ import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.data.profile.remote.dto.ProfileDto
 import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.AccountSettingsSheetContent
-import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.AddTripSheetContent
 import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.EditProfileSheetContent
+import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.TripSheetContent
 import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.TripTypeSheetContent
 import ru.mareanexx.travelogue.presentation.screens.profile.components.skeleton.ProfileContentSkeleton
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.ProfileViewModel
@@ -62,10 +62,8 @@ fun ProfileMainContent(
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collect { event ->
-            when (event) {
-                is ProfileEvent.ShowToast -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-                }
+            if (event is ProfileEvent.ShowToast) {
+                Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -94,7 +92,12 @@ fun ProfileMainContent(
                 ProfileSettingsSheet.TripType -> TripTypeSheetContent(
                     onChangeBottomSheetType = { type -> viewModel.changeBottomSheetType(type) }
                 )
-                ProfileSettingsSheet.AddTrip -> AddTripSheetContent()
+                ProfileSettingsSheet.AddTrip -> TripSheetContent(
+                    isEditing = false,
+                    buttonText = R.string.create_trip,
+                    titleText = R.string.new_trip_title,
+                    onAction = { viewModel -> viewModel.uploadNewTrip() }
+                )
             }
         }
     }
@@ -102,9 +105,13 @@ fun ProfileMainContent(
 
 @Composable
 fun ProfileLoadedContent(profileData: State<ProfileDto?>, onOpenModalSheet: (ProfileSettingsSheet) -> Unit) {
-    Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .background(Color.White)) {
         AsyncImage(
-            modifier = Modifier.fillMaxWidth().height(170.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(170.dp),
             model = "${BuildConfig.API_FILES_URL}${profileData.value!!.coverPhoto}",
             placeholder = painterResource(R.drawable.cover_placeholder),
             error = painterResource(R.drawable.cover_placeholder),
@@ -121,7 +128,9 @@ fun ProfileLoadedContent(profileData: State<ProfileDto?>, onOpenModalSheet: (Pro
                 contentDescription = stringResource(R.string.cd_avatar_photo),
                 placeholder = painterResource(R.drawable.avatar_placeholder),
                 error = painterResource(R.drawable.avatar_placeholder),
-                modifier = Modifier.size(80.dp).clip(CircleShape),
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
             Column(modifier = Modifier.padding(top = 15.dp)) {
@@ -145,7 +154,9 @@ fun ProfileLoadedContent(profileData: State<ProfileDto?>, onOpenModalSheet: (Pro
             followingsNumber = profileData.value!!.followingNumber
         )
 
-        Column(modifier = Modifier.padding(horizontal = 15.dp).padding(top = 12.dp, bottom = 15.dp)) {
+        Column(modifier = Modifier
+            .padding(horizontal = 15.dp)
+            .padding(top = 12.dp, bottom = 15.dp)) {
             ProfileButtonsRow(onOpenModalSheet = onOpenModalSheet)
         }
     }

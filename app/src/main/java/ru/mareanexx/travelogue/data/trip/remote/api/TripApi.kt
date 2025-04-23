@@ -24,7 +24,7 @@ interface TripApi {
     suspend fun deleteTrip(@Path("tripId") tripId: Int): Response<String>
 
     @Multipart
-    @PATCH
+    @PATCH("trips")
     suspend fun updateTrip(
         @Part("data") data: RequestBody,
         @Part cover: MultipartBody.Part?

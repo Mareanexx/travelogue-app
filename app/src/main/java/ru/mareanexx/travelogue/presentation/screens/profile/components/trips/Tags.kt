@@ -71,7 +71,7 @@ fun ConcreteTag(
             value = value,
             textStyle = TextStyle(fontFamily = MontserratFamily, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp, lineHeight = 13.sp),
             onValueChange = onValueChanged,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
         )
         Box(
             modifier = Modifier.padding(start = 8.dp)

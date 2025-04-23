@@ -102,7 +102,7 @@ class TripRepositoryImpl @Inject constructor(
 
                 emit(BaseResult.Success("Successfully deleted trip"))
             } else {
-                emit(BaseResult.Error(response.message()))
+                emit(BaseResult.Error(response.body() ?: "Unknown error"))
             }
         }
     }

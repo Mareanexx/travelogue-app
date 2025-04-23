@@ -115,6 +115,8 @@
     <string name="end_date">End date</string>
     <string name="trip_dates">Trip dates</string>
 
+    <!--Edit trip Bottom Sheet-->
+
     <!--Are you sure Dialog-->
     <string name="cancel_btn">Cancel</string>
     <string name="are_you_sure_text">Are you sure you want to delete</string>

@@ -1,6 +1,5 @@
 package ru.mareanexx.travelogue.presentation.screens.profile.components.trips
 
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
@@ -31,8 +30,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -57,7 +53,6 @@ import ru.mareanexx.travelogue.data.trip.local.type.TripVisibilityType
 import ru.mareanexx.travelogue.domain.trip.entity.Trip
 import ru.mareanexx.travelogue.presentation.screens.profile.components.skeleton.TripsContentSkeleton
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.TripsViewModel
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 import ru.mareanexx.travelogue.presentation.theme.MontserratFamily
 import ru.mareanexx.travelogue.presentation.theme.Shapes
@@ -65,45 +60,40 @@ import ru.mareanexx.travelogue.presentation.theme.enabledButtonContainer
 import ru.mareanexx.travelogue.presentation.theme.primaryText
 import java.time.LocalDate
 
-
 @Composable
 fun TripsListMainContent(viewModel: TripsViewModel = hiltViewModel()) {
-    val context = LocalContext.current
-    val tripsData = viewModel.tripsData.collectAsState()
+    val tripsData by viewModel.tripsData.collectAsState()
     val uiState = viewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.eventFlow.collect { event ->
-            when (event) {
-                is ProfileEvent.ShowToast -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
+    TripsEventHandler(
+        eventFlow = viewModel.eventFlow,
+        onDeleteConfirmed = { tripId -> viewModel.deleteTrip(tripId) }
+    )
 
     when (uiState.value) {
         ProfileUiState.Init -> {}
         ProfileUiState.IsLoading -> TripsContentSkeleton()
-        ProfileUiState.Showing -> TripsLoadedContent(tripsData)
-    }
-}
-
-@Composable
-fun TripsLoadedContent(tripsData: State<List<Trip>>) {
-    LazyColumn(
-        contentPadding = PaddingValues(start = 15.dp, end = 15.dp, bottom = 100.dp),
-        verticalArrangement = Arrangement.spacedBy(15.dp)
-    ) {
-        items(tripsData.value) { trip ->
-            TripCard(trip)
+        ProfileUiState.Showing -> {
+            LazyColumn(
+                contentPadding = PaddingValues(start = 15.dp, end = 15.dp, bottom = 100.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                items(tripsData) { trip ->
+                    TripCard(
+                        trip,
+                        onDeleteTrip = {
+                            viewModel.onDeleteClicked(trip.id)
+                        },
+                        onEditTrip = { viewModel.onEditPanelOpen(trip) }
+                    )
+                }
+            }
         }
     }
 }
 
-
 @Composable
-fun TripCard(trip: Trip) {
+fun TripCard(trip: Trip, onDeleteTrip: () -> Unit, onEditTrip: () -> Unit) {
     Box(modifier = Modifier.fillMaxWidth().height(255.dp).clip(Shapes.medium)) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
@@ -114,8 +104,9 @@ fun TripCard(trip: Trip) {
             contentScale = ContentScale.Crop,
         )
         Box(modifier = Modifier.fillMaxSize().padding(vertical = 13.dp, horizontal = 17.dp)) {
-            if (trip.status == TripTimeStatus.Current) TripHeaderNowOnATripComponent()
-            TripHeaderSettingsComponent(Modifier.align(Alignment.TopEnd))
+            if (trip.status == TripTimeStatus.Current)
+                TripHeaderNowOnATripComponent()
+            TripHeaderSettingsComponent(Modifier.align(Alignment.TopEnd), onEditTrip = onEditTrip, onDeleteTrip = onDeleteTrip)
             BottomTripMainInfo(Modifier.align(Alignment.BottomCenter), trip)
         }
     }
@@ -131,7 +122,9 @@ fun BottomTripMainInfo(modifier: Modifier, trip: Trip) {
             color = Color.White
         )
         Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -209,7 +202,11 @@ fun TripHeaderNowOnATripComponent() {
 }
 
 @Composable
-fun TripHeaderSettingsComponent(modifier: Modifier) {
+fun TripHeaderSettingsComponent(
+    modifier: Modifier,
+    onEditTrip: () -> Unit,
+    onDeleteTrip: () -> Unit
+) {
     val expandedMenu = remember { mutableStateOf(false) }
 
     Box(modifier = modifier) {
@@ -229,13 +226,13 @@ fun TripHeaderSettingsComponent(modifier: Modifier) {
         ) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(R.string.edit_trip), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold) },
-                onClick = { TODO("реализовать открытие Modal Bottom редактирования Trip") },
+                onClick = { onEditTrip() },
                 trailingIcon = { Icon(painterResource(R.drawable.edit_pen_icon), null, tint = primaryText) }
             )
             HorizontalDivider(thickness = 2.dp, color = Color.LightGray)
             DropdownMenuItem(
                 text = { Text(text = stringResource(R.string.delete_trip), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold) },
-                onClick = { TODO("реализовать открытие Modal Bottom удаления Trip") },
+                onClick = { onDeleteTrip() },
                 trailingIcon = { Icon(painterResource(R.drawable.delete_icon), null, tint = primaryText) }
             )
         }

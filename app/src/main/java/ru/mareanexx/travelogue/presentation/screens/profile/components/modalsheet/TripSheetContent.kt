@@ -66,7 +66,13 @@ import ru.mareanexx.travelogue.utils.FileUtils.uriToFile
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTripSheetContent(viewModel: TripsViewModel = hiltViewModel()) {
+fun TripSheetContent(
+    isEditing: Boolean,
+    @StringRes buttonText: Int,
+    @StringRes titleText: Int,
+    onAction: (TripsViewModel) -> Unit,
+    viewModel: TripsViewModel = hiltViewModel()
+) {
 
     val tripUiState by viewModel.uiState.collectAsState()
     val tripForm by viewModel.formState.collectAsState()
@@ -84,10 +90,8 @@ fun AddTripSheetContent(viewModel: TripsViewModel = hiltViewModel()) {
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collect { event ->
-            when (event) {
-                is ProfileEvent.ShowToast -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-                }
+            if (event is ProfileEvent.ShowToast) {
+                Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -95,7 +99,7 @@ fun AddTripSheetContent(viewModel: TripsViewModel = hiltViewModel()) {
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp)) {
         Text(
             modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
-            text = stringResource(R.string.new_trip_title),
+            text = stringResource(titleText),
             style = MaterialTheme.typography.displaySmall,
             color = profilePrimaryText, textAlign = TextAlign.Center
         )
@@ -104,10 +108,10 @@ fun AddTripSheetContent(viewModel: TripsViewModel = hiltViewModel()) {
                 launcher.launch("image/*")
             }
         ) {
-            if (tripForm.coverPhoto == null) {
+            if (tripForm.coverPhoto == null && tripForm.coverPhotoPath == null) {
                 CoverPhotoChooserBox()
             } else {
-                CoverPhotoImage(tripForm.coverPhoto!!)
+                CoverPhotoImage(tripForm, isEditing)
             }
         }
 
@@ -154,9 +158,9 @@ fun AddTripSheetContent(viewModel: TripsViewModel = hiltViewModel()) {
         )
         CheckFieldsButton(
             enabled = tripForm.buttonEnabled,
-            textRes = R.string.create_trip,
+            textRes = buttonText,
             showLoading = tripUiState == ProfileUiState.IsLoading
-        ) { viewModel.uploadNewTrip() }
+        ) { onAction(viewModel) }
         Spacer(modifier = Modifier.height(25.dp))
     }
 
