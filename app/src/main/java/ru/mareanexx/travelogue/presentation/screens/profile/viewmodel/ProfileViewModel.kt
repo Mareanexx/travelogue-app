@@ -8,13 +8,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import ru.mareanexx.travelogue.data.profile.mapper.copyStats
 import ru.mareanexx.travelogue.data.profile.remote.dto.ProfileDto
 import ru.mareanexx.travelogue.data.profile.remote.dto.UpdateProfileRequest
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.profile.usecase.GetProfileWithTripsUseCase
+import ru.mareanexx.travelogue.domain.profile.usecase.GetUpdatedProfileStatsUseCase
 import ru.mareanexx.travelogue.domain.profile.usecase.UpdateProfileUseCase
 import ru.mareanexx.travelogue.presentation.screens.profile.components.profile.ProfileBottomSheetType
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
@@ -26,6 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val getProfileWithTripsUseCase: GetProfileWithTripsUseCase,
+    private val getUpdatedProfileStatsUseCase: GetUpdatedProfileStatsUseCase,
     private val updateProfile: UpdateProfileUseCase
 ) : ViewModel() {
 
@@ -38,7 +42,35 @@ class ProfileViewModel @Inject constructor(
     private val _profileData = MutableStateFlow<ProfileDto?>(null)
     val profileData: StateFlow<ProfileDto?> get() = _profileData
 
-    init { loadProfile() }
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
+    init {
+        loadProfile()
+        refreshStatistics()
+    }
+
+    fun refreshStatistics() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            getUpdatedProfileStatsUseCase()
+                .onStart { setLoading() }
+                .catch { exception -> showToast(exception.message) }
+                .collect { baseResult ->
+                    when(baseResult) {
+                        is BaseResult.Error -> {
+                            showToast(baseResult.error)
+                            _uiState.value = ProfileUiState.Showing
+                        }
+                        is BaseResult.Success -> {
+                            _profileData.value.copyStats(baseResult.data)
+                            _uiState.value = ProfileUiState.Showing
+                        }
+                    }
+                    _isRefreshing.value = false
+                }
+        }
+    }
 
     private fun showToast(message: String?) {
         viewModelScope.launch {

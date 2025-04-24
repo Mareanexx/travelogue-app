@@ -11,6 +11,7 @@ import retrofit2.http.Part
 import retrofit2.http.Query
 import ru.mareanexx.travelogue.data.common.WrappedResponse
 import ru.mareanexx.travelogue.data.profile.remote.dto.AuthorsProfileResponse
+import ru.mareanexx.travelogue.data.profile.remote.dto.UpdatedProfileStatsResponse
 import ru.mareanexx.travelogue.domain.profile.entity.Profile
 import java.util.UUID
 
@@ -32,4 +33,9 @@ interface ProfileApi {
         @Part avatar: MultipartBody.Part?,
         @Part cover: MultipartBody.Part?
     ): Response<WrappedResponse<Profile>>
+
+    @GET("profile/stats")
+    suspend fun getUpdatedStats(
+        @Query("authorId") authorId: Int
+    ): Response<WrappedResponse<UpdatedProfileStatsResponse>>
 }

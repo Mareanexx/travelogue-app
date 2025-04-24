@@ -17,4 +17,11 @@ interface ProfileDao {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(profile: ProfileEntity)
+
+    @Query("""
+        UPDATE profile 
+        SET tripsNumber = :tripsNumber, followersNumber = :followersNumber, followingNumber = :followingNumber 
+        WHERE id = :profileId
+    """)
+    suspend fun updateStatsOnly(profileId: Int, tripsNumber: Int, followersNumber: Int, followingNumber: Int)
 }

@@ -15,6 +15,7 @@ import ru.mareanexx.travelogue.data.profile.remote.dto.AuthorsProfileResponse
 import ru.mareanexx.travelogue.data.profile.remote.dto.NewProfileRequest
 import ru.mareanexx.travelogue.data.profile.remote.dto.ProfileDto
 import ru.mareanexx.travelogue.data.profile.remote.dto.UpdateProfileRequest
+import ru.mareanexx.travelogue.data.profile.remote.dto.UpdatedProfileStatsResponse
 import ru.mareanexx.travelogue.data.trip.local.dao.TripDao
 import ru.mareanexx.travelogue.data.trip.mapper.toEntity
 import ru.mareanexx.travelogue.domain.common.BaseResult
@@ -73,7 +74,7 @@ class ProfileRepositoryImpl @Inject constructor(
                             emit(BaseResult.Success(result.data.profile))
                         }
                         is BaseResult.Error -> {
-                            emit(BaseResult.Error("Can't fetch profile from network"))
+                            emit(BaseResult.Error(result.error))
                         }
                     }
                 }
@@ -90,7 +91,7 @@ class ProfileRepositoryImpl @Inject constructor(
                 val fullProfileWithTrips = response.body()!!.data!!
                 emit(BaseResult.Success(fullProfileWithTrips))
             } else {
-                emit(BaseResult.Error(response.message()))
+                emit(BaseResult.Error(response.body()?.message ?: "Unknown error"))
             }
         }
     }
@@ -119,7 +120,26 @@ class ProfileRepositoryImpl @Inject constructor(
                 profileDao.update(profileResponse.toEntity())
                 emit(BaseResult.Success(profileResponse.toDto()))
             } else {
-                emit(BaseResult.Error("Error editing profile: ${response.message()}"))
+                emit(BaseResult.Error("Error editing profile: ${response.body()?.message ?: "Unknown error"}"))
+            }
+        }
+    }
+
+    override suspend fun getUpdatedProfileStats(): Flow<BaseResult<UpdatedProfileStatsResponse, String>> {
+        return flow {
+            val profileId = userSession.getProfileId()
+            val response = profileApi.getUpdatedStats(profileId)
+
+            if (response.isSuccessful) {
+                val updatedStats = response.body()!!.data!!
+                profileDao.updateStatsOnly(profileId,
+                    updatedStats.tripsNumber,
+                    updatedStats.followersNumber,
+                    updatedStats.followingNumber
+                )
+                emit(BaseResult.Success(updatedStats))
+            } else {
+                emit(BaseResult.Error(response.body()?.message ?: "Unknown error"))
             }
         }
     }
