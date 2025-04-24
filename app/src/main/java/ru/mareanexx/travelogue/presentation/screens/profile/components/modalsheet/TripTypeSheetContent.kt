@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.data.trip.local.type.TripTimeStatus
-import ru.mareanexx.travelogue.presentation.screens.profile.components.profile.ProfileSettingsSheet
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.TripsViewModel
 import ru.mareanexx.travelogue.presentation.screens.start.components.CheckFieldsButton
 import ru.mareanexx.travelogue.presentation.theme.Shapes
@@ -41,7 +40,7 @@ import ru.mareanexx.travelogue.presentation.theme.unfocusedIndicator
 
 @Composable
 fun TripTypeSheetContent(
-    onChangeBottomSheetType: (ProfileSettingsSheet) -> Unit,
+    onChangeBottomSheetType: () -> Unit,
     viewModel: TripsViewModel = hiltViewModel()
 ) {
     Column(
@@ -59,7 +58,7 @@ fun TripTypeSheetContent(
 
         CheckFieldsButton(
             textRes = R.string.continue_button_text
-        ) { onChangeBottomSheetType(ProfileSettingsSheet.AddTrip) }
+        ) { onChangeBottomSheetType() }
         Spacer(modifier = Modifier.height(15.dp))
     }
 }

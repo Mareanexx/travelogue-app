@@ -23,7 +23,7 @@ import ru.mareanexx.travelogue.domain.trip.usecase.AddTripUseCase
 import ru.mareanexx.travelogue.domain.trip.usecase.DeleteTripUseCase
 import ru.mareanexx.travelogue.domain.trip.usecase.GetAuthorsTripsUseCase
 import ru.mareanexx.travelogue.domain.trip.usecase.UpdateTripUseCase
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.TripsEvent
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.form.TripForm
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 import java.io.File
@@ -38,14 +38,14 @@ class TripsViewModel @Inject constructor(
     private val deleteTripUseCase: DeleteTripUseCase,
     private val updateTripUseCase: UpdateTripUseCase
 ): ViewModel() {
-    private val _uiState = MutableStateFlow<ProfileUiState>(ProfileUiState.Init)
+    private val _uiState = MutableStateFlow<ProfileUiState>(ProfileUiState.IsLoading)
     val uiState: StateFlow<ProfileUiState> get() = _uiState.asStateFlow()
 
     private val _formState = MutableStateFlow(TripForm())
     val formState: StateFlow<TripForm> get() = _formState.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<ProfileEvent>()
-    val eventFlow: SharedFlow<ProfileEvent> = _eventFlow.asSharedFlow()
+    private val _eventFlow = MutableSharedFlow<TripsEvent>()
+    val eventFlow: SharedFlow<TripsEvent> = _eventFlow.asSharedFlow()
 
     private val _tripsData = MutableStateFlow<List<Trip>>(emptyList())
     val tripsData: StateFlow<List<Trip>> get() = _tripsData.asStateFlow()
@@ -56,11 +56,17 @@ class TripsViewModel @Inject constructor(
 
     private fun setShowing() { _uiState.value = ProfileUiState.Showing }
 
+    private fun showToast(message: String?) {
+        viewModelScope.launch {
+            _eventFlow.emit(TripsEvent.ShowToast(message ?: "Unknown error"))
+        }
+    }
+
     private fun loadTrips() {
         viewModelScope.launch {
             getAuthorsTripsUseCase()
                 .onStart { setLoading() }
-                .catch { exception -> _eventFlow.emit(ProfileEvent.ShowToast(exception.message ?: "Unknown error")) }
+                .catch { exception -> _eventFlow.emit(TripsEvent.ShowToast(exception.message ?: "Unknown error")) }
                 .collect { trips ->
                     _tripsData.value = trips
                     setShowing()
@@ -124,14 +130,10 @@ class TripsViewModel @Inject constructor(
                 coverPhoto = _formState.value.coverPhoto ?: throw NoSuchFileException("Cant upload file")
             )
                 .onStart { setLoading() }
-                .catch { exception ->
-                    _eventFlow.emit(ProfileEvent.ShowToast(exception.message ?: "Unknown error"))
-                }
+                .catch { exception -> showToast(exception.message) }
                 .collect { baseResult ->
                     when(baseResult) {
-                        is BaseResult.Error -> {
-                            _eventFlow.emit(ProfileEvent.ShowToast(baseResult.error))
-                        }
+                        is BaseResult.Error -> { showToast(baseResult.error) }
                         is BaseResult.Success -> {
                             _tripsData.value += baseResult.data
                             _uiState.value = ProfileUiState.Showing
@@ -143,43 +145,42 @@ class TripsViewModel @Inject constructor(
     }
 
     fun onDeleteClicked(tripId: Int) {
-        viewModelScope.launch { _eventFlow.emit(ProfileEvent.ShowDeleteDialog(tripId)) }
+        viewModelScope.launch { _eventFlow.emit(TripsEvent.ShowDeleteDialog(tripId)) }
     }
 
     fun deleteTrip(tripId: Int) {
         viewModelScope.launch {
             deleteTripUseCase(tripId)
                 .onStart { setLoading() }
-                .catch { exception -> _eventFlow.emit(ProfileEvent.ShowToast(exception.message ?: "Unknown error")) }
+                .catch { exception -> showToast(exception.message) }
         }
     }
 
     fun onEditPanelOpen(trip: Trip) {
         _formState.value = TripForm()
         _formState.value = trip.toForm()
-        viewModelScope.launch { _eventFlow.emit(ProfileEvent.ShowEditBottomSheet) }
+        viewModelScope.launch { _eventFlow.emit(TripsEvent.ShowEditBottomSheet(true)) }
     }
 
     fun updateTrip() {
         viewModelScope.launch {
             updateTripUseCase(_formState.value.toEditRequest(), _formState.value.coverPhoto)
                 .onStart { setLoading() }
-                .catch { exception -> _eventFlow.emit(ProfileEvent.ShowToast(exception.message ?: "Unknown error")) }
+                .catch { exception -> showToast(exception.message) }
                 .collect { baseResult ->
                     when(baseResult) {
-                        is BaseResult.Error -> { _eventFlow.emit(ProfileEvent.ShowToast(baseResult.error)) }
+                        is BaseResult.Error -> { showToast(baseResult.error) }
                         is BaseResult.Success -> {
                             val newList = _tripsData.value.map {
                                 if (it.id == baseResult.data.id) baseResult.data else it
                             }
                             _tripsData.value = newList
-                            _eventFlow.emit(ProfileEvent.CloseEditBottomSheet)
-                            _uiState.value = ProfileUiState.Showing
+                            _eventFlow.emit(TripsEvent.ShowEditBottomSheet(false))
+                            setShowing()
                             _formState.value = TripForm()
                         }
                     }
                 }
         }
     }
-
 }

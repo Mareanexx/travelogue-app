@@ -1,6 +1,6 @@
 package ru.mareanexx.travelogue.presentation.screens.profile.components.profile
 
-import android.widget.Toast
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,153 +10,85 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.data.profile.remote.dto.ProfileDto
-import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.AccountSettingsSheetContent
-import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.EditProfileSheetContent
-import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.TripSheetContent
-import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.TripTypeSheetContent
-import ru.mareanexx.travelogue.presentation.screens.profile.components.skeleton.ProfileContentSkeleton
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.ProfileViewModel
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 import ru.mareanexx.travelogue.presentation.theme.profilePrimaryText
 import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 
-enum class ProfileSettingsSheet {
-    None, EditProfile, Account, TripType, AddTrip
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileMainContent(
-    navigateToStartScreen: () -> Unit,
-    onLoadTrips: () -> Unit, viewModel: ProfileViewModel = hiltViewModel()
-) {
-    val context = LocalContext.current
-    val uiState = viewModel.uiState.collectAsState()
-    val profileData = viewModel.profileData.collectAsState()
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val sheetExpanded = viewModel.sheetExpandedState.collectAsState()
-    val bottomSheetType = viewModel.sheetType.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.eventFlow.collect { event ->
-            if (event is ProfileEvent.ShowToast) {
-                Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    when (uiState.value) {
-        ProfileUiState.Init -> {}
-        ProfileUiState.IsLoading -> ProfileContentSkeleton()
-        ProfileUiState.Showing -> {
-            onLoadTrips()
-            ProfileLoadedContent(profileData, onOpenModalSheet = { type ->
-                viewModel.changeBottomSheetType(type)
-            })
-        }
-    }
-
-    if (sheetExpanded.value) {
-        ModalBottomSheet(
-            sheetState = bottomSheetState,
-            containerColor = Color.White,
-            onDismissRequest = { viewModel.closeBottomSheet() }
-        ) {
-            when(bottomSheetType.value) {
-                ProfileSettingsSheet.None -> {}
-                ProfileSettingsSheet.EditProfile -> EditProfileSheetContent()
-                ProfileSettingsSheet.Account -> AccountSettingsSheetContent(navigateToStartScreen, { viewModel.closeBottomSheet() })
-                ProfileSettingsSheet.TripType -> TripTypeSheetContent(
-                    onChangeBottomSheetType = { type -> viewModel.changeBottomSheetType(type) }
-                )
-                ProfileSettingsSheet.AddTrip -> TripSheetContent(
-                    isEditing = false,
-                    buttonText = R.string.create_trip,
-                    titleText = R.string.new_trip_title,
-                    onAction = { viewModel -> viewModel.uploadNewTrip() }
-                )
-            }
-        }
-    }
+fun ProfileCoverPhoto(profileData: ProfileDto?) {
+    AsyncImage(
+        modifier = Modifier.fillMaxWidth().height(170.dp),
+        model = "${BuildConfig.API_FILES_URL}${profileData!!.coverPhoto}",
+        placeholder = painterResource(R.drawable.cover_placeholder),
+        error = painterResource(R.drawable.cover_placeholder),
+        contentDescription = stringResource(R.string.cd_cover_photo),
+        contentScale = ContentScale.Crop
+    )
 }
 
 @Composable
-fun ProfileLoadedContent(profileData: State<ProfileDto?>, onOpenModalSheet: (ProfileSettingsSheet) -> Unit) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .background(Color.White)) {
+fun ProfileHeaderBlock(profileData: ProfileDto?, visible: Boolean) {
+    val avatarAnimSize by animateDpAsState(if (visible) 50.dp else 80.dp, label = "avatarAnimSize")
+
+    Row(
+        modifier = Modifier.fillMaxWidth().background(Color.White)
+            .padding(start = 25.dp, top = 5.dp, bottom = 5.dp),
+        horizontalArrangement = Arrangement.spacedBy(15.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         AsyncImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(170.dp),
-            model = "${BuildConfig.API_FILES_URL}${profileData.value!!.coverPhoto}",
-            placeholder = painterResource(R.drawable.cover_placeholder),
-            error = painterResource(R.drawable.cover_placeholder),
-            contentDescription = stringResource(R.string.cd_cover_photo),
+            model = "${BuildConfig.API_FILES_URL}${profileData!!.avatar}",
+            contentDescription = stringResource(R.string.cd_avatar_photo),
+            placeholder = painterResource(R.drawable.avatar_placeholder),
+            error = painterResource(R.drawable.avatar_placeholder),
+            modifier = Modifier.size(avatarAnimSize).clip(CircleShape),
             contentScale = ContentScale.Crop
         )
-
-        Row(
-            modifier = Modifier.padding(start = 25.dp, top = 15.dp, bottom = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
-        ) {
-            AsyncImage(
-                model = "${BuildConfig.API_FILES_URL}${profileData.value!!.avatar}",
-                contentDescription = stringResource(R.string.cd_avatar_photo),
-                placeholder = painterResource(R.drawable.avatar_placeholder),
-                error = painterResource(R.drawable.avatar_placeholder),
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
+        Column(modifier = Modifier) {
+            Text(
+                modifier = Modifier.padding(bottom = 7.dp),
+                text = profileData.username,
+                style = MaterialTheme.typography.titleSmall,
+                color = profilePrimaryText
             )
-            Column(modifier = Modifier.padding(top = 15.dp)) {
-                Text(
-                    modifier = Modifier.padding(bottom = 5.dp),
-                    text = profileData.value!!.username,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = profilePrimaryText
-                )
-                Text(
-                    text = profileData.value!!.bio,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = profileSecondaryText
-                )
-            }
+            Text(
+                text = profileData.bio,
+                style = MaterialTheme.typography.bodySmall,
+                color = profileSecondaryText
+            )
         }
+    }
+}
 
+@Composable
+fun ProfileFollowersAndButtons(profileData: State<ProfileDto?>, onOpenModalSheet: (ProfileBottomSheetType) -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp),
+        verticalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
         ProfileStatisticsBlock(
             tripsNumber = profileData.value!!.tripsNumber,
             followersNumber = profileData.value!!.followersNumber,
             followingsNumber = profileData.value!!.followingNumber
         )
 
-        Column(modifier = Modifier
-            .padding(horizontal = 15.dp)
-            .padding(top = 12.dp, bottom = 15.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 15.dp)) {
             ProfileButtonsRow(onOpenModalSheet = onOpenModalSheet)
         }
     }

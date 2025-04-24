@@ -16,13 +16,13 @@ import kotlinx.coroutines.flow.Flow
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.presentation.components.AreYouSureDialog
 import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.TripSheetContent
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.TripsEvent
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TripsEventHandler(
-    eventFlow: Flow<ProfileEvent>,
+    eventFlow: Flow<TripsEvent>,
     onDeleteConfirmed: (Int) -> Unit,
 ) {
     val context = LocalContext.current
@@ -31,17 +31,16 @@ fun TripsEventHandler(
     var showEditTripSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        eventFlow.collect { event ->
-            when (event) {
-                is ProfileEvent.ShowToast -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+        eventFlow.collect { tripsEvent ->
+            when (tripsEvent) {
+                is TripsEvent.ShowToast -> {
+                    Toast.makeText(context, tripsEvent.message, Toast.LENGTH_SHORT).show()
                 }
-                is ProfileEvent.ShowDeleteDialog -> {
-                    deletedTrip.intValue = event.id
+                is TripsEvent.ShowDeleteDialog -> {
+                    deletedTrip.intValue = tripsEvent.id
                     showDialog = true
                 }
-                ProfileEvent.ShowEditBottomSheet -> { showEditTripSheet = true }
-                ProfileEvent.CloseEditBottomSheet -> { showEditTripSheet = false }
+                is TripsEvent.ShowEditBottomSheet -> { showEditTripSheet = tripsEvent.showing }
             }
         }
     }

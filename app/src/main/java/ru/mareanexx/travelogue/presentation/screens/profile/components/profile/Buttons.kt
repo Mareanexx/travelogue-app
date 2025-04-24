@@ -35,7 +35,7 @@ import ru.mareanexx.travelogue.presentation.theme.primaryText
 
 
 @Composable
-fun ProfileButtonsRow(onOpenModalSheet: (ProfileSettingsSheet) -> Unit) {
+fun ProfileButtonsRow(onOpenModalSheet: (ProfileBottomSheetType) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -45,12 +45,12 @@ fun ProfileButtonsRow(onOpenModalSheet: (ProfileSettingsSheet) -> Unit) {
             text = R.string.add_trip,
             containerColor = primaryText,
             contentColor = Color.White,
-            onOpenModalSheet = { onOpenModalSheet(ProfileSettingsSheet.TripType) }
+            onOpenModalSheet = { onOpenModalSheet(ProfileBottomSheetType.TripType) }
         )
         ProfileButton(
             icon = R.drawable.stats_icon,
             text = R.string.travel_stats,
-            horizontalPadding = 29,
+            horizontalPadding = 34,
             borderColor = Color(0xFFE2E2E2)
         ) { TODO("Сделать toast с надписью нереализовано еще") }
         SettingsButton(onOpenModalSheet)
@@ -64,7 +64,7 @@ fun ProfileButton(
     containerColor: Color = Color.White,
     contentColor: Color = primaryText,
     borderColor: Color = containerColor,
-    horizontalPadding: Int = 38,
+    horizontalPadding: Int = 43,
     onOpenModalSheet: () -> Unit
 ) {
     Button(
@@ -87,7 +87,7 @@ fun ProfileButton(
 }
 
 @Composable
-fun SettingsButton(onOpenModalSheet: (ProfileSettingsSheet) -> Unit) {
+fun SettingsButton(onOpenModalSheet: (ProfileBottomSheetType) -> Unit) {
     val expandedMenu = remember { mutableStateOf(false) }
 
     Box {
@@ -110,7 +110,7 @@ fun SettingsButton(onOpenModalSheet: (ProfileSettingsSheet) -> Unit) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(R.string.edit_profile), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold) },
                 onClick = {
-                    onOpenModalSheet(ProfileSettingsSheet.EditProfile)
+                    onOpenModalSheet(ProfileBottomSheetType.EditProfile)
                     expandedMenu.value = false
                 },
                 trailingIcon = { Icon(painter = painterResource(R.drawable.edit_pen_icon), contentDescription = null, tint = primaryText) }
@@ -119,7 +119,7 @@ fun SettingsButton(onOpenModalSheet: (ProfileSettingsSheet) -> Unit) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(R.string.account), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold) },
                 onClick = {
-                    onOpenModalSheet(ProfileSettingsSheet.Account)
+                    onOpenModalSheet(ProfileBottomSheetType.Account)
                     expandedMenu.value = false
                 },
                 trailingIcon = { Icon(painter = painterResource(R.drawable.edit_icon), contentDescription = null, tint = primaryText) }

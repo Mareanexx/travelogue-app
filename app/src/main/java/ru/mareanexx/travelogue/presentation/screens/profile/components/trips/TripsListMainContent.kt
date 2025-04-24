@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -30,7 +28,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,16 +41,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.data.trip.local.type.TripTimeStatus
 import ru.mareanexx.travelogue.data.trip.local.type.TripVisibilityType
 import ru.mareanexx.travelogue.domain.trip.entity.Trip
-import ru.mareanexx.travelogue.presentation.screens.profile.components.skeleton.TripsContentSkeleton
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.TripsViewModel
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 import ru.mareanexx.travelogue.presentation.theme.MontserratFamily
 import ru.mareanexx.travelogue.presentation.theme.Shapes
 import ru.mareanexx.travelogue.presentation.theme.enabledButtonContainer
@@ -61,40 +54,8 @@ import ru.mareanexx.travelogue.presentation.theme.primaryText
 import java.time.LocalDate
 
 @Composable
-fun TripsListMainContent(viewModel: TripsViewModel = hiltViewModel()) {
-    val tripsData by viewModel.tripsData.collectAsState()
-    val uiState = viewModel.uiState.collectAsState()
-
-    TripsEventHandler(
-        eventFlow = viewModel.eventFlow,
-        onDeleteConfirmed = { tripId -> viewModel.deleteTrip(tripId) }
-    )
-
-    when (uiState.value) {
-        ProfileUiState.Init -> {}
-        ProfileUiState.IsLoading -> TripsContentSkeleton()
-        ProfileUiState.Showing -> {
-            LazyColumn(
-                contentPadding = PaddingValues(start = 15.dp, end = 15.dp, bottom = 100.dp),
-                verticalArrangement = Arrangement.spacedBy(15.dp)
-            ) {
-                items(tripsData) { trip ->
-                    TripCard(
-                        trip,
-                        onDeleteTrip = {
-                            viewModel.onDeleteClicked(trip.id)
-                        },
-                        onEditTrip = { viewModel.onEditPanelOpen(trip) }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
 fun TripCard(trip: Trip, onDeleteTrip: () -> Unit, onEditTrip: () -> Unit) {
-    Box(modifier = Modifier.fillMaxWidth().height(255.dp).clip(Shapes.medium)) {
+    Box(modifier = Modifier.fillMaxWidth().height(255.dp).padding(horizontal = 15.dp).clip(Shapes.medium)) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
             model = "${BuildConfig.API_FILES_URL}${trip.coverPhoto}",

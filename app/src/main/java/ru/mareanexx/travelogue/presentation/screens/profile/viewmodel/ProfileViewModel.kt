@@ -16,7 +16,7 @@ import ru.mareanexx.travelogue.data.profile.remote.dto.UpdateProfileRequest
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.profile.usecase.GetProfileWithTripsUseCase
 import ru.mareanexx.travelogue.domain.profile.usecase.UpdateProfileUseCase
-import ru.mareanexx.travelogue.presentation.screens.profile.components.profile.ProfileSettingsSheet
+import ru.mareanexx.travelogue.presentation.screens.profile.components.profile.ProfileBottomSheetType
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.form.UpdateProfileForm
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
@@ -29,7 +29,7 @@ class ProfileViewModel @Inject constructor(
     private val updateProfile: UpdateProfileUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<ProfileUiState>(ProfileUiState.Init)
+    private val _uiState = MutableStateFlow<ProfileUiState>(ProfileUiState.IsLoading)
     val uiState: StateFlow<ProfileUiState> get() = _uiState
 
     private val _eventFlow = MutableSharedFlow<ProfileEvent>()
@@ -38,22 +38,19 @@ class ProfileViewModel @Inject constructor(
     private val _profileData = MutableStateFlow<ProfileDto?>(null)
     val profileData: StateFlow<ProfileDto?> get() = _profileData
 
-    private val _sheetType = MutableStateFlow(ProfileSettingsSheet.None)
-    val sheetType: StateFlow<ProfileSettingsSheet> get() = _sheetType
+    init { loadProfile() }
 
-    private val _sheetExpandedState = MutableStateFlow(false)
-    val sheetExpandedState: StateFlow<Boolean> get() = _sheetExpandedState
-
-    init {
-        loadProfile()
+    private fun showToast(message: String?) {
+        viewModelScope.launch {
+            _eventFlow.emit(ProfileEvent.ShowToast(message ?: "Unknown error"))
+        }
     }
 
-    fun closeBottomSheet() { _sheetExpandedState.value = false }
-
-    fun changeBottomSheetType(newType: ProfileSettingsSheet) {
-        _sheetExpandedState.value = true
-        _sheetType.value = newType
-        if (newType == ProfileSettingsSheet.EditProfile) {
+    fun changeBottomSheetType(newType: ProfileBottomSheetType, showing: Boolean) {
+        viewModelScope.launch {
+            _eventFlow.emit(ProfileEvent.ShowTypifiedBottomSheet(newType, showing))
+        }
+        if (newType == ProfileBottomSheetType.EditProfile) {
             _updatedProfileData.value = UpdateProfileForm(
                 username = profileData.value!!.username,
                 bio = profileData.value!!.bio,
@@ -68,10 +65,10 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             getProfileWithTripsUseCase()
                 .onStart { setLoading() }
-                .catch { exception -> _eventFlow.emit(ProfileEvent.ShowToast(exception.message ?: "Error message")) }
+                .catch { exception -> showToast(exception.message) }
                 .collect { baseResult ->
                     when(baseResult) {
-                        is BaseResult.Error -> _eventFlow.emit(ProfileEvent.ShowToast(baseResult.error))
+                        is BaseResult.Error -> showToast(baseResult.error)
                         is BaseResult.Success -> {
                             _uiState.value = ProfileUiState.Showing
                             _profileData.value = baseResult.data
@@ -143,17 +140,16 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             updateProfile(updateProfileRequest, _updatedProfileData.value.avatar, _updatedProfileData.value.coverPhoto)
                 .onStart { setLoading() }
-                .catch { exception -> _eventFlow.emit(ProfileEvent.ShowToast(exception.message ?: "Unknown error")) }
+                .catch { exception -> showToast(exception.message) }
                 .collect { result ->
                     when (result) {
                         is BaseResult.Success -> {
                             _profileData.value = result.data
                             _uiState.value = ProfileUiState.Showing
-                            _sheetExpandedState.value = false
-                            _sheetType.value = ProfileSettingsSheet.None
+                            changeBottomSheetType(newType = ProfileBottomSheetType.None, showing = false)
                         }
                         is BaseResult.Error -> {
-                            _eventFlow.emit(ProfileEvent.ShowToast(result.error))
+                            showToast(result.error)
                             _uiState.value = ProfileUiState.Showing
                         }
                     }

@@ -28,7 +28,7 @@ fun ProfileStatisticsBlock(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .padding(horizontal = 42.dp, vertical = 6.dp),
+            .padding(horizontal = 42.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         OneProfileStatsColumn(tripsNumber, R.string.trips)
