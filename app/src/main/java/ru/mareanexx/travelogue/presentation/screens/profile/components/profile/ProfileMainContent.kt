@@ -34,7 +34,7 @@ import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 fun ProfileCoverPhoto(profileData: ProfileDto?) {
     AsyncImage(
         modifier = Modifier.fillMaxWidth().height(170.dp),
-        model = "${BuildConfig.API_FILES_URL}${profileData!!.coverPhoto}",
+        model = "${BuildConfig.API_FILES_URL}${profileData?.coverPhoto}",
         placeholder = painterResource(R.drawable.cover_placeholder),
         error = painterResource(R.drawable.cover_placeholder),
         contentDescription = stringResource(R.string.cd_cover_photo),
@@ -45,10 +45,11 @@ fun ProfileCoverPhoto(profileData: ProfileDto?) {
 @Composable
 fun ProfileHeaderBlock(profileData: ProfileDto?, visible: Boolean) {
     val avatarAnimSize by animateDpAsState(if (visible) 50.dp else 80.dp, label = "avatarAnimSize")
+    val horizPaddingAnim by animateDpAsState(if (visible) 15.dp else 5.dp, label = "paddingAnim")
 
     Row(
         modifier = Modifier.fillMaxWidth().background(Color.White)
-            .padding(start = 25.dp, top = 5.dp, bottom = 5.dp),
+            .padding(start = 25.dp, top = horizPaddingAnim, bottom = horizPaddingAnim),
         horizontalArrangement = Arrangement.spacedBy(15.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -77,7 +78,10 @@ fun ProfileHeaderBlock(profileData: ProfileDto?, visible: Boolean) {
 }
 
 @Composable
-fun ProfileFollowersAndButtons(profileData: State<ProfileDto?>, onOpenModalSheet: (ProfileBottomSheetType) -> Unit) {
+fun ProfileFollowersAndButtons(
+    profileData: State<ProfileDto?>, onOpenModalSheet: (ProfileBottomSheetType) -> Unit,
+    navigateToFollows: (String, Int) -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
@@ -85,7 +89,8 @@ fun ProfileFollowersAndButtons(profileData: State<ProfileDto?>, onOpenModalSheet
         ProfileStatisticsBlock(
             tripsNumber = profileData.value!!.tripsNumber,
             followersNumber = profileData.value!!.followersNumber,
-            followingsNumber = profileData.value!!.followingNumber
+            followingsNumber = profileData.value!!.followingNumber,
+            navigateToFollows = { navigateToFollows(profileData.value!!.username, profileData.value!!.id) }
         )
 
         Column(modifier = Modifier.padding(horizontal = 15.dp)) {

@@ -125,4 +125,12 @@
     <string name="all_notifications_variant_del">all notifications?</string>
     <string name="this_trip_variant_del">this trip?</string>
     <string name="account_variant_del">your account?</string>
+
+    <!--Follows Screen-->
+    <string name="get_back_cd">Get back to previous screen</string>
+    <string name="search_follows_cd">Search for follows</string>
+    <string name="follow_btn">Follow</string>
+    <string name="following_btn">Following</string>
+    <string name="retry_btn">Retry</string>
+    <string name="retry_description">Content could not be loaded. Try again now or later!</string>
 </resources>

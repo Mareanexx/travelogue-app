@@ -45,10 +45,7 @@ class ProfileViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
-    init {
-        loadProfile()
-        refreshStatistics()
-    }
+    init { loadProfile() }
 
     fun refreshStatistics() {
         viewModelScope.launch {
@@ -102,8 +99,8 @@ class ProfileViewModel @Inject constructor(
                     when(baseResult) {
                         is BaseResult.Error -> showToast(baseResult.error)
                         is BaseResult.Success -> {
-                            _uiState.value = ProfileUiState.Showing
                             _profileData.value = baseResult.data
+                            _uiState.value = ProfileUiState.Showing
                         }
                     }
                 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -35,6 +36,7 @@ import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.Prof
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
+    navigateToFollows: (String, Int) -> Unit,
     navigateToStartScreen: () -> Unit,
     profileViewModel: ProfileViewModel = hiltViewModel(),
     tripsViewModel: TripsViewModel = hiltViewModel()
@@ -80,9 +82,11 @@ fun ProfileScreen(
                     item { ProfileCoverPhoto(profileData.value) }
                     stickyHeader { ProfileHeaderBlock(profileData.value, showHeader.value) }
                     item {
-                        ProfileFollowersAndButtons(profileData, onOpenModalSheet = { type ->
-                            profileViewModel.changeBottomSheetType(type, true)
-                        })
+                        ProfileFollowersAndButtons(
+                            profileData,
+                            onOpenModalSheet = { type -> profileViewModel.changeBottomSheetType(type, true) },
+                            navigateToFollows = navigateToFollows,
+                        )
                     }
                 }
             }
@@ -90,7 +94,10 @@ fun ProfileScreen(
             if (canShowTrips) {
                 when (tripsUiState.value) {
                     ProfileUiState.IsLoading -> {
-                        item { TripsContentSkeleton() }
+                        item {
+                            LaunchedEffect(Unit) { tripsViewModel.loadTrips() }
+                            TripsContentSkeleton()
+                        }
                     }
                     ProfileUiState.Showing -> {
                         items(tripsData.value) { trip ->

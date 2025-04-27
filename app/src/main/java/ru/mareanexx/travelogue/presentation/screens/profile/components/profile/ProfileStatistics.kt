@@ -1,6 +1,8 @@
 package ru.mareanexx.travelogue.presentation.screens.profile.components.profile
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -12,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -22,13 +25,18 @@ import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 
 @Composable
 fun ProfileStatisticsBlock(
-    tripsNumber: Int, followersNumber: Int, followingsNumber: Int
+    tripsNumber: Int, followersNumber: Int, followingsNumber: Int,
+    navigateToFollows: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .padding(horizontal = 42.dp),
+            .padding(horizontal = 42.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { navigateToFollows() },
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         OneProfileStatsColumn(tripsNumber, R.string.trips)

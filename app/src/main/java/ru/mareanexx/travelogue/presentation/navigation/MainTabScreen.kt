@@ -12,10 +12,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import ru.mareanexx.travelogue.presentation.components.BottomNavBar
+import ru.mareanexx.travelogue.presentation.screens.follows.FollowsScreen
 import ru.mareanexx.travelogue.presentation.screens.notifications.NotificationsScreen
 import ru.mareanexx.travelogue.presentation.screens.profile.ProfileScreen
 
@@ -57,14 +60,39 @@ fun MainTabScreen(rootNavController: NavHostController) {
                         modifier = Modifier.fillMaxSize()
                     ) {
                         when (tab) {
-                            "profile" -> composable("profile") {
-                                ProfileScreen(
-                                    navigateToStartScreen = {
-                                        rootNavController.navigate("auth") {
-                                            popUpTo("main") { inclusive = true }
+                            "profile" -> {
+                                composable("profile") {
+                                    ProfileScreen(
+                                        navigateToFollows = { username, profileId ->
+                                            navController.navigate("follows/$username/$profileId")
+                                        },
+                                        navigateToStartScreen = {
+                                            rootNavController.navigate("auth") {
+                                                popUpTo("main") { inclusive = true }
+                                            }
                                         }
-                                    }
-                                )
+                                    )
+                                }
+
+                                composable(
+                                    route = "follows/{username}/{profileId}",
+                                    arguments = listOf(
+                                        navArgument("profileId") {
+                                            type = NavType.IntType
+                                        },
+                                        navArgument("username") {
+                                            type = NavType.StringType
+                                        }
+                                    )
+                                ) { backStackEntry ->
+                                    val profileId = backStackEntry.arguments?.getInt("profileId") ?: -1
+                                    val username = backStackEntry.arguments?.getString("username") ?: "Username"
+                                    FollowsScreen(
+                                        username = username,
+                                        profileId = profileId,
+                                        navigateBack = { navController.popBackStack() }
+                                    )
+                                }
                             }
 
                             "notifications" -> composable("notifications") {

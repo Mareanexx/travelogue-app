@@ -50,8 +50,6 @@ class TripsViewModel @Inject constructor(
     private val _tripsData = MutableStateFlow<List<Trip>>(emptyList())
     val tripsData: StateFlow<List<Trip>> get() = _tripsData.asStateFlow()
 
-    init { loadTrips() }
-
     private fun setLoading() { _uiState.value = ProfileUiState.IsLoading }
 
     private fun setShowing() { _uiState.value = ProfileUiState.Showing }
@@ -62,11 +60,11 @@ class TripsViewModel @Inject constructor(
         }
     }
 
-    private fun loadTrips() {
+    fun loadTrips() {
         viewModelScope.launch {
             getAuthorsTripsUseCase()
                 .onStart { setLoading() }
-                .catch { exception -> _eventFlow.emit(TripsEvent.ShowToast(exception.message ?: "Unknown error")) }
+                .catch { exception -> showToast(exception.message ?: "Unknown error") }
                 .collect { trips ->
                     _tripsData.value = trips
                     setShowing()
