@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import ru.mareanexx.travelogue.presentation.components.BottomNavBar
+import ru.mareanexx.travelogue.presentation.screens.explore.ExploreScreen
 import ru.mareanexx.travelogue.presentation.screens.follows.FollowsScreen
 import ru.mareanexx.travelogue.presentation.screens.notifications.NotificationsScreen
 import ru.mareanexx.travelogue.presentation.screens.profile.ProfileScreen
@@ -104,7 +105,7 @@ fun MainTabScreen(rootNavController: NavHostController) {
                             }
 
                             "explore" -> composable("explore") {
-                                /* ExploreScreen() */
+                                ExploreScreen()
                             }
                         }
                     }

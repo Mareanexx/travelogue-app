@@ -1,0 +1,13 @@
+package ru.mareanexx.travelogue.domain.explore.entity
+
+data class InspiringProfileResponse(
+    val id: Int,
+    val username: String,
+    val bio: String,
+    val avatar: String?,
+    val coverPhoto: String?,
+    val followersNumber: Int,
+    val followingNumber: Int,
+    val tripsNumber: Int,
+    val isFollowing: Boolean = false
+)

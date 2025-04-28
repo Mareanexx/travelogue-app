@@ -31,3 +31,6 @@ val timeText = Color(0xFF7E8C99)
 val deleteText = Color(0xFFDE0202)
 
 val selectedVariant = Color(0xFF2D83B4)
+
+val searchBackground = Color(0xFFE8ECF2)
+val searchText = Color(0xFF797A7F)

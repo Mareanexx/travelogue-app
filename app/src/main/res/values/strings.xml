@@ -115,8 +115,6 @@
     <string name="end_date">End date</string>
     <string name="trip_dates">Trip dates</string>
 
-    <!--Edit trip Bottom Sheet-->
-
     <!--Are you sure Dialog-->
     <string name="cancel_btn">Cancel</string>
     <string name="are_you_sure_text">Are you sure you want to delete</string>
@@ -133,4 +131,13 @@
     <string name="following_btn">Following</string>
     <string name="retry_btn">Retry</string>
     <string name="retry_description">Content could not be loaded. Try again now or later!</string>
+
+    <!--Explore Screen-->
+    <string name="explore_search_description">Search people &amp; trips</string>
+    <string name="trending_tags_label">Trending tags</string>
+    <string name="trending_trips_label">Trending trips</string>
+    <string name="inspiring_travelers_label">Inspiring travelers</string>
+
+    <!--Report Menu-->
+    <string name="report_trip">Report trip</string>
 </resources>
