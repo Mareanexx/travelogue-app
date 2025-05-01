@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 import ru.mareanexx.travelogue.data.follows.remote.api.FollowsApi
 import ru.mareanexx.travelogue.data.follows.repository.FollowsRepositoryImpl
 import ru.mareanexx.travelogue.domain.follows.FollowsRepository
+import ru.mareanexx.travelogue.utils.UserSessionManager
 import javax.inject.Singleton
 
 @Module
@@ -21,7 +22,10 @@ object FollowsModule {
 
     @Provides
     @Singleton
-    fun provideFollowsRepository(followsApi: FollowsApi): FollowsRepository {
-        return FollowsRepositoryImpl(followsApi)
+    fun provideFollowsRepository(
+        followsApi: FollowsApi,
+        userSessionManager: UserSessionManager
+    ): FollowsRepository {
+        return FollowsRepositoryImpl(followsApi, userSessionManager)
     }
 }

@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import ru.mareanexx.travelogue.data.follows.remote.dto.FollowUserRequest
 import ru.mareanexx.travelogue.data.follows.remote.dto.FollowersAndFollowingsResponse
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.follows.entity.Follows
@@ -82,7 +81,7 @@ class FollowsViewModel @Inject constructor(
 
     fun followUser(follow: Follows) {
         viewModelScope.launch {
-            followUserUseCase(FollowUserRequest(followerId = _profileId, followingId = follow.id))
+            followUserUseCase(follow.id)
                 .catch { exception -> _uiState.value = FollowsUiState.Error(exception.message ?: "Unknown error") }
                 .collect { baseResult ->
                     when(baseResult) {
@@ -105,7 +104,7 @@ class FollowsViewModel @Inject constructor(
 
     fun unfollowUser(follow: Follows) {
         viewModelScope.launch {
-            unfollowUserUseCase(FollowUserRequest(followerId = _profileId, followingId = follow.id))
+            unfollowUserUseCase(follow.id)
                 .catch { exception -> _uiState.value = FollowsUiState.Error(exception.message ?: "Unknown error") }
                 .collect { baseResult ->
                     when(baseResult) {

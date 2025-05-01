@@ -7,10 +7,12 @@ import ru.mareanexx.travelogue.data.follows.remote.dto.FollowUserRequest
 import ru.mareanexx.travelogue.data.follows.remote.dto.FollowersAndFollowingsResponse
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.follows.FollowsRepository
+import ru.mareanexx.travelogue.utils.UserSessionManager
 import javax.inject.Inject
 
 class FollowsRepositoryImpl @Inject constructor(
-    private val followsApi: FollowsApi
+    private val followsApi: FollowsApi,
+    private val userSessionManager: UserSessionManager
 ): FollowsRepository {
     override suspend fun getFollowersAndFollowings(profileId: Int): Flow<BaseResult<FollowersAndFollowingsResponse, String>> {
         return flow {
@@ -24,9 +26,10 @@ class FollowsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun followUser(followUserRequest: FollowUserRequest): Flow<BaseResult<String, String>> {
+    override suspend fun followUser(followingId: Int): Flow<BaseResult<String, String>> {
         return flow {
-            val response = followsApi.followUser(followUserRequest)
+            val authorId = userSessionManager.getProfileId()
+            val response = followsApi.followUser(FollowUserRequest(authorId, followingId))
             if (response.isSuccessful) {
                 val data = response.body()!!.message!!
                 emit(BaseResult.Success(data))
@@ -36,9 +39,10 @@ class FollowsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun unfollowUser(followUserRequest: FollowUserRequest): Flow<BaseResult<String, String>> {
+    override suspend fun unfollowUser(followingId: Int): Flow<BaseResult<String, String>> {
         return flow {
-            val response = followsApi.unfollowUser(followUserRequest.followerId, followUserRequest.followingId)
+            val authorId = userSessionManager.getProfileId()
+            val response = followsApi.unfollowUser(authorId, followingId)
             if (response.isSuccessful) {
                 val data = response.body()!!.message!!
                 emit(BaseResult.Success(data))
