@@ -5,13 +5,17 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import ru.mareanexx.travelogue.domain.common.BaseResult
-import ru.mareanexx.travelogue.domain.explore.entity.InspiringProfileResponse
+import ru.mareanexx.travelogue.domain.explore.entity.InspiringProfile
 import ru.mareanexx.travelogue.domain.explore.entity.TopTag
 import ru.mareanexx.travelogue.domain.explore.entity.TrendingTrip
 import ru.mareanexx.travelogue.domain.explore.usecase.GetInspiringTravelersUseCase
@@ -19,13 +23,10 @@ import ru.mareanexx.travelogue.domain.explore.usecase.GetTrendingTagsUseCase
 import ru.mareanexx.travelogue.domain.explore.usecase.GetTrendingTripsUseCase
 import ru.mareanexx.travelogue.domain.follows.usecase.FollowUserUseCase
 import ru.mareanexx.travelogue.domain.follows.usecase.UnfollowUserUseCase
+import ru.mareanexx.travelogue.domain.report.usecase.CreateReportUseCase
+import ru.mareanexx.travelogue.presentation.screens.explore.viewmodel.event.ExploreEvent
+import ru.mareanexx.travelogue.presentation.screens.explore.viewmodel.state.ExploreUiState
 import javax.inject.Inject
-
-sealed class ExploreUiState {
-    data object Loading : ExploreUiState()
-    data class Error(val message: String) : ExploreUiState()
-    data object Showing : ExploreUiState()
-}
 
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
@@ -33,14 +34,18 @@ class ExploreViewModel @Inject constructor(
     private val getTrendingTripsUseCase: GetTrendingTripsUseCase,
     private val getInspiringTravelersUseCase: GetInspiringTravelersUseCase,
     private val followUserUseCase: FollowUserUseCase,
-    private val unfollowUserUseCase: UnfollowUserUseCase
+    private val unfollowUserUseCase: UnfollowUserUseCase,
+    private val reportUseCase: CreateReportUseCase
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow<ExploreUiState>(ExploreUiState.Loading)
     val uiState: StateFlow<ExploreUiState> = _uiState.asStateFlow()
 
-    private val _inspiringTravelers = MutableStateFlow<List<InspiringProfileResponse>>(emptyList())
-    val inspiringTravelers: StateFlow<List<InspiringProfileResponse>> = _inspiringTravelers.asStateFlow()
+    private val _eventFlow = MutableSharedFlow<ExploreEvent>()
+    val eventFlow: SharedFlow<ExploreEvent> = _eventFlow.asSharedFlow()
+
+    private val _inspiringTravelers = MutableStateFlow<List<InspiringProfile>>(emptyList())
+    val inspiringTravelers: StateFlow<List<InspiringProfile>> = _inspiringTravelers.asStateFlow()
 
     private val _trendingTrips = MutableStateFlow<List<TrendingTrip>>(emptyList())
     val trendingTrips: StateFlow<List<TrendingTrip>> = _trendingTrips.asStateFlow()
@@ -54,6 +59,12 @@ class ExploreViewModel @Inject constructor(
     fun refresh() { loadExploreScreen() }
 
     init { loadExploreScreen() }
+
+    private fun showToast(message: String?) {
+        viewModelScope.launch {
+            _eventFlow.emit(ExploreEvent.ShowToast(message ?: "Unknown error"))
+        }
+    }
 
     private fun setLoading() { _uiState.value = ExploreUiState.Loading }
 
@@ -91,6 +102,55 @@ class ExploreViewModel @Inject constructor(
             } catch (e: Exception) {
                 _uiState.value = ExploreUiState.Error(e.localizedMessage ?: "Unknown error")
             }
+        }
+    }
+
+    fun followUser(inspiringProfile: InspiringProfile) {
+        viewModelScope.launch {
+            followUserUseCase(inspiringProfile.id)
+                .catch { exception -> showToast(exception.message) }
+                .collect { baseResult ->
+                    when(baseResult) {
+                        is BaseResult.Error -> { showToast(baseResult.error) }
+                        is BaseResult.Success -> {
+                            val changedProfile = inspiringProfile.copy(isFollowing = true)
+                            _inspiringTravelers.value = _inspiringTravelers.value.map {
+                                if (it.id == changedProfile.id) changedProfile else it
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
+    fun unfollowUser(inspiringProfile: InspiringProfile) {
+        viewModelScope.launch {
+            unfollowUserUseCase(inspiringProfile.id)
+                .catch { exception -> showToast(exception.message) }
+                .collect { baseResult ->
+                    when(baseResult) {
+                        is BaseResult.Error -> { showToast(baseResult.error) }
+                        is BaseResult.Success -> {
+                            val changedProfile = inspiringProfile.copy(isFollowing = false)
+                            _inspiringTravelers.value = _inspiringTravelers.value.map {
+                                if (it.id == changedProfile.id) changedProfile else it
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
+    fun createReport(tripId: Int) {
+        viewModelScope.launch {
+            reportUseCase(tripId)
+                .catch { exception -> showToast(exception.message) }
+                .collect { baseResult ->
+                    when(baseResult) {
+                        is BaseResult.Error -> { showToast(baseResult.error) }
+                        is BaseResult.Success -> { showToast(baseResult.data) }
+                    }
+                }
         }
     }
 }

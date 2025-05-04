@@ -21,6 +21,6 @@ interface TripDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(newTrip: TripEntity)
 
-    @Query("SELECT * FROM trip")
+    @Query("SELECT * FROM trip ORDER BY startDate DESC")
     suspend fun getTrips(): List<TripEntity>
 }

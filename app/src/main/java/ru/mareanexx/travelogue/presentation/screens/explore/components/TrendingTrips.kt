@@ -42,7 +42,7 @@ import ru.mareanexx.travelogue.presentation.theme.Shapes
 import ru.mareanexx.travelogue.presentation.theme.primaryText
 
 @Composable
-fun TrendingTripsRow(trendingTrips: List<TrendingTrip>) {
+fun TrendingTripsRow(trendingTrips: List<TrendingTrip>, onSendReport: (Int) -> Unit) {
     Text(
         modifier = Modifier.padding(horizontal = 15.dp),
         text = stringResource(R.string.trending_trips_label),
@@ -54,13 +54,13 @@ fun TrendingTripsRow(trendingTrips: List<TrendingTrip>) {
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(trendingTrips) { trip ->
-            TrendingTripCard(trip)
+            TrendingTripCard(trip, onSendReport = { onSendReport(trip.id) })
         }
     }
 }
 
 @Composable
-fun TrendingTripCard(trip: TrendingTrip) {
+fun TrendingTripCard(trip: TrendingTrip, onSendReport: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxWidth().size(height = 320.dp, width = 255.dp).clip(Shapes.medium)
     ) {
@@ -77,7 +77,7 @@ fun TrendingTripCard(trip: TrendingTrip) {
                 TripHeaderNowOnATripComponent()
             OthersTripHeaderSettings(
                 Modifier.align(Alignment.TopEnd),
-                onSendReport = { TODO("Реализовать report на нажатие") }
+                onSendReport = onSendReport
             )
             TrendingTripMainInfo(Modifier.align(Alignment.BottomCenter), trip)
         }

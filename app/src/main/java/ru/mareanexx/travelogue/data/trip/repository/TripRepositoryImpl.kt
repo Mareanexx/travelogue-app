@@ -35,7 +35,7 @@ class TripRepositoryImpl @Inject constructor(
         val tripIds = tripEntities.map { it.id }
 
         val tags = tagDao.getTagsForTrips(tripIds)
-            .groupBy { it.tripId } // Map<Int, List<TagWithTripId>>
+            .groupBy { it.tripId }
 
         val trips = tripEntities.map { tripEntity ->
             val tagList = tags[tripEntity.id].orEmpty().map { NewTagResponse(it.id, it.name) }

@@ -5,7 +5,8 @@ import kotlinx.coroutines.flow.flow
 import ru.mareanexx.travelogue.data.explore.remote.api.ExploreApi
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.explore.ExploreRepository
-import ru.mareanexx.travelogue.domain.explore.entity.InspiringProfileResponse
+import ru.mareanexx.travelogue.domain.explore.entity.InspiringProfile
+import ru.mareanexx.travelogue.domain.explore.entity.SearchResult
 import ru.mareanexx.travelogue.domain.explore.entity.TopTag
 import ru.mareanexx.travelogue.domain.explore.entity.TrendingTrip
 import ru.mareanexx.travelogue.utils.UserSessionManager
@@ -40,10 +41,23 @@ class ExploreRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getInspiringTravelers(): Flow<BaseResult<List<InspiringProfileResponse>, String>> {
+    override suspend fun getInspiringTravelers(): Flow<BaseResult<List<InspiringProfile>, String>> {
         return flow {
             val authorId = userSessionManager.getProfileId()
             val response = exploreApi.getInspiringTravelers(authorId)
+            if (response.isSuccessful) {
+                val data = response.body()!!.data!!
+                emit(BaseResult.Success(data))
+            } else {
+                emit(BaseResult.Error(response.body()?.message ?: "Unknown error"))
+            }
+        }
+    }
+
+    override suspend fun search(query: String): Flow<BaseResult<SearchResult, String>> {
+        return flow {
+            val authorId = userSessionManager.getProfileId()
+            val response = exploreApi.search(authorId, query)
             if (response.isSuccessful) {
                 val data = response.body()!!.data!!
                 emit(BaseResult.Success(data))

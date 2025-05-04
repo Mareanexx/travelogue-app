@@ -4,15 +4,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -71,5 +74,19 @@ fun ExploreSkeleton() {
         ) {
             items(2) { BoxSkeleton(Modifier.width(255.dp), height = 320, shape = Shapes.small) }
         }
+    }
+}
+
+@Composable
+fun SearchLoading() {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp, vertical = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = stringResource(R.string.searching_process),
+            color = primaryText
+        )
+        CircularProgressIndicator(modifier = Modifier.size(25.dp), color = primaryText)
     }
 }

@@ -137,7 +137,18 @@
     <string name="trending_tags_label">Trending tags</string>
     <string name="trending_trips_label">Trending trips</string>
     <string name="inspiring_travelers_label">Inspiring travelers</string>
+    <string name="searching_process">Searching…</string>
 
     <!--Report Menu-->
     <string name="report_trip">Report trip</string>
+    <string name="success_report">Thank you, your report has been received!</string>
+    <string name="trips_tab">Trips</string>
+    <string name="people_tab">People</string>
+    <string name="close">Close</string>
+    <string name="no_results">No results for this query</string>
+    <string name="error_loading_search_results">Error loading search results</string>
+
+    <!--Trip Screen-->
+    <string name="swipe_cd">Swipe</string>
+    <string name="add_first_step_btn">Add your first step</string>
 </resources>

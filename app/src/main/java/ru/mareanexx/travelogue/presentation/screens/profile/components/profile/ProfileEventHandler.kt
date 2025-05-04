@@ -69,7 +69,10 @@ fun ProfileEventHandler(
                     isEditing = false,
                     buttonText = R.string.create_trip,
                     titleText = R.string.new_trip_title,
-                    onAction = { viewModel -> viewModel.uploadNewTrip() }
+                    onAction = {
+                        viewModel -> viewModel.uploadNewTrip()
+                        showBottomSheet = false
+                    }
                 )
             }
         }

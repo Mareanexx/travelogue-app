@@ -1,13 +1,16 @@
-package ru.mareanexx.travelogue.presentation.screens.explore.components
+package ru.mareanexx.travelogue.presentation.screens.explore.components.search
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,10 +26,14 @@ import ru.mareanexx.travelogue.presentation.theme.searchBackground
 import ru.mareanexx.travelogue.presentation.theme.searchText
 
 @Composable
-fun SearchRow() {
+fun Search(onClick: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 30.dp, start = 15.dp, end = 15.dp)
-            .background(searchBackground, Shapes.extraSmall).padding(8.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp).padding(bottom = 30.dp)
+            .background(color = searchBackground, shape = Shapes.extraSmall).padding(8.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { onClick() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
@@ -35,12 +42,10 @@ fun SearchRow() {
             contentDescription = stringResource(R.string.explore_search_description),
             tint = searchText
         )
-        BasicTextField(
-            value = stringResource(R.string.explore_search_description),
-            onValueChange = { TODO("Реализовать поиск по trips и по users") },
-            textStyle = TextStyle(color = searchText, fontSize = 13.sp,
-                fontWeight = FontWeight.Medium, fontFamily = MontserratFamily, lineHeight = 14.sp),
-            singleLine = true
+        Text(
+            text = stringResource(R.string.explore_search_description),
+            style = TextStyle(color = searchText, fontSize = 13.sp,
+                fontWeight = FontWeight.Medium, fontFamily = MontserratFamily, lineHeight = 14.sp)
         )
     }
 }

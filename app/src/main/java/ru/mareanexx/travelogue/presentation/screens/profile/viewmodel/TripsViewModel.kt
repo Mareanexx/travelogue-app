@@ -133,7 +133,10 @@ class TripsViewModel @Inject constructor(
                     when(baseResult) {
                         is BaseResult.Error -> { showToast(baseResult.error) }
                         is BaseResult.Success -> {
-                            _tripsData.value += baseResult.data
+                            _tripsData.value = buildList {
+                                add(baseResult.data)
+                                _tripsData.value
+                            }
                             _uiState.value = ProfileUiState.Showing
                             _formState.value = TripForm()
                         }

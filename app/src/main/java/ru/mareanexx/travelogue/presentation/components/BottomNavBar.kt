@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,7 +34,7 @@ fun BottomNavBar(
     onTabSelected: (String) -> Unit
 ) {
     Row(
-        modifier = Modifier.systemBarsPadding().fillMaxWidth().background(Color.White)
+        modifier = Modifier.padding(bottom = 20.dp).fillMaxWidth().background(Color.White)
             .padding(vertical = 8.dp, horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

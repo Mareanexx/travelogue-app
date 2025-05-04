@@ -34,3 +34,6 @@ val selectedVariant = Color(0xFF2D83B4)
 
 val searchBackground = Color(0xFFE8ECF2)
 val searchText = Color(0xFF797A7F)
+
+val blueBackground = Color(0xFF04A4F0)
+val mapPointsRowBack = Color(0xFFF4F5F7)

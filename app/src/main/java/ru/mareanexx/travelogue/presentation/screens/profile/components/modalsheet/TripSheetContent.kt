@@ -53,7 +53,7 @@ import ru.mareanexx.travelogue.presentation.screens.profile.components.trips.Con
 import ru.mareanexx.travelogue.presentation.screens.profile.components.trips.CoverPhotoChooserBox
 import ru.mareanexx.travelogue.presentation.screens.profile.components.trips.CoverPhotoImage
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.TripsViewModel
-import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.TripsEvent
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 import ru.mareanexx.travelogue.presentation.screens.start.components.CheckFieldsButton
 import ru.mareanexx.travelogue.presentation.theme.Shapes
@@ -90,7 +90,7 @@ fun TripSheetContent(
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collect { event ->
-            if (event is ProfileEvent.ShowToast) {
+            if (event is TripsEvent.ShowToast) {
                 Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
             }
         }

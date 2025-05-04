@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
-import ru.mareanexx.travelogue.domain.explore.entity.InspiringProfileResponse
+import ru.mareanexx.travelogue.domain.explore.entity.InspiringProfile
 import ru.mareanexx.travelogue.presentation.screens.follows.components.StartFollowButton
 import ru.mareanexx.travelogue.presentation.screens.follows.components.UnfollowButton
 import ru.mareanexx.travelogue.presentation.theme.MontserratFamily
@@ -41,7 +41,11 @@ import ru.mareanexx.travelogue.presentation.theme.profilePrimaryText
 import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 
 @Composable
-fun InspiringTravelerBigCard(traveler: InspiringProfileResponse) {
+fun InspiringTravelerBigCard(
+    traveler: InspiringProfile,
+    onStartFollowClick: () -> Unit,
+    onUnfollowClick: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth()
             .padding(start = 15.dp, end = 15.dp, bottom = 15.dp).height(190.dp)
@@ -77,16 +81,16 @@ fun InspiringTravelerBigCard(traveler: InspiringProfileResponse) {
             )
             TravelerStatisticsRow(traveler)
             if (traveler.isFollowing) {
-                UnfollowButton(onUnfollowClicked = { TODO("Реализовать follow по нажатию") })
+                UnfollowButton(onUnfollowClick)
             } else {
-                StartFollowButton(onStartFollowClicked = { TODO("Реализовать unfollow") })
+                StartFollowButton(onStartFollowClick)
             }
         }
     }
 }
 
 @Composable
-fun TravelerStatisticsRow(traveler: InspiringProfileResponse) {
+fun TravelerStatisticsRow(traveler: InspiringProfile) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp),
         horizontalArrangement = Arrangement.SpaceBetween

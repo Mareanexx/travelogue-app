@@ -3,6 +3,7 @@ package ru.mareanexx.travelogue.presentation.screens.profile.components.trips
 import android.widget.Toast
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,6 +30,7 @@ fun TripsEventHandler(
     var showDialog by remember { mutableStateOf(false) }
     val deletedTrip = remember { mutableIntStateOf(-1) }
     var showEditTripSheet by remember { mutableStateOf(false) }
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     LaunchedEffect(Unit) {
         eventFlow.collect { tripsEvent ->
@@ -58,12 +60,16 @@ fun TripsEventHandler(
 
     if (showEditTripSheet) {
         ModalBottomSheet(
+            sheetState = bottomSheetState,
             containerColor = Color.White,
             onDismissRequest = { showEditTripSheet = false }
         ) {
             TripSheetContent(
                 buttonText = R.string.save_changes, titleText = R.string.edit_trip,
-                onAction = { viewModel -> viewModel.updateTrip() },
+                onAction = {
+                    viewModel -> viewModel.updateTrip()
+                    showEditTripSheet = false
+                },
                 isEditing = true
             )
         }
