@@ -49,6 +49,7 @@ import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.data.trip.local.type.TripTimeStatus
 import ru.mareanexx.travelogue.data.trip.local.type.TripVisibilityType
 import ru.mareanexx.travelogue.domain.trip.entity.Trip
+import ru.mareanexx.travelogue.presentation.components.CardInnerDarkening
 import ru.mareanexx.travelogue.presentation.theme.MontserratFamily
 import ru.mareanexx.travelogue.presentation.theme.Shapes
 import ru.mareanexx.travelogue.presentation.theme.enabledButtonContainer
@@ -73,6 +74,7 @@ fun TripCard(trip: Trip, navigateToTrip: () -> Unit, onDeleteTrip: () -> Unit, o
             contentDescription = stringResource(R.string.cd_trip_cover_photo),
             contentScale = ContentScale.Crop,
         )
+        CardInnerDarkening(Modifier.align(Alignment.TopCenter))
         Box(modifier = Modifier.fillMaxSize().padding(vertical = 13.dp, horizontal = 17.dp)) {
             if (trip.status == TripTimeStatus.Current)
                 TripHeaderNowOnATripComponent()
@@ -147,7 +149,7 @@ fun TripHeaderNowOnATripComponent() {
         initialValue = enabledButtonContainer,
         targetValue = Color.Transparent,
         animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
+            animation = tween(1500, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "colorAnimation"
@@ -155,8 +157,8 @@ fun TripHeaderNowOnATripComponent() {
 
     Row(
         modifier = Modifier.height(20.dp)
-            .background(color = Color.Black.copy(alpha = 0.3f), shape = Shapes.large)
-            .padding(horizontal = 7.dp, vertical = 4.dp),
+            .background(color = primaryText, shape = Shapes.large)
+            .padding(horizontal = 8.dp, vertical = 0.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

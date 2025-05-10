@@ -36,6 +36,7 @@ import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.data.trip.local.type.TripTimeStatus
 import ru.mareanexx.travelogue.domain.explore.entity.TrendingTrip
+import ru.mareanexx.travelogue.presentation.components.CardInnerDarkening
 import ru.mareanexx.travelogue.presentation.screens.profile.components.trips.TripHeaderNowOnATripComponent
 import ru.mareanexx.travelogue.presentation.screens.profile.components.trips.TripStatsComponent
 import ru.mareanexx.travelogue.presentation.theme.Shapes
@@ -72,7 +73,8 @@ fun TrendingTripCard(trip: TrendingTrip, onSendReport: () -> Unit) {
             contentDescription = stringResource(R.string.cd_trip_cover_photo),
             contentScale = ContentScale.Crop,
         )
-        Box(modifier = Modifier.fillMaxSize().padding(14.dp)) {
+        CardInnerDarkening(Modifier.align(Alignment.TopCenter))
+        Box(modifier = Modifier.fillMaxSize().padding(horizontal = 14.dp).padding(top = 14.dp, bottom = 8.dp)) {
             if (trip.status == TripTimeStatus.Current)
                 TripHeaderNowOnATripComponent()
             OthersTripHeaderSettings(

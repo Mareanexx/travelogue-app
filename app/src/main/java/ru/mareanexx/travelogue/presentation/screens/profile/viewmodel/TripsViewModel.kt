@@ -135,7 +135,7 @@ class TripsViewModel @Inject constructor(
                         is BaseResult.Success -> {
                             _tripsData.value = buildList {
                                 add(baseResult.data)
-                                _tripsData.value
+                                addAll(_tripsData.value)
                             }
                             _uiState.value = ProfileUiState.Showing
                             _formState.value = TripForm()

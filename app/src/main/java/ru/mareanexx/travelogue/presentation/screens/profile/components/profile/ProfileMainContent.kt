@@ -3,8 +3,10 @@ package ru.mareanexx.travelogue.presentation.screens.profile.components.profile
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,19 +29,23 @@ import coil3.compose.AsyncImage
 import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.data.profile.remote.dto.ProfileDto
+import ru.mareanexx.travelogue.presentation.components.CardInnerDarkening
 import ru.mareanexx.travelogue.presentation.theme.profilePrimaryText
 import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 
 @Composable
 fun ProfileCoverPhoto(profileData: ProfileDto?) {
-    AsyncImage(
-        modifier = Modifier.fillMaxWidth().height(170.dp),
-        model = "${BuildConfig.API_FILES_URL}${profileData?.coverPhoto}",
-        placeholder = painterResource(R.drawable.cover_placeholder),
-        error = painterResource(R.drawable.cover_placeholder),
-        contentDescription = stringResource(R.string.cd_cover_photo),
-        contentScale = ContentScale.Crop
-    )
+    Box(modifier = Modifier.fillMaxWidth().height(170.dp)) {
+        AsyncImage(
+            modifier = Modifier.fillMaxSize(),
+            model = "${BuildConfig.API_FILES_URL}${profileData?.coverPhoto}",
+            placeholder = painterResource(R.drawable.cover_placeholder),
+            error = painterResource(R.drawable.cover_placeholder),
+            contentDescription = stringResource(R.string.cd_cover_photo),
+            contentScale = ContentScale.Crop
+        )
+        CardInnerDarkening(Modifier.align(Alignment.TopCenter))
+    }
 }
 
 @Composable
