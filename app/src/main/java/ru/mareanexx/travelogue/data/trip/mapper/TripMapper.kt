@@ -71,7 +71,7 @@ fun Trip.toForm() = TripForm(
     type = type,
     status = status,
     coverPhotoPath = coverPhoto,
-    tagList = tagList?.map { it.name } ?: emptyList(),
+    tagList = tagList?.map { it.name } ?: emptyList()
 )
 
 fun TripForm.toEditRequest() = EditTripRequest(

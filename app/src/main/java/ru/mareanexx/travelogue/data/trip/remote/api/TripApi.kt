@@ -30,7 +30,7 @@ interface TripApi {
     ): Response<WrappedResponse<Trip>>
 
     @DELETE("trips/{tripId}")
-    suspend fun deleteTrip(@Path("tripId") tripId: Int): Response<String>
+    suspend fun deleteTrip(@Path("tripId") tripId: Int): Response<WrappedResponse<String>>
 
     @Multipart
     @PATCH("trips")

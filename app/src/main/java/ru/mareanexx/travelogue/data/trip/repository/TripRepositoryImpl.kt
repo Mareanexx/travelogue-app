@@ -170,9 +170,9 @@ class TripRepositoryImpl @Inject constructor(
             if (response.isSuccessful) {
                 tripDao.deleteTripById(tripId)
 
-                emit(BaseResult.Success("Successfully deleted trip"))
+                emit(BaseResult.Success(response.body()!!.message!!))
             } else {
-                emit(BaseResult.Error(response.body() ?: "Unknown error"))
+                emit(BaseResult.Error(response.body()?.message ?: "Unknown error"))
             }
         }
     }

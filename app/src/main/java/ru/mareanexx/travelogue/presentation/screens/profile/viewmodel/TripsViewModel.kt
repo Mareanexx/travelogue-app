@@ -78,7 +78,7 @@ class TripsViewModel @Inject constructor(
         _formState.value = _formState.value.copy(
             buttonEnabled = _formState.value.name.isNotEmptyOrBlank()
                     && _formState.value.description.isNotEmptyOrBlank()
-                    && _formState.value.coverPhoto != null
+                    && (_formState.value.coverPhoto != null || _formState.value.coverPhotoPath != null)
         )
     }
 
@@ -153,7 +153,18 @@ class TripsViewModel @Inject constructor(
         viewModelScope.launch {
             deleteTripUseCase(tripId)
                 .onStart { setLoading() }
-                .catch { exception -> showToast(exception.message) }
+                .catch { exception ->
+                    showToast(exception.message)
+                }
+                .collect { baseResult ->
+                    when(baseResult) {
+                        is BaseResult.Error -> {
+                            showToast(baseResult.error) }
+                        is BaseResult.Success -> {
+                            _tripsData.value = _tripsData.value.filter { it.id != tripId }
+                        }
+                    }
+                }
         }
     }
 
