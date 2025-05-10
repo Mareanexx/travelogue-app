@@ -23,4 +23,7 @@ interface TripDao {
 
     @Query("SELECT * FROM trip ORDER BY startDate DESC")
     suspend fun getTrips(): List<TripEntity>
+
+    @Query("SELECT * FROM trip WHERE id = :tripId")
+    suspend fun getTripById(tripId: Int): TripEntity?
 }

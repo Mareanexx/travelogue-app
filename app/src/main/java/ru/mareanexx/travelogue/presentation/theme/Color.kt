@@ -37,3 +37,8 @@ val searchText = Color(0xFF797A7F)
 
 val blueBackground = Color(0xFF04A4F0)
 val mapPointsRowBack = Color(0xFFF4F5F7)
+
+val mapBoxBackground = Color(0xFF000C1A)
+val commentRowIndicator = Color(0xFFD9DDE0)
+
+val likedIcon = Color(0xFFF2004D)

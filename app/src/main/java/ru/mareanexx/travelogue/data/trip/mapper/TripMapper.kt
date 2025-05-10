@@ -9,19 +9,6 @@ import ru.mareanexx.travelogue.data.trip.remote.dto.NewTripRequest
 import ru.mareanexx.travelogue.domain.trip.entity.Trip
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.form.TripForm
 
-fun TripEntity.toDto() = AuthorTrip(
-    id = id,
-    name = name,
-    description = description,
-    startDate = startDate,
-    endDate = endDate,
-    stepsNumber = stepsNumber,
-    daysNumber = daysNumber,
-    type = type,
-    status = status,
-    coverPhoto = coverPhoto
-)
-
 fun AuthorTrip.toEntity(profileId: Int) = TripEntity(
     id = id,
     name = name,

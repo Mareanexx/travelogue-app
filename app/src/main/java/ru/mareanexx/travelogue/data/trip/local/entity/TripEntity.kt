@@ -7,7 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import ru.mareanexx.travelogue.data.profile.local.entity.ProfileEntity
-import ru.mareanexx.travelogue.data.trip.local.converter.LocalDateConverter
+import ru.mareanexx.travelogue.data.db.converter.LocalDateConverter
 import ru.mareanexx.travelogue.data.trip.local.type.TripTimeStatus
 import ru.mareanexx.travelogue.data.trip.local.type.TripVisibilityType
 import java.time.LocalDate

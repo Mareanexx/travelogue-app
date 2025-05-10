@@ -115,10 +115,10 @@ fun DateRangePickerDialog(
                     val end = state.selectedEndDateMillis
                     if (start != null) onDatesSelected(start, end)
                 }
-            ) { Text("OK", style = MaterialTheme.typography.labelMedium, color = primaryText) }
+            ) { Text(stringResource(R.string.ok_btn), style = MaterialTheme.typography.labelMedium, color = primaryText) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel", style = MaterialTheme.typography.labelMedium, color = primaryText) }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel_btn), style = MaterialTheme.typography.labelMedium, color = primaryText) }
         }
     ) {
         DateRangePicker(
@@ -134,7 +134,7 @@ fun DateRangePickerDialog(
 fun OneDatePicker(
     @StringRes dateType: Int,
     value: String,
-    horizontalAlignment: Alignment.Horizontal
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start
 ) {
     Column(horizontalAlignment = horizontalAlignment) {
         Text(text = stringResource(dateType), style = MaterialTheme.typography.bodySmall, color = profileSecondaryText)

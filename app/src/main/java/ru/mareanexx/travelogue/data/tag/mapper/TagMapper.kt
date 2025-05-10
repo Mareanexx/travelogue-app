@@ -15,3 +15,8 @@ fun NewTagResponse.toEntity(tripId: Int) = TagEntity(
     name = name,
     tripId = tripId
 )
+
+fun TagEntity.toResponse() = NewTagResponse(
+    id = id,
+    name = name
+)

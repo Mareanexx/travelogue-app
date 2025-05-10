@@ -35,14 +35,17 @@ import ru.mareanexx.travelogue.presentation.theme.unfocusedIndicator
 
 
 @Composable
-fun authTextFieldColors(): TextFieldColors {
+fun authTextFieldColors(
+    unfocusedIndicatorColor: Color = unfocusedIndicator,
+    focusedIndicatorColor: Color = focusedTextField
+): TextFieldColors {
     return TextFieldDefaults.colors(
         errorContainerColor = Color.White,
-        unfocusedIndicatorColor = unfocusedIndicator,
+        unfocusedIndicatorColor = unfocusedIndicatorColor,
         unfocusedLabelColor = textFieldText,
         focusedContainerColor = Color.White,
         unfocusedContainerColor = Color.White,
-        focusedIndicatorColor = focusedTextField,
+        focusedIndicatorColor = focusedIndicatorColor,
         focusedLabelColor = focusedTextField
     )
 }
@@ -95,7 +98,7 @@ fun TrailingIcon(passwordVisible: MutableState<Boolean>) {
 @Composable
 fun LeadingIcon(@DrawableRes iconRes: Int) {
     Icon(
-        modifier = Modifier.size(25.dp),
+        modifier = Modifier.padding(start = 5.dp).size(25.dp),
         painter = painterResource(iconRes),
         contentDescription = null
     )

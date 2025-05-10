@@ -38,6 +38,7 @@ import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.Prof
 fun ProfileScreen(
     navigateToFollows: (String, Int) -> Unit,
     navigateToStartScreen: () -> Unit,
+    navigateToTrip: (Int, username: String, avatar: String) -> Unit,
     profileViewModel: ProfileViewModel = hiltViewModel(),
     tripsViewModel: TripsViewModel = hiltViewModel()
 ) {
@@ -103,6 +104,7 @@ fun ProfileScreen(
                         items(tripsData.value) { trip ->
                             TripCard(
                                 trip,
+                                navigateToTrip = { navigateToTrip(trip.id, profileData.value!!.username, profileData.value!!.avatar.toString()) },
                                 onDeleteTrip = { tripsViewModel.onDeleteClicked(trip.id) },
                                 onEditTrip = { tripsViewModel.onEditPanelOpen(trip) }
                             )

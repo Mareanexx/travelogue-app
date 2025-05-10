@@ -6,6 +6,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
+import ru.mareanexx.travelogue.data.mappoint.local.dao.MapPointDao
+import ru.mareanexx.travelogue.data.pointphoto.local.dao.PointPhotoDao
 import ru.mareanexx.travelogue.data.tag.local.dao.TagDao
 import ru.mareanexx.travelogue.data.trip.local.dao.TripDao
 import ru.mareanexx.travelogue.data.trip.remote.api.TripApi
@@ -24,9 +26,11 @@ object TripModule {
         tripApi: TripApi,
         tripDao: TripDao,
         tagDao: TagDao,
+        mapPointDao: MapPointDao,
+        pointPhotoDao: PointPhotoDao,
         userSessionManager: UserSessionManager
     ): TripRepository {
-        return TripRepositoryImpl(gson, tripApi, tripDao, tagDao, userSessionManager)
+        return TripRepositoryImpl(gson, tripApi, tripDao, tagDao, mapPointDao, pointPhotoDao, userSessionManager)
     }
 
     @Singleton

@@ -7,6 +7,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -22,11 +23,15 @@ import ru.mareanexx.travelogue.presentation.screens.explore.ExploreScreen
 import ru.mareanexx.travelogue.presentation.screens.follows.FollowsScreen
 import ru.mareanexx.travelogue.presentation.screens.notifications.NotificationsScreen
 import ru.mareanexx.travelogue.presentation.screens.profile.ProfileScreen
+import ru.mareanexx.travelogue.presentation.screens.trip.TripScreen
+import ru.mareanexx.travelogue.presentation.theme.mapBoxBackground
 
 @Composable
 fun MainTabScreen(rootNavController: NavHostController) {
     val navItems = listOf("profile", "notifications", "activity", "explore")
     var selectedTab by rememberSaveable { mutableStateOf("profile") }
+    var showBottomNavBar by remember { mutableStateOf(true) }
+    val scaffoldContainerColor = remember { mutableStateOf(Color.White) }
 
     val profileNavController = rememberNavController()
     val notificationsNavController = rememberNavController()
@@ -41,12 +46,14 @@ fun MainTabScreen(rootNavController: NavHostController) {
     )
 
     Scaffold(
-        containerColor = Color.White,
+        containerColor = scaffoldContainerColor.value,
         bottomBar = {
-            BottomNavBar(
-                selectedTab = selectedTab,
-                onTabSelected = { selectedTab = it }
-            )
+            if (showBottomNavBar) {
+                BottomNavBar(
+                    selectedTab = selectedTab,
+                    onTabSelected = { selectedTab = it }
+                )
+            }
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
@@ -63,6 +70,8 @@ fun MainTabScreen(rootNavController: NavHostController) {
                         when (tab) {
                             "profile" -> {
                                 composable("profile") {
+                                    showBottomNavBar = true
+                                    scaffoldContainerColor.value = Color.White
                                     ProfileScreen(
                                         navigateToFollows = { username, profileId ->
                                             navController.navigate("follows/$username/$profileId")
@@ -71,6 +80,12 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                             rootNavController.navigate("auth") {
                                                 popUpTo("main") { inclusive = true }
                                             }
+                                        },
+                                        navigateToTrip = { tripId, username, avatar ->
+                                            navController.navigate("trip/?tripId=$tripId" +
+                                                    "&profileId=me" +
+                                                    "&username=$username" +
+                                                    "&avatar=$avatar")
                                         }
                                     )
                                 }
@@ -86,6 +101,7 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                         }
                                     )
                                 ) { backStackEntry ->
+                                    showBottomNavBar = true
                                     val profileId = backStackEntry.arguments?.getInt("profileId") ?: -1
                                     val username = backStackEntry.arguments?.getString("username") ?: "Username"
                                     FollowsScreen(
@@ -94,17 +110,43 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                         navigateBack = { navController.popBackStack() }
                                     )
                                 }
+
+                                composable(route = "trip/?tripId={tripId}&profileId={profileId}&username={username}&avatar={avatar}",
+                                    arguments = listOf(
+                                        navArgument("tripId") { type = NavType.IntType },
+                                        navArgument("profileId") { type = NavType.StringType },
+                                        navArgument("username") { type = NavType.StringType },
+                                        navArgument("avatar") { type = NavType.StringType }
+                                    )
+                                ) { backStackEntry ->
+                                    showBottomNavBar = false
+                                    scaffoldContainerColor.value = mapBoxBackground
+                                    val profileId = backStackEntry.arguments?.getString("profileId") ?: "me"
+                                    val tripId = backStackEntry.arguments?.getInt("tripId") ?: -1
+                                    val avatar = backStackEntry.arguments?.getString("avatar") ?: ""
+                                    val username = backStackEntry.arguments?.getString("username") ?: ""
+                                    TripScreen(
+                                        profileId = profileId,
+                                        tripId = tripId,
+                                        username = username,
+                                        userAvatar = avatar,
+                                        navigateBack = { navController.popBackStack() }
+                                    )
+                                }
                             }
 
                             "notifications" -> composable("notifications") {
+                                showBottomNavBar = true
                                 NotificationsScreen()
                             }
 
                             "activity" -> composable("activity") {
+                                showBottomNavBar = true
                                 /* ActivityScreen() */
                             }
 
                             "explore" -> composable("explore") {
+                                showBottomNavBar = true
                                 ExploreScreen()
                             }
                         }

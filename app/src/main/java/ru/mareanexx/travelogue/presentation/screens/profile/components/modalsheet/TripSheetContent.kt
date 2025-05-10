@@ -157,7 +157,7 @@ fun TripSheetContent(
             onOpenModalBottomSheet = { bottomSheetState.value = true }
         )
         CheckFieldsButton(
-            enabled = tripForm.buttonEnabled,
+            enabled = if (isEditing) true else tripForm.buttonEnabled,
             textRes = buttonText,
             showLoading = tripUiState == ProfileUiState.IsLoading
         ) { onAction(viewModel) }

@@ -8,6 +8,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ru.mareanexx.travelogue.data.db.TravelogueDatabase
+import ru.mareanexx.travelogue.data.mappoint.local.dao.MapPointDao
+import ru.mareanexx.travelogue.data.pointphoto.local.dao.PointPhotoDao
 import ru.mareanexx.travelogue.data.profile.local.dao.ProfileDao
 import ru.mareanexx.travelogue.data.tag.local.dao.TagDao
 import ru.mareanexx.travelogue.data.trip.local.dao.TripDao
@@ -40,5 +42,15 @@ object DatabaseModule {
     @Provides
     fun provideTagDao(db: TravelogueDatabase): TagDao {
         return db.tagDao()
+    }
+
+    @Provides
+    fun provideMapPointDao(db: TravelogueDatabase): MapPointDao {
+        return db.mapPointDao()
+    }
+
+    @Provides
+    fun providePointPhotoDao(db: TravelogueDatabase): PointPhotoDao {
+        return db.pointPhotoDao()
     }
 }

@@ -8,6 +8,8 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,8 +56,15 @@ import ru.mareanexx.travelogue.presentation.theme.primaryText
 import java.time.LocalDate
 
 @Composable
-fun TripCard(trip: Trip, onDeleteTrip: () -> Unit, onEditTrip: () -> Unit) {
-    Box(modifier = Modifier.fillMaxWidth().height(255.dp).padding(horizontal = 15.dp).clip(Shapes.medium)) {
+fun TripCard(trip: Trip, navigateToTrip: () -> Unit, onDeleteTrip: () -> Unit, onEditTrip: () -> Unit) {
+    Box(
+        modifier = Modifier.fillMaxWidth().height(255.dp)
+            .padding(horizontal = 15.dp).clip(Shapes.medium)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { navigateToTrip() }
+    ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
             model = "${BuildConfig.API_FILES_URL}${trip.coverPhoto}",

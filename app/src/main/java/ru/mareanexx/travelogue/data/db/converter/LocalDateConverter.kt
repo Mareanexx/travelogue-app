@@ -1,4 +1,4 @@
-package ru.mareanexx.travelogue.data.trip.local.converter
+package ru.mareanexx.travelogue.data.db.converter
 
 import androidx.room.TypeConverter
 import java.time.Instant
