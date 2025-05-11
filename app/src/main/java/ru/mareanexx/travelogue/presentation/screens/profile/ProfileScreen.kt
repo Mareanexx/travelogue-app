@@ -59,15 +59,17 @@ fun ProfileScreen(
     val tripsData = tripsViewModel.tripsData.collectAsState()
     val tripsUiState = tripsViewModel.uiState.collectAsState()
     val profileIsRefreshing = profileViewModel.isRefreshing.collectAsState()
+    val tripIsRefreshing = tripsViewModel.isRefreshing.collectAsState()
 
     val showHeader = remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
     var canShowTrips by remember { mutableStateOf(false) }
 
     PullToRefreshBox(
         modifier = Modifier.fillMaxSize().background(color = Color.White),
-        isRefreshing = profileIsRefreshing.value,
+        isRefreshing = profileIsRefreshing.value && tripIsRefreshing.value,
         onRefresh = {
             profileViewModel.refreshStatistics()
+            tripsViewModel.refreshStatistics()
         }
     ) {
         LazyColumn(

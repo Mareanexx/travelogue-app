@@ -6,9 +6,11 @@ import ru.mareanexx.travelogue.data.trip.remote.dto.NewTripRequest
 import ru.mareanexx.travelogue.data.trip.remote.dto.TripWithMapPoints
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.trip.entity.Trip
+import ru.mareanexx.travelogue.domain.trip.entity.TripStats
 import java.io.File
 
 interface TripRepository {
+    suspend fun getUpdatedTripStats() : Flow<List<TripStats>>
     suspend fun getTripFromDatabase(tripId: Int) : Flow<BaseResult<TripWithMapPoints, String>>
     suspend fun fetchTripFromNetwork(tripId: Int) : Flow<BaseResult<TripWithMapPoints, String>>
     suspend fun getTripWithMapPoints(profileId: String, tripId: Int) : Flow<BaseResult<TripWithMapPoints, String>>

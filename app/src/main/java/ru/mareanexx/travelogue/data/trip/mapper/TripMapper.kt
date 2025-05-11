@@ -7,7 +7,13 @@ import ru.mareanexx.travelogue.data.trip.local.entity.TripEntity
 import ru.mareanexx.travelogue.data.trip.remote.dto.EditTripRequest
 import ru.mareanexx.travelogue.data.trip.remote.dto.NewTripRequest
 import ru.mareanexx.travelogue.domain.trip.entity.Trip
+import ru.mareanexx.travelogue.domain.trip.entity.TripStats
+import ru.mareanexx.travelogue.domain.trip.entity.TripStatsResponse
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.form.TripForm
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.Period
+import java.time.ZoneId
 
 fun AuthorTrip.toEntity(profileId: Int) = TripEntity(
     id = id,
@@ -84,3 +90,20 @@ fun TripForm.toEditRequest() = EditTripRequest(
     status = status,
     tagList = tagList.map { NewTagRequest(it) }
 )
+
+fun TripStatsResponse.toStats(): TripStats {
+    val localStartDate = Instant.ofEpochMilli(startDate.toLong())
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
+
+    val days = maxArrivalDate?.let {
+        val arrivalDate = OffsetDateTime.parse(it).toLocalDate()
+        Period.between(localStartDate, arrivalDate).days + 1
+    } ?: 0
+
+    return TripStats(
+        id = id,
+        stepsNumber = stepsNumber,
+        daysNumber = days
+    )
+}

@@ -20,6 +20,7 @@ import ru.mareanexx.travelogue.data.tag.mapper.toResponse
 import ru.mareanexx.travelogue.data.tag.remote.dto.NewTagResponse
 import ru.mareanexx.travelogue.data.trip.local.dao.TripDao
 import ru.mareanexx.travelogue.data.trip.mapper.toEntity
+import ru.mareanexx.travelogue.data.trip.mapper.toStats
 import ru.mareanexx.travelogue.data.trip.mapper.toTrip
 import ru.mareanexx.travelogue.data.trip.remote.api.TripApi
 import ru.mareanexx.travelogue.data.trip.remote.dto.EditTripRequest
@@ -28,6 +29,7 @@ import ru.mareanexx.travelogue.data.trip.remote.dto.TripWithMapPoints
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.trip.TripRepository
 import ru.mareanexx.travelogue.domain.trip.entity.Trip
+import ru.mareanexx.travelogue.domain.trip.entity.TripStats
 import ru.mareanexx.travelogue.utils.UserSessionManager
 import java.io.File
 import javax.inject.Inject
@@ -48,6 +50,13 @@ class TripRepositoryImpl @Inject constructor(
             } else {
                 fetchTripFromNetwork(tripId).collect { result -> emit(result) }
             }
+        }
+    }
+
+    override suspend fun getUpdatedTripStats(): Flow<List<TripStats>> {
+        return flow {
+            val response = tripDao.getTripStats()
+            emit(response.map { it.toStats() })
         }
     }
 

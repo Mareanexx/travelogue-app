@@ -22,6 +22,7 @@ import ru.mareanexx.travelogue.domain.trip.entity.Trip
 import ru.mareanexx.travelogue.domain.trip.usecase.AddTripUseCase
 import ru.mareanexx.travelogue.domain.trip.usecase.DeleteTripUseCase
 import ru.mareanexx.travelogue.domain.trip.usecase.GetAuthorsTripsUseCase
+import ru.mareanexx.travelogue.domain.trip.usecase.GetUpdatedTripStats
 import ru.mareanexx.travelogue.domain.trip.usecase.UpdateTripUseCase
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.TripsEvent
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.form.TripForm
@@ -36,7 +37,8 @@ class TripsViewModel @Inject constructor(
     private val getAuthorsTripsUseCase: GetAuthorsTripsUseCase,
     private val addTripUseCase: AddTripUseCase,
     private val deleteTripUseCase: DeleteTripUseCase,
-    private val updateTripUseCase: UpdateTripUseCase
+    private val updateTripUseCase: UpdateTripUseCase,
+    private val getUpdatedTripStats: GetUpdatedTripStats
 ): ViewModel() {
     private val _uiState = MutableStateFlow<ProfileUiState>(ProfileUiState.IsLoading)
     val uiState: StateFlow<ProfileUiState> get() = _uiState.asStateFlow()
@@ -49,6 +51,9 @@ class TripsViewModel @Inject constructor(
 
     private val _tripsData = MutableStateFlow<List<Trip>>(emptyList())
     val tripsData: StateFlow<List<Trip>> get() = _tripsData.asStateFlow()
+
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
     private fun setLoading() { _uiState.value = ProfileUiState.IsLoading }
 
@@ -64,9 +69,32 @@ class TripsViewModel @Inject constructor(
         viewModelScope.launch {
             getAuthorsTripsUseCase()
                 .onStart { setLoading() }
-                .catch { exception -> showToast(exception.message ?: "Unknown error") }
+                .catch { exception -> showToast(exception.message) }
                 .collect { trips ->
                     _tripsData.value = trips
+                    setShowing()
+                }
+        }
+    }
+
+    fun refreshStatistics() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            getUpdatedTripStats()
+                .onStart { setLoading() }
+                .catch { exception ->
+                    setShowing()
+                    showToast(exception.message)
+                }
+                .collect { tripStats ->
+                    val updated = _tripsData.value.map { trip ->
+                        val stat = tripStats.find { it.id == trip.id }
+                        if (stat != null) {
+                            trip.copy(stepsNumber = stat.stepsNumber, daysNumber = stat.daysNumber)
+                        } else trip
+                    }
+                    _tripsData.value = updated
+                    _isRefreshing.value = false
                     setShowing()
                 }
         }
