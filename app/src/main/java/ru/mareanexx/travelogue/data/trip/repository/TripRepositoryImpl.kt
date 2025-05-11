@@ -27,6 +27,7 @@ import ru.mareanexx.travelogue.data.trip.remote.dto.EditTripRequest
 import ru.mareanexx.travelogue.data.trip.remote.dto.NewTripRequest
 import ru.mareanexx.travelogue.data.trip.remote.dto.TripWithMapPoints
 import ru.mareanexx.travelogue.domain.common.BaseResult
+import ru.mareanexx.travelogue.domain.explore.entity.TrendingTrip
 import ru.mareanexx.travelogue.domain.trip.TripRepository
 import ru.mareanexx.travelogue.domain.trip.entity.Trip
 import ru.mareanexx.travelogue.domain.trip.entity.TripStats
@@ -49,6 +50,18 @@ class TripRepositoryImpl @Inject constructor(
                 getTripFromDatabase(tripId).collect { result -> emit(result) }
             } else {
                 fetchTripFromNetwork(tripId).collect { result -> emit(result) }
+            }
+        }
+    }
+
+    override suspend fun getTaggedTrips(tagName: String): Flow<BaseResult<List<TrendingTrip>, String>> {
+        return flow {
+            val profileId = userSessionManager.getProfileId()
+            val response = tripApi.getTripsByTag(finderId = profileId, tagName = tagName)
+            if (response.isSuccessful) {
+                emit(BaseResult.Success(response.body()!!.data!!))
+            } else {
+                emit(BaseResult.Error(response.body()?.message ?: "Unknown error"))
             }
         }
     }

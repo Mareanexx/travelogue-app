@@ -53,6 +53,7 @@ data class SearchOverlayState(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreScreen(
+    onNavigateToTagScreen: (Int, String) -> Unit,
     onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit,
     exploreViewModel: ExploreViewModel = hiltViewModel(),
     searchViewModel: SearchViewModel = hiltViewModel()
@@ -74,7 +75,7 @@ fun ExploreScreen(
                         onSearchBarClick = {
                             searchOverlayState.value = searchOverlayState.value.copy(isActive = true)
                         },
-                        onNavigateToTrip
+                        onNavigateToTagScreen, onNavigateToTrip
                     )
                 }
             }
@@ -119,6 +120,7 @@ fun ExploreEventHandler(eventFlow: SharedFlow<ExploreEvent>) {
 fun ExploreLoadedContent(
     viewModel: ExploreViewModel,
     onSearchBarClick: () -> Unit,
+    onNavigateToTagScreen: (Int, String) -> Unit,
     onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit
 ) {
     val trendingTrips = viewModel.trendingTrips.collectAsState()
@@ -141,7 +143,7 @@ fun ExploreLoadedContent(
 
         item { Search(onSearchBarClick) }
 
-        item { TrendingTagsGrid(trendingTags.value) }
+        item { TrendingTagsGrid(trendingTags.value, onNavigateToTagScreen = onNavigateToTagScreen) }
 
         item {
             TrendingTripsRow(trendingTrips.value,
@@ -177,5 +179,5 @@ fun ExploreLoadedContent(
 @Preview(showBackground = true, showSystemUi = true )
 @Composable
 fun PreviewExploreScreen() {
-    ExploreScreen( onNavigateToTrip = { _, _, _, _ -> } )
+    ExploreScreen( onNavigateToTrip = { _, _, _, _ -> }, onNavigateToTagScreen = ({ _, _ -> }) )
 }

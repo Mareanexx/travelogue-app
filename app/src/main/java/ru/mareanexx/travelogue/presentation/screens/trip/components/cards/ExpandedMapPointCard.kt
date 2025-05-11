@@ -47,9 +47,9 @@ import coil3.compose.AsyncImage
 import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.data.mappoint.remote.dto.MapPointWithPhotos
+import ru.mareanexx.travelogue.presentation.components.ErrorLoadingContent
 import ru.mareanexx.travelogue.presentation.screens.trip.components.cards.components.CommentsSkeleton
 import ru.mareanexx.travelogue.presentation.screens.trip.components.cards.components.DescriptionAndStatsBlock
-import ru.mareanexx.travelogue.presentation.screens.trip.components.cards.components.ErrorLoadingComments
 import ru.mareanexx.travelogue.presentation.screens.trip.components.cards.components.ExpandedMapPointCardHeader
 import ru.mareanexx.travelogue.presentation.screens.trip.components.cards.components.OneCommentRow
 import ru.mareanexx.travelogue.presentation.screens.trip.components.cards.components.WriteACommentInputBlock
@@ -185,7 +185,7 @@ fun ExpandedMapPointCard(
                 }
                 when(commentsUiState.value) {
                     CommentsUiState.Init -> {}
-                    CommentsUiState.Error -> { item { ErrorLoadingComments(onRetry = { commentsViewModel.retry() }) } }
+                    CommentsUiState.Error -> { item { ErrorLoadingContent(R.string.cant_load_comments, onRetry = { commentsViewModel.retry() }) } }
                     CommentsUiState.Loading -> { item { CommentsSkeleton() } }
                     CommentsUiState.Success -> {
                         items(commentsData.value) { comment ->

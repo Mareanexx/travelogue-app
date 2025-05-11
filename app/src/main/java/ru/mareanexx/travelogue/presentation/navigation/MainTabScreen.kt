@@ -20,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import ru.mareanexx.travelogue.presentation.components.BottomNavBar
 import ru.mareanexx.travelogue.presentation.screens.explore.ExploreScreen
+import ru.mareanexx.travelogue.presentation.screens.explore.components.tags.TagScreen
 import ru.mareanexx.travelogue.presentation.screens.follows.FollowsScreen
 import ru.mareanexx.travelogue.presentation.screens.notifications.NotificationsScreen
 import ru.mareanexx.travelogue.presentation.screens.profile.ProfileScreen
@@ -56,7 +57,9 @@ fun MainTabScreen(rootNavController: NavHostController) {
             }
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+        Box(modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize()) {
             navItems.forEach { tab ->
                 val navController = navControllers[tab]!!
                 val isSelected = tab == selectedTab
@@ -150,12 +153,41 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                 composable("explore") {
                                     showBottomNavBar = true
                                     scaffoldContainerColor.value = Color.White
-                                    ExploreScreen(onNavigateToTrip = { tripId, profileId, username, avatar ->
-                                        navController.navigate("trip/?tripId=$tripId" +
+                                    ExploreScreen(
+                                        onNavigateToTrip = { tripId, profileId, username, avatar ->
+                                            navController.navigate("trip/?tripId=$tripId" +
                                                 "&profileId=$profileId" +
                                                 "&username=$username" +
-                                                "&avatar=$avatar")
+                                                "&avatar=$avatar"
+                                            )
+                                        },
+                                        onNavigateToTagScreen = { imgIndex, tagName ->
+                                            navController.navigate("tag/$tagName/$imgIndex")
                                         }
+                                    )
+                                }
+
+                                composable("tag/{tagName}/{imgIndex}",
+                                    arguments = listOf(
+                                        navArgument("tagName") { type = NavType.StringType },
+                                        navArgument("imgIndex") { type = NavType.IntType }
+                                    )
+                                ) { backStackEntry ->
+                                    showBottomNavBar = true
+                                    scaffoldContainerColor.value = Color.White
+                                    val tagName = backStackEntry.arguments?.getString("tagName") ?: ""
+                                    val imgIndex = backStackEntry.arguments?.getInt("imgIndex") ?: 0
+                                    TagScreen(
+                                        tagName = tagName,
+                                        imgIndex = imgIndex,
+                                        navigateBack = { navController.popBackStack() },
+                                        onNavigateToTrip = { tripId, profileId, username, avatar ->
+                                            navController.navigate("trip/?tripId=$tripId" +
+                                                    "&profileId=$profileId" +
+                                                    "&username=$username" +
+                                                    "&avatar=$avatar"
+                                            )
+                                        },
                                     )
                                 }
 

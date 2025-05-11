@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,7 +41,6 @@ import ru.mareanexx.travelogue.data.profile.remote.dto.AuthorCommentSender
 import ru.mareanexx.travelogue.domain.comments.entity.Comment
 import ru.mareanexx.travelogue.presentation.components.BoxSkeleton
 import ru.mareanexx.travelogue.presentation.components.authTextFieldColors
-import ru.mareanexx.travelogue.presentation.screens.start.components.CheckFieldsButton
 import ru.mareanexx.travelogue.presentation.screens.trip.components.SendCommentButton
 import ru.mareanexx.travelogue.presentation.theme.commentRowIndicator
 import ru.mareanexx.travelogue.presentation.theme.mapPointsRowBack
@@ -64,25 +62,6 @@ fun CommentsSkeleton() {
                 }
             }
         }
-    }
-}
-
-
-@Composable
-fun ErrorLoadingComments(onRetry: () -> Unit) {
-    Column(
-        modifier = Modifier.padding(horizontal = 15.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        CheckFieldsButton(
-            textRes = R.string.retry_btn,
-            onClick = onRetry
-        )
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.cant_load_comments),
-            style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center
-        )
     }
 }
 

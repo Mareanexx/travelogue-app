@@ -13,6 +13,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.mareanexx.travelogue.data.common.WrappedResponse
 import ru.mareanexx.travelogue.data.trip.remote.dto.TripWithMapPoints
+import ru.mareanexx.travelogue.domain.explore.entity.TrendingTrip
 import ru.mareanexx.travelogue.domain.trip.entity.Trip
 
 interface TripApi {
@@ -38,4 +39,10 @@ interface TripApi {
         @Part("data") data: RequestBody,
         @Part cover: MultipartBody.Part?
     ): Response<WrappedResponse<Trip>>
+
+    @GET("trips/tagged")
+    suspend fun getTripsByTag(
+        @Query("finderId") finderId: Int,
+        @Query("tagName") tagName: String
+    ) : Response<WrappedResponse<List<TrendingTrip>>>
 }

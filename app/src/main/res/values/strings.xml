@@ -177,4 +177,5 @@
     <string name="send_comment_btn">Send input comment to selected map point</string>
     <string name="cant_load_comments">Something went wrong! Can\'t load comments now</string>
     <string name="delete_map_point">Delete step</string>
+    <string name="cant_load_trips_by_tag">Something went wrong! Can\'t load trips by this tag</string>
 </resources>
