@@ -22,6 +22,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -61,9 +63,10 @@ import java.util.Locale
 val dateTextFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH)
 val timeTextFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpandedMapPointCard(
-    profileId: String, username: String, avatar: String,
+    profileId: String,
     mapPointData: MutableState<MapPointWithPhotos?>,
     onDismiss: () -> Unit, onOpenEditSheet: () -> Unit,
     commentsViewModel: CommentsViewModel = hiltViewModel(),
@@ -72,6 +75,8 @@ fun ExpandedMapPointCard(
     val commentsData = commentsViewModel.commentsData.collectAsState()
     val commentsUiState = commentsViewModel.uiState.collectAsState()
     val commentMessage = commentsViewModel.commentMessage.collectAsState()
+    val isRefreshing = commentsViewModel.isRefreshing.collectAsState()
+    val authorProfileData = commentsViewModel.authorData.collectAsState()
 
     LaunchedEffect(Unit) { commentsViewModel.loadComments(mapPointData.value!!.mapPoint.id) }
 
@@ -126,69 +131,74 @@ fun ExpandedMapPointCard(
 
         ExpandedMapPointCardHeader(alphaFloat, mapPointData)
 
-        LazyColumn(
+        PullToRefreshBox(
+            isRefreshing = isRefreshing.value,
+            onRefresh = { commentsViewModel.retry() },
             modifier = Modifier.fillMaxWidth().weight(1f),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomCenter) {
-                    HorizontalPager(state = pagerState) { pageNumber ->
-                        AsyncImage(
-                            model = "${BuildConfig.API_FILES_URL}${mapPointData.value?.photos?.getOrNull(pageNumber)?.filePath}",
-                            placeholder = painterResource(R.drawable.cover_placeholder),
-                            error = painterResource(R.drawable.cover_placeholder),
-                            contentDescription = null,
-                            modifier = Modifier.width(imageWidth).height(imageHeight),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                    if (mapPointData.value!!.photos.isNotEmpty()) {
-                        Row(
-                            modifier = Modifier.padding(bottom = 15.dp).background(primaryText, Shapes.medium)
-                                .padding(vertical = 2.dp, horizontal = 4.dp)
-                        ) {
-                            repeat(pagerState.pageCount) { iteration ->
-                                val color = if (pagerState.currentPage == iteration) Color.White else Color.White.copy(0.5f)
-                                Box(modifier = Modifier.padding(2.dp).clip(CircleShape).background(color).size(7.dp))
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item {
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomCenter) {
+                        HorizontalPager(state = pagerState) { pageNumber ->
+                            AsyncImage(
+                                model = "${BuildConfig.API_FILES_URL}${mapPointData.value?.photos?.getOrNull(pageNumber)?.filePath}",
+                                placeholder = painterResource(R.drawable.cover_placeholder),
+                                error = painterResource(R.drawable.cover_placeholder),
+                                contentDescription = null,
+                                modifier = Modifier.width(imageWidth).height(imageHeight),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        if (mapPointData.value!!.photos.isNotEmpty()) {
+                            Row(
+                                modifier = Modifier.padding(bottom = 15.dp).background(primaryText, Shapes.medium)
+                                    .padding(vertical = 2.dp, horizontal = 4.dp)
+                            ) {
+                                repeat(pagerState.pageCount) { iteration ->
+                                    val color = if (pagerState.currentPage == iteration) Color.White else Color.White.copy(0.5f)
+                                    Box(modifier = Modifier.padding(2.dp).clip(CircleShape).background(color).size(7.dp))
+                                }
                             }
                         }
                     }
                 }
-            }
-            item {
-                AnimatedVisibility(
-                    modifier = Modifier.fillMaxWidth().padding(15.dp),
-                    visible = isDragged.value
-                ) {
-                    DescriptionAndStatsBlock(
-                        profileId,
-                        mapPointData, onOpenEditSheet = { onOpenEditSheet(); onDismiss() },
-                        onAddLike = {
-                            onAddLike(mapPointData.value!!.mapPoint.id)
-                            mapPointData.value = mapPointData.value!!.copy(mapPoint = mapPointData.value!!.mapPoint.copy(isLiked = true))
-                        },
-                        onRemoveLike = {
-                            onRemoveLike(mapPointData.value!!.mapPoint.id)
-                            mapPointData.value = mapPointData.value!!.copy(mapPoint = mapPointData.value!!.mapPoint.copy(isLiked = false))
+                item {
+                    Column(modifier = Modifier.fillMaxWidth().padding(15.dp)) {
+                        AnimatedVisibility(visible = isDragged.value) {
+                            DescriptionAndStatsBlock(
+                                profileId,
+                                mapPointData, onOpenEditSheet = { onOpenEditSheet(); onDismiss() },
+                                onAddLike = {
+                                    onAddLike(mapPointData.value!!.mapPoint.id)
+                                    mapPointData.value = mapPointData.value!!.copy(mapPoint = mapPointData.value!!.mapPoint.copy(isLiked = true))
+                                },
+                                onRemoveLike = {
+                                    onRemoveLike(mapPointData.value!!.mapPoint.id)
+                                    mapPointData.value = mapPointData.value!!.copy(mapPoint = mapPointData.value!!.mapPoint.copy(isLiked = false))
+                                }
+                            )
                         }
-                    )
+                    }
                 }
-            }
-            when(commentsUiState.value) {
-                CommentsUiState.Init -> {}
-                CommentsUiState.Error -> { item { ErrorLoadingComments(onRetry = { commentsViewModel.retry() }) } }
-                CommentsUiState.Loading -> { item { CommentsSkeleton() } }
-                CommentsUiState.Success -> {
-                    items(commentsData.value) { comment ->
-                        OneCommentRow(comment)
-                        Spacer(Modifier.height(20.dp))
+                when(commentsUiState.value) {
+                    CommentsUiState.Init -> {}
+                    CommentsUiState.Error -> { item { ErrorLoadingComments(onRetry = { commentsViewModel.retry() }) } }
+                    CommentsUiState.Loading -> { item { CommentsSkeleton() } }
+                    CommentsUiState.Success -> {
+                        items(commentsData.value) { comment ->
+                            OneCommentRow(comment)
+                            Spacer(Modifier.height(20.dp))
+                        }
                     }
                 }
             }
         }
 
         WriteACommentInputBlock(
-            avatar,
+            authorProfileData,
             alignModifier = Modifier.align(Alignment.End),
             commentText = commentMessage,
             onCommentTextChanged = { newVal -> commentsViewModel.onCommentTextChanged(newVal) },

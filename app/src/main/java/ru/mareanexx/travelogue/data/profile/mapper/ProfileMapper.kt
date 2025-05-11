@@ -1,6 +1,7 @@
 package ru.mareanexx.travelogue.data.profile.mapper
 
 import ru.mareanexx.travelogue.data.profile.local.entity.ProfileEntity
+import ru.mareanexx.travelogue.data.profile.remote.dto.AuthorCommentSender
 import ru.mareanexx.travelogue.data.profile.remote.dto.NewProfileRequest
 import ru.mareanexx.travelogue.data.profile.remote.dto.ProfileDto
 import ru.mareanexx.travelogue.data.profile.remote.dto.UpdatedProfileStatsResponse
@@ -67,4 +68,9 @@ fun ProfileDto?.copyStats(updatedStats: UpdatedProfileStatsResponse) = this?.cop
     followersNumber = updatedStats.followersNumber,
     followingNumber = updatedStats.followingNumber,
     tripsNumber = updatedStats.tripsNumber
+)
+
+fun ProfileEntity.toCommentSender() = AuthorCommentSender(
+    username = username,
+    avatar = avatar
 )

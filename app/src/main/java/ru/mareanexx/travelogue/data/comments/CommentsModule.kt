@@ -7,6 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import ru.mareanexx.travelogue.data.comments.remote.api.CommentsApi
 import ru.mareanexx.travelogue.data.comments.repository.CommentsRepositoryImpl
+import ru.mareanexx.travelogue.data.profile.local.dao.ProfileDao
 import ru.mareanexx.travelogue.domain.comments.CommentsRepository
 import ru.mareanexx.travelogue.utils.UserSessionManager
 import javax.inject.Singleton
@@ -24,8 +25,9 @@ object CommentsModule {
     @Provides
     fun provideCommentsRepository(
         userSession: UserSessionManager,
+        profileDao: ProfileDao,
         commentsApi: CommentsApi
     ): CommentsRepository {
-        return CommentsRepositoryImpl(userSession, commentsApi)
+        return CommentsRepositoryImpl(userSession, profileDao, commentsApi)
     }
 }

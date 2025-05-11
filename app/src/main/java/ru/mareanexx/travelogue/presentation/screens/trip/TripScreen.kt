@@ -121,7 +121,7 @@ fun TripScreenLoadedContent(
         if (expandedMapPoint.value != null) {
             Box(modifier = Modifier.align(Alignment.BottomCenter)) {
                 ExpandedMapPointCard(
-                    profileId, username, avatar,
+                    profileId,
                     mapPointData = expandedMapPoint,
                     onDismiss = { expandedMapPoint.value = null },
                     onOpenEditSheet = {

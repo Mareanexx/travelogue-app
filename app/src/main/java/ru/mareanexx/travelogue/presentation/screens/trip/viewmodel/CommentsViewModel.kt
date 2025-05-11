@@ -1,6 +1,5 @@
 package ru.mareanexx.travelogue.presentation.screens.trip.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import ru.mareanexx.travelogue.data.comments.mapper.toEntity
 import ru.mareanexx.travelogue.data.comments.remote.dto.NewCommentRequest
+import ru.mareanexx.travelogue.data.profile.remote.dto.AuthorCommentSender
 import ru.mareanexx.travelogue.domain.comments.entity.Comment
 import ru.mareanexx.travelogue.domain.comments.usecase.AddNewCommentUseCase
 import ru.mareanexx.travelogue.domain.comments.usecase.GetCommentsUseCase
@@ -21,14 +21,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CommentsViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val getCommentsUseCase: GetCommentsUseCase,
     private val addNewCommentUseCase: AddNewCommentUseCase
 ): ViewModel() {
 
     private val _mapPointId = MutableStateFlow(-1)
-    private val avatar = savedStateHandle["avatar"] ?: ""
-    private val username = savedStateHandle["username"] ?: ""
+    private val _authorData = MutableStateFlow(AuthorCommentSender())
+    val authorData = _authorData.asStateFlow()
 
     private val _uiState = MutableStateFlow<CommentsUiState>(CommentsUiState.Init)
     val uiState = _uiState.asStateFlow()
@@ -48,7 +47,13 @@ class CommentsViewModel @Inject constructor(
 
     fun onCommentTextChanged(newValue: String) { _commentMessage.value = newValue }
 
-    fun retry() { loadComments(_mapPointId.value) }
+    fun retry() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            loadComments(_mapPointId.value)
+            _isRefreshing.value = false
+        }
+    }
 
     fun loadComments(mapPointId: Int) {
         viewModelScope.launch {
@@ -60,7 +65,8 @@ class CommentsViewModel @Inject constructor(
                     when(baseResult) {
                         is BaseResult.Error -> { setErrorState() }
                         is BaseResult.Success -> {
-                            _commentsData.value = baseResult.data.sortedByDescending { it.sendDate }
+                            _commentsData.value = baseResult.data.comments.sortedByDescending { it.sendDate }
+                            _authorData.value = baseResult.data.author
                             setSuccessState()
                         }
                     }
@@ -77,7 +83,7 @@ class CommentsViewModel @Inject constructor(
                         is BaseResult.Error -> { setErrorState() }
                         is BaseResult.Success -> {
                             _commentsData.value = buildList {
-                                add(0, baseResult.data.toEntity(username, avatar))
+                                add(0, baseResult.data.toEntity(authorData.value))
                                 addAll(_commentsData.value)
                             }
                             _commentMessage.value = ""

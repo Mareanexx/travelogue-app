@@ -38,6 +38,7 @@ import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
 import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
+import ru.mareanexx.travelogue.data.profile.remote.dto.AuthorCommentSender
 import ru.mareanexx.travelogue.domain.comments.entity.Comment
 import ru.mareanexx.travelogue.presentation.components.BoxSkeleton
 import ru.mareanexx.travelogue.presentation.components.authTextFieldColors
@@ -120,7 +121,7 @@ fun OneCommentRow(comment: Comment) {
 
 @Composable
 fun WriteACommentInputBlock(
-    avatar: String,
+    authorProfileData: State<AuthorCommentSender>,
     alignModifier: Modifier,
     commentText: State<String>,
     onCommentTextChanged: (String) -> Unit,
@@ -134,7 +135,7 @@ fun WriteACommentInputBlock(
     ) {
         AsyncImage(
             modifier = Modifier.size(42.dp).clip(CircleShape),
-            model = "${BuildConfig.API_FILES_URL}${avatar}",
+            model = "${BuildConfig.API_FILES_URL}${authorProfileData.value.avatar}",
             contentDescription = stringResource(R.string.cd_avatar_photo),
             placeholder = painterResource(R.drawable.avatar_placeholder),
             error = painterResource(R.drawable.avatar_placeholder),

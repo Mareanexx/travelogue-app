@@ -5,22 +5,28 @@ import kotlinx.coroutines.flow.flow
 import ru.mareanexx.travelogue.data.comments.remote.api.CommentsApi
 import ru.mareanexx.travelogue.data.comments.remote.dto.NewCommentRequest
 import ru.mareanexx.travelogue.data.comments.remote.dto.NewCommentResponse
+import ru.mareanexx.travelogue.data.profile.local.dao.ProfileDao
+import ru.mareanexx.travelogue.data.profile.mapper.toCommentSender
+import ru.mareanexx.travelogue.data.profile.remote.dto.AuthorCommentSender
 import ru.mareanexx.travelogue.domain.comments.CommentsRepository
-import ru.mareanexx.travelogue.domain.comments.entity.Comment
+import ru.mareanexx.travelogue.domain.comments.entity.CommentsWithAuthor
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.utils.UserSessionManager
 import javax.inject.Inject
 
 class CommentsRepositoryImpl @Inject constructor(
     private val userSession: UserSessionManager,
+    private val profileDao: ProfileDao,
     private val commentsApi: CommentsApi
 ): CommentsRepository {
 
-    override suspend fun getAllComments(mapPointId: Int): Flow<BaseResult<List<Comment>, String>> {
+    override suspend fun getAllComments(mapPointId: Int): Flow<BaseResult<CommentsWithAuthor, String>> {
         return flow {
             val response = commentsApi.getAllByMapPointId(mapPointId)
             if (response.isSuccessful) {
-                emit(BaseResult.Success(response.body()!!.data!!))
+                val commentSender = profileDao.getProfile()?.toCommentSender()
+                val result = CommentsWithAuthor(commentSender ?: AuthorCommentSender(), response.body()!!.data!!)
+                emit(BaseResult.Success(result))
             } else {
                 emit(BaseResult.Error(response.body()?.message ?: "Unknown error"))
             }
