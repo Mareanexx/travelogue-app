@@ -142,12 +142,45 @@ fun MainTabScreen(rootNavController: NavHostController) {
 
                             "activity" -> composable("activity") {
                                 showBottomNavBar = true
+                                scaffoldContainerColor.value = Color.White
                                 /* ActivityScreen() */
                             }
 
-                            "explore" -> composable("explore") {
-                                showBottomNavBar = true
-                                ExploreScreen()
+                            "explore" -> {
+                                composable("explore") {
+                                    showBottomNavBar = true
+                                    scaffoldContainerColor.value = Color.White
+                                    ExploreScreen(onNavigateToTrip = { tripId, profileId, username, avatar ->
+                                        navController.navigate("trip/?tripId=$tripId" +
+                                                "&profileId=$profileId" +
+                                                "&username=$username" +
+                                                "&avatar=$avatar")
+                                        }
+                                    )
+                                }
+
+                                composable(route = "trip/?tripId={tripId}&profileId={profileId}&username={username}&avatar={avatar}",
+                                    arguments = listOf(
+                                        navArgument("tripId") { type = NavType.IntType },
+                                        navArgument("profileId") { type = NavType.StringType },
+                                        navArgument("username") { type = NavType.StringType },
+                                        navArgument("avatar") { type = NavType.StringType }
+                                    )
+                                ) { backStackEntry ->
+                                    showBottomNavBar = false
+                                    scaffoldContainerColor.value = mapBoxBackground
+                                    val profileId = backStackEntry.arguments?.getString("profileId") ?: "me"
+                                    val tripId = backStackEntry.arguments?.getInt("tripId") ?: -1
+                                    val avatar = backStackEntry.arguments?.getString("avatar") ?: ""
+                                    val username = backStackEntry.arguments?.getString("username") ?: ""
+                                    TripScreen(
+                                        profileId = profileId,
+                                        tripId = tripId,
+                                        username = username,
+                                        userAvatar = avatar,
+                                        navigateBack = { navController.popBackStack() }
+                                    )
+                                }
                             }
                         }
                     }

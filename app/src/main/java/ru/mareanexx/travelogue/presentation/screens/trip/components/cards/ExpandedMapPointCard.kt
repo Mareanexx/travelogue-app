@@ -160,7 +160,9 @@ fun ExpandedMapPointCard(
                     modifier = Modifier.fillMaxWidth().padding(15.dp),
                     visible = isDragged.value
                 ) {
-                    DescriptionAndStatsBlock(mapPointData, onOpenEditSheet = { onOpenEditSheet(); onDismiss() },
+                    DescriptionAndStatsBlock(
+                        profileId,
+                        mapPointData, onOpenEditSheet = { onOpenEditSheet(); onDismiss() },
                         onAddLike = {
                             onAddLike(mapPointData.value!!.mapPoint.id)
                             mapPointData.value = mapPointData.value!!.copy(mapPoint = mapPointData.value!!.mapPoint.copy(isLiked = true))

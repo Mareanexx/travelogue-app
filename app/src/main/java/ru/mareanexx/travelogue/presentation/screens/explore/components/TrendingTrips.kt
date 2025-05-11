@@ -1,5 +1,7 @@
 package ru.mareanexx.travelogue.presentation.screens.explore.components
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,7 +45,11 @@ import ru.mareanexx.travelogue.presentation.theme.Shapes
 import ru.mareanexx.travelogue.presentation.theme.primaryText
 
 @Composable
-fun TrendingTripsRow(trendingTrips: List<TrendingTrip>, onSendReport: (Int) -> Unit) {
+fun TrendingTripsRow(
+    trendingTrips: List<TrendingTrip>,
+    onSendReport: (Int) -> Unit,
+    onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit
+) {
     Text(
         modifier = Modifier.padding(horizontal = 15.dp),
         text = stringResource(R.string.trending_trips_label),
@@ -55,15 +61,23 @@ fun TrendingTripsRow(trendingTrips: List<TrendingTrip>, onSendReport: (Int) -> U
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(trendingTrips) { trip ->
-            TrendingTripCard(trip, onSendReport = { onSendReport(trip.id) })
+            TrendingTripCard(trip, onSendReport = { onSendReport(trip.id) }, onNavigateToTrip)
         }
     }
 }
 
 @Composable
-fun TrendingTripCard(trip: TrendingTrip, onSendReport: () -> Unit) {
+fun TrendingTripCard(
+    trip: TrendingTrip,
+    onSendReport: () -> Unit,
+    onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit
+) {
     Box(
         modifier = Modifier.fillMaxWidth().size(height = 320.dp, width = 255.dp).clip(Shapes.medium)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { onNavigateToTrip(trip.id, trip.profileId.toString(), trip.username, trip.avatar.toString()) }
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),

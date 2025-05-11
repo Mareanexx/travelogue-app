@@ -29,8 +29,8 @@ import ru.mareanexx.travelogue.presentation.theme.unfocusedNavBarItem
 
 @Composable
 fun DescriptionAndStatsBlock(
-    mapPointData: State<MapPointWithPhotos?>, onOpenEditSheet: () -> Unit,
-    onAddLike: () -> Unit, onRemoveLike: () -> Unit
+    profileId: String, mapPointData: State<MapPointWithPhotos?>,
+    onOpenEditSheet: () -> Unit, onAddLike: () -> Unit, onRemoveLike: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -71,7 +71,7 @@ fun DescriptionAndStatsBlock(
                     )
                 }
             }
-            EditMapPointButton(onOpenEditSheet = onOpenEditSheet)
+            if (profileId == "me") EditMapPointButton(onOpenEditSheet = onOpenEditSheet)
         }
     }
 }
