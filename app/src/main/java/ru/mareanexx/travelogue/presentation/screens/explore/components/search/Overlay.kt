@@ -38,7 +38,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -75,10 +74,10 @@ fun SearchOverlay(
     onQueryChanged: (String) -> Unit,
     onClearQuery: () -> Unit,
     onClose: () -> Unit,
+    onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit,
     searchViewModel: SearchViewModel
 ) {
     val focusRequester = remember { FocusRequester() }
-    val keyboardController = LocalSoftwareKeyboardController.current
     val searchUiState by searchViewModel.uiState.collectAsState()
 
     val selectedTab = remember { mutableIntStateOf(0) }
@@ -142,6 +141,6 @@ fun SearchOverlay(
                 )
             }
         }
-        SearchResultsTabs(searchUiState, selectedTab, searchViewModel)
+        SearchResultsTabs(searchUiState, selectedTab, searchViewModel, onNavigateToTrip)
     }
 }

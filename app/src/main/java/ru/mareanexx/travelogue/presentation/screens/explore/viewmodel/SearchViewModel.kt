@@ -93,6 +93,7 @@ class SearchViewModel @Inject constructor(
 
     fun clearQuery() {
         searchQuery.value = ""
+        _searchResults.value = SearchResult(emptyList(), emptyList())
         setInitState()
     }
 

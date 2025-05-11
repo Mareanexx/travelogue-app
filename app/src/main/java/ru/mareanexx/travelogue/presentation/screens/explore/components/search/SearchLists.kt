@@ -16,7 +16,10 @@ import ru.mareanexx.travelogue.domain.explore.entity.SearchTrip
 import ru.mareanexx.travelogue.presentation.theme.primaryText
 
 @Composable
-fun TripSearchColumn(trips: List<SearchTrip>) {
+fun TripSearchColumn(
+    trips: List<SearchTrip>,
+    onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit
+) {
     if (trips.isEmpty()) {
         Text(
             modifier = Modifier.padding(horizontal = 15.dp, vertical = 15.dp),
@@ -28,7 +31,7 @@ fun TripSearchColumn(trips: List<SearchTrip>) {
 
     LazyColumn(contentPadding = PaddingValues(horizontal = 15.dp)) {
         items(trips) { trip ->
-            TripSearchItem(trip)
+            TripSearchItem(trip, onNavigateToTrip)
         }
     }
 }

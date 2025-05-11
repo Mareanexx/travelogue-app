@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,10 +44,13 @@ fun TripDescriptionStartBlock(tripData: TripWithMapPoints) {
                 modifier = Modifier.size(26.dp), painter = painterResource(R.drawable.quote_icon),
                 contentDescription = null, tint = Color.White
             )
-            Text(
-                text = tripData.trip.description, color = Color.White,
-                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold)
-            )
+            Row(modifier = Modifier.heightIn(min = 30.dp, max = 60.dp).verticalScroll(rememberScrollState())) {
+                Text(
+                    text = tripData.trip.description,
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold)
+                )
+            }
         }
 
         TagGrid(tripData)

@@ -26,7 +26,8 @@ import ru.mareanexx.travelogue.presentation.theme.profilePrimaryText
 fun SearchResultsTabs(
     searchUiState: SearchUiState,
     selectedTab: MutableIntState,
-    searchViewModel: SearchViewModel
+    searchViewModel: SearchViewModel,
+    onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit
 ) {
     val searchResults = searchViewModel.searchResults.collectAsState()
     val tabs = listOf(R.string.people_tab, R.string.trips_tab)
@@ -68,7 +69,7 @@ fun SearchResultsTabs(
                         startFollowUser = { profile -> searchViewModel.followUser(profile) },
                         unfollowUser = { profile -> searchViewModel.unfollowUser(profile) }
                     )
-                    1 -> TripSearchColumn(searchResults.value.trips)
+                    1 -> TripSearchColumn(searchResults.value.trips, onNavigateToTrip)
                 }
             }
             is SearchUiState.Error -> {

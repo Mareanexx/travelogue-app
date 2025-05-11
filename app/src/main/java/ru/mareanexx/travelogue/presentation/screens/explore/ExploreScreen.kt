@@ -92,6 +92,7 @@ fun ExploreScreen(
                     searchOverlayState.value = SearchOverlayState()
                     searchViewModel.clearQuery()
                 },
+                onNavigateToTrip = onNavigateToTrip,
                 searchViewModel = searchViewModel
             )
         }
