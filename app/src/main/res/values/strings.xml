@@ -94,6 +94,7 @@
     <string name="trip">trip</string>
     <string name="added_a_new">added a new</string>
     <string name="map_point">map point</string>
+    <string name="new_indicator">New</string>
 
     <!--Add trip Bottom Sheet-->
     <string name="kind_of_trip_label">What kind of trip do you want to add?</string>

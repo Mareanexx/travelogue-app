@@ -51,7 +51,7 @@ fun NotificationCard(notificationData: Notification) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(modifier = Modifier, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Box(modifier = Modifier.size(50.dp)) {
                 AsyncImage(
                     model = "${BuildConfig.API_FILES_URL}${notificationData.avatar}",
@@ -99,15 +99,22 @@ fun NotificationCard(notificationData: Notification) {
                         )
                     }
                 }
-                Text(
-                    text = timeAgoResolver.resolveTimeAgo(notificationData.createdAt), color = timeText,
-                    fontSize = 10.sp, fontWeight = FontWeight.Medium,
-                    lineHeight = 10.sp
-                )
+                Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = timeAgoResolver.resolveTimeAgo(notificationData.createdAt), color = timeText,
+                        fontSize = 10.sp, fontWeight = FontWeight.Medium,
+                        lineHeight = 10.sp
+                    )
+                    if (!notificationData.isRead) {
+                        Box(modifier = Modifier.background(unreadNotificationIndicator, Shapes.extraSmall).padding(horizontal = 5.dp)) {
+                            Text(text = stringResource(R.string.new_indicator).uppercase(), color = Color.White,
+                                fontSize = 10.sp, fontWeight = FontWeight.Bold,
+                                lineHeight = 10.sp
+                            )
+                        }
+                    }
+                }
             }
-        }
-        if (!notificationData.isRead) {
-            Box(modifier = Modifier.size(11.dp).background(unreadNotificationIndicator, CircleShape))
         }
     }
 }
