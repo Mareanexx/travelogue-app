@@ -19,10 +19,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import ru.mareanexx.travelogue.presentation.components.BottomNavBar
+import ru.mareanexx.travelogue.presentation.screens.activity.ActivityScreen
 import ru.mareanexx.travelogue.presentation.screens.explore.ExploreScreen
 import ru.mareanexx.travelogue.presentation.screens.explore.components.tags.TagScreen
 import ru.mareanexx.travelogue.presentation.screens.follows.FollowsScreen
 import ru.mareanexx.travelogue.presentation.screens.notifications.NotificationsScreen
+import ru.mareanexx.travelogue.presentation.screens.othersprofile.OthersProfileScreen
 import ru.mareanexx.travelogue.presentation.screens.profile.ProfileScreen
 import ru.mareanexx.travelogue.presentation.screens.trip.TripScreen
 import ru.mareanexx.travelogue.presentation.theme.mapBoxBackground
@@ -96,20 +98,141 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                 composable(
                                     route = "follows/{username}/{profileId}",
                                     arguments = listOf(
-                                        navArgument("profileId") {
-                                            type = NavType.IntType
-                                        },
-                                        navArgument("username") {
-                                            type = NavType.StringType
-                                        }
+                                        navArgument("profileId") { type = NavType.StringType },
+                                        navArgument("username") { type = NavType.StringType }
                                     )
                                 ) { backStackEntry ->
                                     showBottomNavBar = true
-                                    val profileId = backStackEntry.arguments?.getInt("profileId") ?: -1
+                                    val profileId = backStackEntry.arguments?.getString("profileId") ?: ""
                                     val username = backStackEntry.arguments?.getString("username") ?: "Username"
                                     FollowsScreen(
                                         username = username,
                                         profileId = profileId,
+                                        onNavigateToOthersProfile = { othersProfileId ->
+                                            navController.navigate("others-profile/$othersProfileId")
+                                        },
+                                        navigateBack = { navController.popBackStack() }
+                                    )
+                                }
+
+                                composable(route = "trip/?tripId={tripId}&profileId={profileId}&username={username}&avatar={avatar}",
+                                    arguments = listOf(
+                                        navArgument("tripId") { type = NavType.IntType },
+                                        navArgument("profileId") { type = NavType.StringType },
+                                        navArgument("username") { type = NavType.StringType },
+                                        navArgument("avatar") { type = NavType.StringType }
+                                    )
+                                ) { backStackEntry ->
+                                    showBottomNavBar = false
+                                    scaffoldContainerColor.value = mapBoxBackground
+                                    val profileId = backStackEntry.arguments?.getString("profileId") ?: "me"
+                                    val tripId = backStackEntry.arguments?.getInt("tripId") ?: -1
+                                    val avatar = backStackEntry.arguments?.getString("avatar") ?: ""
+                                    val username = backStackEntry.arguments?.getString("username") ?: ""
+                                    TripScreen(
+                                        profileId = profileId, tripId = tripId,
+                                        username = username, userAvatar = avatar,
+                                        onNavigateToOthersProfile = { othersProfileId ->
+                                            navController.navigate("others-profile/$othersProfileId")
+                                        },
+                                        navigateBack = { navController.popBackStack() }
+                                    )
+                                }
+
+                                composable(
+                                    route = "others-profile/{profileId}",
+                                    arguments = listOf(
+                                        navArgument("profileId") { type = NavType.IntType }
+                                    )
+                                ) { backStackEntry ->
+                                    showBottomNavBar = true
+                                    scaffoldContainerColor.value = Color.White
+                                    val argProfileId = backStackEntry.arguments?.getInt("profileId") ?: -1
+                                    OthersProfileScreen(
+                                        profileId = argProfileId,
+                                        navigateToFollows = { username, profileId ->
+                                            navController.navigate("follows/$username/$profileId")
+                                        },
+                                        navigateToTrip = { tripId, username, avatar ->
+                                            navController.navigate(
+                                                "trip/?tripId=$tripId" +
+                                                        "&profileId=me" +
+                                                        "&username=$username" +
+                                                        "&avatar=$avatar"
+                                            )
+                                        },
+                                        navigateBack = { navController.popBackStack() }
+                                    )
+                                }
+                            }
+
+                            "notifications" -> composable("notifications") {
+                                showBottomNavBar = true
+                                NotificationsScreen()
+                            }
+
+                            "activity" -> {
+                                composable("activity") {
+                                    showBottomNavBar = true
+                                    scaffoldContainerColor.value = Color.White
+                                    ActivityScreen(
+                                        onNavigateToSearch = { selectedTab = "explore" },
+                                        onNavigateToOthersProfile = { othersProfileId ->
+                                            navController.navigate("others-profile/$othersProfileId")
+                                        },
+                                        onNavigateToTrip = { tripId, profileId, username, avatar ->
+                                            navController.navigate(
+                                                "trip/?tripId=$tripId" +
+                                                        "&profileId=$profileId" +
+                                                        "&username=$username" +
+                                                        "&avatar=$avatar"
+                                            )
+                                        }
+                                    )
+                                }
+
+                                composable(
+                                    route = "others-profile/{profileId}",
+                                    arguments = listOf(
+                                        navArgument("profileId") { type = NavType.IntType }
+                                    )
+                                ) { backStackEntry ->
+                                    showBottomNavBar = true
+                                    scaffoldContainerColor.value = Color.White
+                                    val argProfileId = backStackEntry.arguments?.getInt("profileId") ?: -1
+                                    OthersProfileScreen(
+                                        profileId = argProfileId,
+                                        navigateToFollows = { username, profileId ->
+                                            navController.navigate("follows/$username/$profileId")
+                                        },
+                                        navigateToTrip = { tripId, username, avatar ->
+                                            navController.navigate(
+                                                "trip/?tripId=$tripId" +
+                                                        "&profileId=me" +
+                                                        "&username=$username" +
+                                                        "&avatar=$avatar"
+                                            )
+                                        },
+                                        navigateBack = { navController.popBackStack() }
+                                    )
+                                }
+
+                                composable(
+                                    route = "follows/{username}/{profileId}",
+                                    arguments = listOf(
+                                        navArgument("profileId") { type = NavType.StringType },
+                                        navArgument("username") { type = NavType.StringType }
+                                    )
+                                ) { backStackEntry ->
+                                    showBottomNavBar = true
+                                    val profileId = backStackEntry.arguments?.getString("profileId") ?: ""
+                                    val username = backStackEntry.arguments?.getString("username") ?: "Username"
+                                    FollowsScreen(
+                                        username = username,
+                                        profileId = profileId,
+                                        onNavigateToOthersProfile = { othersProfileId ->
+                                            navController.navigate("others-profile/$othersProfileId")
+                                        },
                                         navigateBack = { navController.popBackStack() }
                                     )
                                 }
@@ -133,20 +256,12 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                         tripId = tripId,
                                         username = username,
                                         userAvatar = avatar,
-                                        navigateBack = { navController.popBackStack() }
+                                        navigateBack = { navController.popBackStack() },
+                                        onNavigateToOthersProfile = { othersProfileId ->
+                                            navController.navigate("others-profile/$othersProfileId")
+                                        }
                                     )
                                 }
-                            }
-
-                            "notifications" -> composable("notifications") {
-                                showBottomNavBar = true
-                                NotificationsScreen()
-                            }
-
-                            "activity" -> composable("activity") {
-                                showBottomNavBar = true
-                                scaffoldContainerColor.value = Color.White
-                                /* ActivityScreen() */
                             }
 
                             "explore" -> {
@@ -161,9 +276,58 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                                 "&avatar=$avatar"
                                             )
                                         },
+                                        onNavigateToOthersProfile = { othersProfileId ->
+                                            navController.navigate("others-profile/$othersProfileId")
+                                        },
                                         onNavigateToTagScreen = { imgIndex, tagName ->
                                             navController.navigate("tag/$tagName/$imgIndex")
                                         }
+                                    )
+                                }
+
+                                composable(
+                                    route = "follows/{username}/{profileId}",
+                                    arguments = listOf(
+                                        navArgument("profileId") { type = NavType.StringType },
+                                        navArgument("username") { type = NavType.StringType }
+                                    )
+                                ) { backStackEntry ->
+                                    showBottomNavBar = true
+                                    val profileId = backStackEntry.arguments?.getString("profileId") ?: ""
+                                    val username = backStackEntry.arguments?.getString("username") ?: "Username"
+                                    FollowsScreen(
+                                        username = username,
+                                        profileId = profileId,
+                                        onNavigateToOthersProfile = { othersProfileId ->
+                                            navController.navigate("others-profile/$othersProfileId")
+                                        },
+                                        navigateBack = { navController.popBackStack() }
+                                    )
+                                }
+
+                                composable(
+                                    route = "others-profile/{profileId}",
+                                    arguments = listOf(
+                                        navArgument("profileId") { type = NavType.IntType }
+                                    )
+                                ) { backStackEntry ->
+                                    showBottomNavBar = true
+                                    scaffoldContainerColor.value = Color.White
+                                    val argProfileId = backStackEntry.arguments?.getInt("profileId") ?: -1
+                                    OthersProfileScreen(
+                                        profileId = argProfileId,
+                                        navigateToFollows = { username, profileId ->
+                                            navController.navigate("follows/$username/$profileId")
+                                        },
+                                        navigateToTrip = { tripId, username, avatar ->
+                                            navController.navigate(
+                                                "trip/?tripId=$tripId" +
+                                                        "&profileId=me" +
+                                                        "&username=$username" +
+                                                        "&avatar=$avatar"
+                                            )
+                                        },
+                                        navigateBack = { navController.popBackStack() }
                                     )
                                 }
 
@@ -181,6 +345,9 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                         tagName = tagName,
                                         imgIndex = imgIndex,
                                         navigateBack = { navController.popBackStack() },
+                                        onNavigateToOthersProfile = { othersProfileId ->
+                                            navController.navigate("others-profile/$othersProfileId")
+                                        },
                                         onNavigateToTrip = { tripId, profileId, username, avatar ->
                                             navController.navigate("trip/?tripId=$tripId" +
                                                     "&profileId=$profileId" +
@@ -210,7 +377,10 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                         tripId = tripId,
                                         username = username,
                                         userAvatar = avatar,
-                                        navigateBack = { navController.popBackStack() }
+                                        navigateBack = { navController.popBackStack() },
+                                        onNavigateToOthersProfile = { othersProfileId ->
+                                            navController.navigate("others-profile/$othersProfileId")
+                                        }
                                     )
                                 }
                             }

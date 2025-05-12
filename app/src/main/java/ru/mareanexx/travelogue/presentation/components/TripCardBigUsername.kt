@@ -40,12 +40,13 @@ import ru.mareanexx.travelogue.presentation.theme.primaryText
 @Composable
 fun TripCardBigUsername(
     trip: TrendingTrip,
+    onNavigateToOthersProfile: (Int) -> Unit,
     onSendReport: () -> Unit,
     onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit
 ) {
     Column(modifier = Modifier.padding(horizontal = 15.dp).padding(top = 15.dp).fillMaxWidth()) {
 
-        TripHeaderWithUsername(trip)
+        TripHeaderWithUsername(trip, onNavigateToOthersProfile)
 
         Box(
             modifier = Modifier.fillMaxWidth().height(240.dp).clip(RoundedCornerShape(bottomEnd = 15.dp, bottomStart = 15.dp))
@@ -98,11 +99,15 @@ fun TripCardMainInfo(alignModifier: Modifier, trip: TrendingTrip) {
 }
 
 @Composable
-fun TripHeaderWithUsername(trip: TrendingTrip) {
+fun TripHeaderWithUsername(trip: TrendingTrip, onNavigateToOthersProfile: (Int) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth()
             .shadow(elevation = 8.dp, spotColor = Color.Black.copy(0.5f), ambientColor = Color.Black.copy(0.7f), shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
-            .background(Color.White, RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)).padding(15.dp),
+            .background(Color.White, RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)).padding(15.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { onNavigateToOthersProfile(trip.profileId) },
         horizontalArrangement = Arrangement.spacedBy(13.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

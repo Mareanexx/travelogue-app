@@ -74,6 +74,7 @@ fun SearchOverlay(
     onQueryChanged: (String) -> Unit,
     onClearQuery: () -> Unit,
     onClose: () -> Unit,
+    onNavigateToOthersProfile: (Int) -> Unit,
     onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit,
     searchViewModel: SearchViewModel
 ) {
@@ -141,6 +142,6 @@ fun SearchOverlay(
                 )
             }
         }
-        SearchResultsTabs(searchUiState, selectedTab, searchViewModel, onNavigateToTrip)
+        SearchResultsTabs(searchUiState, selectedTab, searchViewModel, onNavigateToTrip, onNavigateToOthersProfile)
     }
 }

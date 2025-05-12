@@ -1,6 +1,7 @@
 package ru.mareanexx.travelogue.domain.trip
 
 import kotlinx.coroutines.flow.Flow
+import ru.mareanexx.travelogue.data.mappoint.remote.dto.TrendingTripWithPoints
 import ru.mareanexx.travelogue.data.trip.remote.dto.EditTripRequest
 import ru.mareanexx.travelogue.data.trip.remote.dto.NewTripRequest
 import ru.mareanexx.travelogue.data.trip.remote.dto.TripWithMapPoints
@@ -12,6 +13,7 @@ import java.io.File
 
 interface TripRepository {
     // get
+    suspend fun getActivity() : Flow<BaseResult<List<TrendingTripWithPoints>, String>>
     suspend fun getTaggedTrips(tagName: String) : Flow<BaseResult<List<TrendingTrip>, String>>
     suspend fun getUpdatedTripStats() : Flow<List<TripStats>>
     suspend fun getTripFromDatabase(tripId: Int) : Flow<BaseResult<TripWithMapPoints, String>>

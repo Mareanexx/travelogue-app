@@ -50,6 +50,7 @@ import ru.mareanexx.travelogue.data.trip.local.type.TripTimeStatus
 import ru.mareanexx.travelogue.data.trip.local.type.TripVisibilityType
 import ru.mareanexx.travelogue.domain.trip.entity.Trip
 import ru.mareanexx.travelogue.presentation.components.CardInnerDarkening
+import ru.mareanexx.travelogue.presentation.screens.explore.components.OthersTripHeaderSettings
 import ru.mareanexx.travelogue.presentation.theme.MontserratFamily
 import ru.mareanexx.travelogue.presentation.theme.Shapes
 import ru.mareanexx.travelogue.presentation.theme.enabledButtonContainer
@@ -57,7 +58,11 @@ import ru.mareanexx.travelogue.presentation.theme.primaryText
 import java.time.LocalDate
 
 @Composable
-fun TripCard(trip: Trip, navigateToTrip: () -> Unit, onDeleteTrip: () -> Unit, onEditTrip: () -> Unit) {
+fun TripCard(
+    whose: String = "me", trip: Trip, navigateToTrip: () -> Unit,
+    onDeleteTrip: (() -> Unit)? = null, onEditTrip: (() -> Unit)? = null,
+    onSendReport: (() -> Unit)? = null
+) {
     Box(
         modifier = Modifier.fillMaxWidth().height(255.dp)
             .padding(horizontal = 15.dp).clip(Shapes.medium)
@@ -78,14 +83,18 @@ fun TripCard(trip: Trip, navigateToTrip: () -> Unit, onDeleteTrip: () -> Unit, o
         Box(modifier = Modifier.fillMaxSize().padding(vertical = 13.dp, horizontal = 17.dp)) {
             if (trip.status == TripTimeStatus.Current)
                 TripHeaderNowOnATripComponent()
-            TripHeaderSettingsComponent(Modifier.align(Alignment.TopEnd), onEditTrip = onEditTrip, onDeleteTrip = onDeleteTrip)
-            BottomTripMainInfo(Modifier.align(Alignment.BottomCenter), trip)
+            if (whose == "me") {
+                TripHeaderSettingsComponent(Modifier.align(Alignment.TopEnd), onEditTrip = onEditTrip ?: {}, onDeleteTrip = onDeleteTrip ?: {})
+            } else {
+                OthersTripHeaderSettings(Modifier.align(Alignment.TopEnd), onSendReport = onSendReport ?: {})
+            }
+            BottomTripMainInfo(whose, Modifier.align(Alignment.BottomCenter), trip)
         }
     }
 }
 
 @Composable
-fun BottomTripMainInfo(modifier: Modifier, trip: Trip) {
+fun BottomTripMainInfo(whose: String, modifier: Modifier, trip: Trip) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier.padding(bottom = 20.dp),
@@ -104,7 +113,7 @@ fun BottomTripMainInfo(modifier: Modifier, trip: Trip) {
             TripStatsComponent(number = trip.daysNumber, textRes = R.string.days)
             TripStatsComponent(number = 120, textRes = R.string.kilometers)
             TripStatsComponent(number = trip.stepsNumber, textRes = R.string.steps)
-            TripVisibilityIcon(trip.type)
+            if (whose == "me") TripVisibilityIcon(trip.type)
         }
     }
 }

@@ -35,9 +35,19 @@ import ru.mareanexx.travelogue.presentation.theme.profilePrimaryText
 import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 
 @Composable
-fun ProfileSearchItem(profile: SearchProfile, startFollowUser: () -> Unit, unfollowUser: () -> Unit) {
+fun ProfileSearchItem(
+    profile: SearchProfile,
+    startFollowUser: () -> Unit,
+    unfollowUser: () -> Unit,
+    onNavigateToOthersProfile: () -> Unit
+) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onNavigateToOthersProfile
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

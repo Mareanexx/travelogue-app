@@ -36,6 +36,7 @@ import ru.mareanexx.travelogue.presentation.theme.mapBoxBackground
 fun TripScreen(
     profileId: String, tripId: Int,
     username: String, userAvatar: String,
+    onNavigateToOthersProfile: (Int) -> Unit,
     navigateBack: () -> Unit,
     tripViewModel: TripViewModel = hiltViewModel()
 ) {
@@ -62,7 +63,7 @@ fun TripScreen(
         TripUiState.Showing -> {
             TripScreenLoadedContent(
                 profileId, username, userAvatar,
-                tripViewModel, navigateBack
+                tripViewModel, navigateBack, onNavigateToOthersProfile
             )
         }
     }
@@ -73,7 +74,8 @@ fun TripScreenLoadedContent(
     profileId: String,
     username: String, avatar: String,
     tripViewModel: TripViewModel,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    onNavigateToOthersProfile: (Int) -> Unit
 ) {
     val mapPointForm = tripViewModel.mapPointForm.collectAsState()
     val tripData = tripViewModel.tripData.collectAsState()
@@ -106,7 +108,8 @@ fun TripScreenLoadedContent(
                     navigateBack = {
                         tripViewModel.setLoadingState()
                         navigateBack()
-                    }
+                    },
+                    onNavigateToOthersProfile
                 )
             }
 

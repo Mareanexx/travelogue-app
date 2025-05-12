@@ -21,6 +21,7 @@ import ru.mareanexx.travelogue.data.trip.mapper.toEntity
 import ru.mareanexx.travelogue.domain.common.BaseResult
 import ru.mareanexx.travelogue.domain.profile.ProfileRepository
 import ru.mareanexx.travelogue.domain.profile.entity.Profile
+import ru.mareanexx.travelogue.domain.profile.entity.ProfileWithTrips
 import ru.mareanexx.travelogue.utils.UserSessionManager
 import java.io.File
 import javax.inject.Inject
@@ -138,6 +139,18 @@ class ProfileRepositoryImpl @Inject constructor(
                     updatedStats.followingNumber
                 )
                 emit(BaseResult.Success(updatedStats))
+            } else {
+                emit(BaseResult.Error(response.body()?.message ?: "Unknown error"))
+            }
+        }
+    }
+
+    override suspend fun getOthersProfile(othersId: Int): Flow<BaseResult<ProfileWithTrips, String>> {
+        return flow {
+            val authorId = userSession.getProfileId()
+            val response = profileApi.getOthersProfile(othersId = othersId, authorId = authorId)
+            if (response.isSuccessful) {
+                emit(BaseResult.Success(response.body()!!.data!!))
             } else {
                 emit(BaseResult.Error(response.body()?.message ?: "Unknown error"))
             }

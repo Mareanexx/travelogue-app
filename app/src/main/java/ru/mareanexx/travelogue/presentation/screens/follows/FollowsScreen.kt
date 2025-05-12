@@ -32,7 +32,8 @@ import ru.mareanexx.travelogue.presentation.screens.follows.viewmodel.FollowsVie
 @Composable
 fun FollowsScreen(
     username: String,
-    profileId: Int,
+    profileId: String,
+    onNavigateToOthersProfile: (Int) -> Unit,
     navigateBack: () -> Unit,
     viewModel: FollowsViewModel = hiltViewModel()
 ) {
@@ -52,7 +53,7 @@ fun FollowsScreen(
     when(uiState.value) {
         FollowsUiState.IsLoading -> FollowsSkeleton()
         FollowsUiState.Success -> FollowsLoadedContent(
-            profileUsername = username, navigateBack = navigateBack
+            profileUsername = username, navigateBack = navigateBack, onNavigateToOthersProfile
         )
         is FollowsUiState.Error -> ErrorRetry(username, navigateBack,
             onRetry = { viewModel.retry() }
@@ -65,6 +66,7 @@ fun FollowsScreen(
 fun FollowsLoadedContent(
     profileUsername: String,
     navigateBack: () -> Unit,
+    onNavigateToOthersProfile: (Int) -> Unit,
     viewModel: FollowsViewModel = hiltViewModel()
 ) {
     val isRefreshing = viewModel.isRefreshing.collectAsState()
@@ -89,20 +91,20 @@ fun FollowsLoadedContent(
                 0 -> {
                     items(followsData.value.followers) { follower ->
                         OneFollowsCard(
-                            isFollowing = false,
                             follow = follower,
                             onStartFollowClicked = { viewModel.followUser(follower) },
-                            onUnfollowClicked = { viewModel.unfollowUser(follower) }
+                            onUnfollowClicked = { viewModel.unfollowUser(follower) },
+                            onNavigateToOthersProfile = onNavigateToOthersProfile,
                         )
                     }
                 }
                 1 -> {
                     items(followsData.value.followings) { following ->
                         OneFollowsCard(
-                            isFollowing = true,
                             follow = following,
                             onStartFollowClicked = { viewModel.followUser(following) },
-                            onUnfollowClicked = { viewModel.unfollowUser(following) }
+                            onUnfollowClicked = { viewModel.unfollowUser(following) },
+                            onNavigateToOthersProfile = onNavigateToOthersProfile
                         )
                     }
                 }

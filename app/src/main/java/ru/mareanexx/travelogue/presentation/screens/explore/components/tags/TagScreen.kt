@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.travelogue.R
@@ -45,6 +44,7 @@ import ru.mareanexx.travelogue.presentation.theme.mapPointsRowBack
 fun TagScreen(
     tagName: String, imgIndex: Int,
     navigateBack: () -> Unit,
+    onNavigateToOthersProfile: (Int) -> Unit,
     onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit,
     tagViewModel: TagViewModel = hiltViewModel()
 ) {
@@ -105,6 +105,7 @@ fun TagScreen(
                     items(tripsData) { trip ->
                         TripCardBigUsername(
                             trip = trip,
+                            onNavigateToOthersProfile = onNavigateToOthersProfile,
                             onSendReport = { tagViewModel.createReport(trip.id) },
                             onNavigateToTrip = onNavigateToTrip
                         )
@@ -113,10 +114,4 @@ fun TagScreen(
             }
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewTagScreen() {
-    TagScreen(tagName = "mountains", imgIndex = 0, {}, { _, _, _, _ -> })
 }

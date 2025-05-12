@@ -9,7 +9,7 @@ import javax.inject.Inject
 class GetFollowersUseCase @Inject constructor(
     private val followsRepository: FollowsRepository
 ) {
-    suspend operator fun invoke(profileId: Int): Flow<BaseResult<FollowersAndFollowingsResponse, String>> {
+    suspend operator fun invoke(profileId: String): Flow<BaseResult<FollowersAndFollowingsResponse, String>> {
         return followsRepository.getFollowersAndFollowings(profileId = profileId)
     }
 }

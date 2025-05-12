@@ -37,7 +37,7 @@ class FollowsViewModel @Inject constructor(
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase
 ): ViewModel() {
-    private val _profileId: Int = savedStateHandle["profileId"] ?: -1
+    private val _whoseProfileId: String = savedStateHandle["profileId"] ?: ""
 
     private val _uiState = MutableStateFlow<FollowsUiState>(FollowsUiState.IsLoading)
     val uiState : StateFlow<FollowsUiState> = _uiState.asStateFlow()
@@ -65,7 +65,7 @@ class FollowsViewModel @Inject constructor(
 
     private fun loadFollows() {
         viewModelScope.launch {
-            getFollowersUseCase(_profileId)
+            getFollowersUseCase(_whoseProfileId)
                 .catch { exception -> _uiState.value = FollowsUiState.Error(exception.message ?: "Unknown error") }
                 .collect { baseResult ->
                     when(baseResult) {
@@ -87,10 +87,16 @@ class FollowsViewModel @Inject constructor(
                     when(baseResult) {
                         is BaseResult.Error -> { _eventFlow.emit(FollowsEvent.ShowToast(baseResult.error)) }
                         is BaseResult.Success -> {
-                            val newFollowVer = follow.copy(isFollowingBack = true)
+                            val newFollowVer = follow.copy(isFollowing = true)
 
                             _followsData.value = _followsData.value.copy(
-                                followings = _followsData.value.followings + newFollowVer,
+                                followings = if (_whoseProfileId == "me") {
+                                    _followsData.value.followings + newFollowVer
+                                } else {
+                                    _followsData.value.followings.map {
+                                        if (it.id == follow.id) newFollowVer else it
+                                    }
+                                },
                                 followers = _followsData.value.followers.map {
                                     if (it.id == follow.id) newFollowVer else it
                                 }
@@ -112,9 +118,13 @@ class FollowsViewModel @Inject constructor(
                         is BaseResult.Success -> {
                             _followsData.value = _followsData.value.copy(
                                 followers = _followsData.value.followers.map {
-                                    if (it.id == follow.id) it.copy(isFollowingBack = false) else it
+                                    if (it.id == follow.id) it.copy(isFollowing = false) else it
                                 },
-                                followings = _followsData.value.followings.filter { it.id != follow.id }
+                                followings = if (_whoseProfileId == "me") {
+                                    _followsData.value.followings.filter { it.id != follow.id }
+                                } else { _followsData.value.followings.map {
+                                    if (it.id == follow.id) it.copy(isFollowing = false) else it
+                                }}
                             )
                             _uiState.value = FollowsUiState.Success
                         }

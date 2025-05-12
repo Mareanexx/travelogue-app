@@ -12,7 +12,10 @@ import ru.mareanexx.travelogue.data.follows.remote.dto.FollowersAndFollowingsRes
 
 interface FollowsApi {
     @GET("follows")
-    suspend fun getFollowersAndFollowings(@Query("profileId") profileId: Int): Response<WrappedResponse<FollowersAndFollowingsResponse>>
+    suspend fun getFollowersAndFollowings(
+        @Query("authorId") authorId: Int,
+        @Query("othersId") othersId: Int
+    ): Response<WrappedResponse<FollowersAndFollowingsResponse>>
 
     @POST("follows")
     suspend fun followUser(@Body followUserRequest: FollowUserRequest): Response<WrappedResponse<String>>

@@ -1,6 +1,8 @@
 package ru.mareanexx.travelogue.presentation.screens.explore.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,12 +35,20 @@ import ru.mareanexx.travelogue.presentation.theme.profilePrimaryText
 import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 
 @Composable
-fun InspiringTravelerSmallCard(inspiringProfile: InspiringProfile, onUnfollowClicked: () -> Unit, onStartFollowClicked: () -> Unit) {
+fun InspiringTravelerSmallCard(
+    inspiringProfile: InspiringProfile,
+    onUnfollowClicked: () -> Unit,
+    onStartFollowClicked: () -> Unit,
+    onNavigateToOthersProfile: (Int) -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp).padding(bottom = 15.dp)
             .shadow(elevation = 3.dp, Shapes.small, ambientColor = Color.Black.copy(alpha = 0.3f), spotColor = Color.Black.copy(alpha = 0.2f))
-            .background(Color.White, Shapes.small)
-            .padding(horizontal = 10.dp, vertical = 7.dp),
+            .background(Color.White, Shapes.small).padding(horizontal = 10.dp, vertical = 7.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { onNavigateToOthersProfile(inspiringProfile.id) },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

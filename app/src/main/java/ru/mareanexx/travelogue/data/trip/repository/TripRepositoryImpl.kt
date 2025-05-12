@@ -11,6 +11,7 @@ import ru.mareanexx.travelogue.data.mappoint.local.dao.MapPointDao
 import ru.mareanexx.travelogue.data.mappoint.mapper.toEntity
 import ru.mareanexx.travelogue.data.mappoint.mapper.toResponse
 import ru.mareanexx.travelogue.data.mappoint.remote.dto.MapPointWithPhotos
+import ru.mareanexx.travelogue.data.mappoint.remote.dto.TrendingTripWithPoints
 import ru.mareanexx.travelogue.data.pointphoto.local.dao.PointPhotoDao
 import ru.mareanexx.travelogue.data.pointphoto.mapper.toEntity
 import ru.mareanexx.travelogue.data.pointphoto.mapper.toResponse
@@ -50,6 +51,20 @@ class TripRepositoryImpl @Inject constructor(
                 getTripFromDatabase(tripId).collect { result -> emit(result) }
             } else {
                 fetchTripFromNetwork(tripId).collect { result -> emit(result) }
+            }
+        }
+    }
+
+    override suspend fun getActivity(): Flow<BaseResult<List<TrendingTripWithPoints>, String>> {
+        return flow {
+            val authorId = userSessionManager.getProfileId()
+            val response = tripApi.getActivity(authorId)
+            if (response.code() == 204) {
+                emit(BaseResult.Error(code = 204, error = "No followings"))
+            } else if (response.isSuccessful) {
+                emit(BaseResult.Success(response.body()!!.data!!))
+            } else {
+                emit(BaseResult.Error(response.body()?.message ?: "Unknown error"))
             }
         }
     }

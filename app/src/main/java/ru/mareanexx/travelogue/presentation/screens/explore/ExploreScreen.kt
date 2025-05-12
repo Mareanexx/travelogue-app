@@ -55,6 +55,7 @@ data class SearchOverlayState(
 fun ExploreScreen(
     onNavigateToTagScreen: (Int, String) -> Unit,
     onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit,
+    onNavigateToOthersProfile: (Int) -> Unit,
     exploreViewModel: ExploreViewModel = hiltViewModel(),
     searchViewModel: SearchViewModel = hiltViewModel()
 ) {
@@ -71,11 +72,12 @@ fun ExploreScreen(
                     isRefreshing = isRefreshing.value,
                     onRefresh = { exploreViewModel.refresh() }
                 ) {
-                    ExploreLoadedContent(exploreViewModel,
+                    ExploreLoadedContent(
+                        exploreViewModel,
                         onSearchBarClick = {
                             searchOverlayState.value = searchOverlayState.value.copy(isActive = true)
                         },
-                        onNavigateToTagScreen, onNavigateToTrip
+                        onNavigateToTagScreen, onNavigateToTrip, onNavigateToOthersProfile
                     )
                 }
             }
@@ -93,6 +95,7 @@ fun ExploreScreen(
                     searchOverlayState.value = SearchOverlayState()
                     searchViewModel.clearQuery()
                 },
+                onNavigateToOthersProfile = onNavigateToOthersProfile,
                 onNavigateToTrip = onNavigateToTrip,
                 searchViewModel = searchViewModel
             )
@@ -121,7 +124,8 @@ fun ExploreLoadedContent(
     viewModel: ExploreViewModel,
     onSearchBarClick: () -> Unit,
     onNavigateToTagScreen: (Int, String) -> Unit,
-    onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit
+    onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit,
+    onNavigateToOthersProfile: (Int) -> Unit
 ) {
     val trendingTrips = viewModel.trendingTrips.collectAsState()
     val trendingTags = viewModel.trendingTags.collectAsState()
@@ -163,7 +167,8 @@ fun ExploreLoadedContent(
         items(inspiringTravelers.value.subList(0, 3)) { traveler ->
             InspiringTravelerBigCard(traveler,
                 onStartFollowClick = { viewModel.followUser(traveler) },
-                onUnfollowClick = { viewModel.unfollowUser(traveler) }
+                onUnfollowClick = { viewModel.unfollowUser(traveler) },
+                onNavigateToOthersProfile
             )
         }
 
@@ -171,6 +176,7 @@ fun ExploreLoadedContent(
             InspiringTravelerSmallCard(traveler,
                 onUnfollowClicked = { viewModel.unfollowUser(traveler) },
                 onStartFollowClicked = { viewModel.followUser(traveler) },
+                onNavigateToOthersProfile
             )
         }
     }
@@ -179,5 +185,5 @@ fun ExploreLoadedContent(
 @Preview(showBackground = true, showSystemUi = true )
 @Composable
 fun PreviewExploreScreen() {
-    ExploreScreen( onNavigateToTrip = { _, _, _, _ -> }, onNavigateToTagScreen = ({ _, _ -> }) )
+    ExploreScreen(onNavigateToTagScreen = ({ _, _ -> }), onNavigateToTrip = { _, _, _, _ -> }, onNavigateToOthersProfile = { _ -> })
 }

@@ -27,7 +27,8 @@ fun SearchResultsTabs(
     searchUiState: SearchUiState,
     selectedTab: MutableIntState,
     searchViewModel: SearchViewModel,
-    onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit
+    onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit,
+    onNavigateToOthersProfile: (Int) -> Unit
 ) {
     val searchResults = searchViewModel.searchResults.collectAsState()
     val tabs = listOf(R.string.people_tab, R.string.trips_tab)
@@ -67,7 +68,8 @@ fun SearchResultsTabs(
                     0 -> PeopleSearchColumn(
                         searchResults.value.profiles,
                         startFollowUser = { profile -> searchViewModel.followUser(profile) },
-                        unfollowUser = { profile -> searchViewModel.unfollowUser(profile) }
+                        unfollowUser = { profile -> searchViewModel.unfollowUser(profile) },
+                        onNavigateToOthersProfile
                     )
                     1 -> TripSearchColumn(searchResults.value.trips, onNavigateToTrip)
                 }

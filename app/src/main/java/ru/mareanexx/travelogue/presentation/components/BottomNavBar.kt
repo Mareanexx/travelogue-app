@@ -34,7 +34,7 @@ fun BottomNavBar(
     onTabSelected: (String) -> Unit
 ) {
     Row(
-        modifier = Modifier.padding(bottom = 20.dp).fillMaxWidth().background(Color.White)
+        modifier = Modifier.fillMaxWidth().background(Color.White).padding(bottom = 20.dp)
             .padding(vertical = 8.dp, horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

@@ -9,5 +9,6 @@ data class ProfileDto(
     val coverPhoto: String?,
     val followersNumber: Int,
     val followingNumber: Int,
-    val tripsNumber: Int
+    val tripsNumber: Int,
+    val isFollowing: Boolean = false
 )

@@ -86,7 +86,7 @@ fun ProfileHeaderBlock(profileData: ProfileDto?, visible: Boolean) {
 @Composable
 fun ProfileFollowersAndButtons(
     profileData: State<ProfileDto?>, onOpenModalSheet: (ProfileBottomSheetType) -> Unit,
-    navigateToFollows: (String, Int) -> Unit
+    navigateToFollows: (String, String) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp),
@@ -96,7 +96,7 @@ fun ProfileFollowersAndButtons(
             tripsNumber = profileData.value!!.tripsNumber,
             followersNumber = profileData.value!!.followersNumber,
             followingsNumber = profileData.value!!.followingNumber,
-            navigateToFollows = { navigateToFollows(profileData.value!!.username, profileData.value!!.id) }
+            navigateToFollows = { navigateToFollows(profileData.value!!.username, "me") }
         )
 
         Column(modifier = Modifier.padding(horizontal = 15.dp)) {

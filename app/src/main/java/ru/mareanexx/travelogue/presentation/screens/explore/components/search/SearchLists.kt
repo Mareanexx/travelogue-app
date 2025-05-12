@@ -37,7 +37,12 @@ fun TripSearchColumn(
 }
 
 @Composable
-fun PeopleSearchColumn(profiles: List<SearchProfile>, startFollowUser: (SearchProfile) -> Unit, unfollowUser: (SearchProfile) -> Unit) {
+fun PeopleSearchColumn(
+    profiles: List<SearchProfile>,
+    startFollowUser: (SearchProfile) -> Unit,
+    unfollowUser: (SearchProfile) -> Unit,
+    onNavigateToOthersProfile: (Int) -> Unit
+) {
     if (profiles.isEmpty()) {
         Text(
             modifier = Modifier.padding(horizontal = 15.dp, vertical = 15.dp),
@@ -52,6 +57,7 @@ fun PeopleSearchColumn(profiles: List<SearchProfile>, startFollowUser: (SearchPr
                 profile,
                 startFollowUser = { startFollowUser(profile) },
                 unfollowUser = { unfollowUser(profile) },
+                onNavigateToOthersProfile = { onNavigateToOthersProfile(profile.id) }
             )
         }
     }

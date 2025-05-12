@@ -13,6 +13,7 @@ import ru.mareanexx.travelogue.data.common.WrappedResponse
 import ru.mareanexx.travelogue.data.profile.remote.dto.AuthorsProfileResponse
 import ru.mareanexx.travelogue.data.profile.remote.dto.UpdatedProfileStatsResponse
 import ru.mareanexx.travelogue.domain.profile.entity.Profile
+import ru.mareanexx.travelogue.domain.profile.entity.ProfileWithTrips
 import java.util.UUID
 
 interface ProfileApi {
@@ -38,4 +39,10 @@ interface ProfileApi {
     suspend fun getUpdatedStats(
         @Query("authorId") authorId: Int
     ): Response<WrappedResponse<UpdatedProfileStatsResponse>>
+
+    @GET("profile/other")
+    suspend fun getOthersProfile(
+        @Query("othersId") othersId: Int,
+        @Query("authorId") authorId: Int
+    ) : Response<WrappedResponse<ProfileWithTrips>>
 }

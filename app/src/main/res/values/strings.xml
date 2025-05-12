@@ -179,4 +179,10 @@
     <string name="cant_load_comments">Something went wrong! Can\'t load comments now</string>
     <string name="delete_map_point">Delete step</string>
     <string name="cant_load_trips_by_tag">Something went wrong! Can\'t load trips by this tag</string>
+
+    <!--Activity Screen-->
+    <string name="no_followers_yet">You’re not following any travellers yet!</string>
+    <string name="search_for_friends_btn">Search for friends</string>
+    <string name="cant_load_activity">Something went wrong! Can\'t load activity now</string>
+    <string name="error_loading_others_profile">Something went wrong! Can\'t load user\'s profile</string>
 </resources>

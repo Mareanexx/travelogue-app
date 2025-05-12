@@ -45,7 +45,7 @@ fun ProfileButtonsRow(onOpenModalSheet: (ProfileBottomSheetType) -> Unit) {
             text = R.string.add_trip,
             containerColor = primaryText,
             contentColor = Color.White,
-            onOpenModalSheet = { onOpenModalSheet(ProfileBottomSheetType.TripType) }
+            onClick = { onOpenModalSheet(ProfileBottomSheetType.TripType) }
         )
         ProfileButton(
             icon = R.drawable.stats_icon,
@@ -59,23 +59,23 @@ fun ProfileButtonsRow(onOpenModalSheet: (ProfileBottomSheetType) -> Unit) {
 
 @Composable
 fun ProfileButton(
-    @DrawableRes icon: Int,
+    @DrawableRes icon: Int? = null,
     @StringRes text: Int,
     containerColor: Color = Color.White,
     contentColor: Color = primaryText,
     borderColor: Color = containerColor,
     horizontalPadding: Int = 43,
-    onOpenModalSheet: () -> Unit
+    onClick: () -> Unit
 ) {
     Button(
         modifier = Modifier.height(34.dp),
         shape = Shapes.small,
-        onClick = onOpenModalSheet,
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(contentColor = contentColor, containerColor = containerColor),
         border = BorderStroke(width = 2.dp, color = borderColor),
         contentPadding = PaddingValues(horizontal = horizontalPadding.dp, vertical = 0.dp)
     ) {
-        Icon(painter = painterResource(icon), contentDescription = null)
+        if (icon != null) Icon(painter = painterResource(icon), contentDescription = null)
         Text(
             modifier = Modifier.padding(start = 5.dp),
             text = stringResource(text),

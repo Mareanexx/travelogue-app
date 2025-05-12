@@ -36,7 +36,7 @@ import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.Prof
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navigateToFollows: (String, Int) -> Unit,
+    navigateToFollows: (String, String) -> Unit,
     navigateToStartScreen: () -> Unit,
     navigateToTrip: (Int, username: String, avatar: String) -> Unit,
     profileViewModel: ProfileViewModel = hiltViewModel(),
@@ -105,7 +105,7 @@ fun ProfileScreen(
                     ProfileUiState.Showing -> {
                         items(tripsData.value) { trip ->
                             TripCard(
-                                trip,
+                                trip = trip,
                                 navigateToTrip = { navigateToTrip(trip.id, profileData.value!!.username, profileData.value!!.avatar.toString()) },
                                 onDeleteTrip = { tripsViewModel.onDeleteClicked(trip.id) },
                                 onEditTrip = { tripsViewModel.onEditPanelOpen(trip) }

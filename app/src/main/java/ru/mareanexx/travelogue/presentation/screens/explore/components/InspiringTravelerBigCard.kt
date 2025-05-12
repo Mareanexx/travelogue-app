@@ -3,6 +3,8 @@ package ru.mareanexx.travelogue.presentation.screens.explore.components
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,13 +47,18 @@ import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 fun InspiringTravelerBigCard(
     traveler: InspiringProfile,
     onStartFollowClick: () -> Unit,
-    onUnfollowClick: () -> Unit
+    onUnfollowClick: () -> Unit,
+    onNavigateToOthersProfile: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth()
             .padding(start = 15.dp, end = 15.dp, bottom = 15.dp).height(190.dp)
             .shadow(elevation = 5.dp, Shapes.small, ambientColor = Color.Black.copy(alpha = 0.3f), spotColor = Color.Black.copy(alpha = 0.2f))
             .background(Color.White).clip(Shapes.small)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { onNavigateToOthersProfile(traveler.id) },
     ) {
         Box(modifier = Modifier.fillMaxHeight().width(86.dp)) {
             AsyncImage(

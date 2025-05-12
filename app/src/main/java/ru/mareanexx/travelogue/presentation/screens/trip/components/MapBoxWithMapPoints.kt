@@ -70,7 +70,9 @@ fun MapBoxWithMapPoints(
             } ?: 0.0
 
             val duration = when {
-                distance < 600.0 -> 1000L
+                distance < 100.0 -> 1000L
+                distance in (100.0..400.0) -> 2000L
+                distance in (400.0..800.0) -> 3000L
                 else -> 5000L
             }
 

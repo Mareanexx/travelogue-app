@@ -14,9 +14,11 @@ class FollowsRepositoryImpl @Inject constructor(
     private val followsApi: FollowsApi,
     private val userSessionManager: UserSessionManager
 ): FollowsRepository {
-    override suspend fun getFollowersAndFollowings(profileId: Int): Flow<BaseResult<FollowersAndFollowingsResponse, String>> {
+    override suspend fun getFollowersAndFollowings(profileId: String): Flow<BaseResult<FollowersAndFollowingsResponse, String>> {
         return flow {
-            val response = followsApi.getFollowersAndFollowings(profileId)
+            val authorId = userSessionManager.getProfileId()
+            val othersProfileId = if (profileId == "me") userSessionManager.getProfileId() else profileId.toIntOrNull() ?: 0
+            val response = followsApi.getFollowersAndFollowings(authorId = authorId, othersId = othersProfileId)
             if (response.isSuccessful) {
                 val data = response.body()!!.data!!
                 emit(BaseResult.Success(data))
