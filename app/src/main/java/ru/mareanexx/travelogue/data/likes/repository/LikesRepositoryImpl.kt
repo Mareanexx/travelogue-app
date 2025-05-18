@@ -30,7 +30,7 @@ class LikesRepositoryImpl @Inject constructor(
     override suspend fun deleteExisted(mapPointId: Int): Flow<BaseResult<String, String>> {
         return flow {
             val senderId = userSession.getProfileId()
-            val response = likesApi.deleteExisting(LikeRequest(senderId, mapPointId))
+            val response = likesApi.deleteExisting(senderId, mapPointId)
             if (response.isSuccessful) {
                 emit(BaseResult.Success(response.body()!!.data!!))
             } else {

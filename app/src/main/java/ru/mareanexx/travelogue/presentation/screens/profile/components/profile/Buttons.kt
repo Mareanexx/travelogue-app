@@ -52,7 +52,7 @@ fun ProfileButtonsRow(onOpenModalSheet: (ProfileBottomSheetType) -> Unit) {
             text = R.string.travel_stats,
             horizontalPadding = 34,
             borderColor = Color(0xFFE2E2E2)
-        ) { TODO("Сделать toast с надписью нереализовано еще") }
+        ) { } // TODO("Сделать toast с надписью нереализовано еще")
         SettingsButton(onOpenModalSheet)
     }
 }

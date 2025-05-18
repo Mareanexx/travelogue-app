@@ -11,13 +11,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.di.utils.AuthInterceptor
-import ru.mareanexx.travelogue.di.utils.TokenAuthenticator
 import ru.mareanexx.travelogue.utils.DataStore
 import ru.mareanexx.travelogue.utils.LocalDateAdapter
 import ru.mareanexx.travelogue.utils.OffsetDateTimeAdapter
 import java.time.LocalDate
 import java.time.OffsetDateTime
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -45,9 +43,6 @@ object NetworkModule {
     @Provides
     fun provideOkHttp(requestInterceptor: AuthInterceptor): OkHttpClient {
         return OkHttpClient.Builder().apply {
-            connectTimeout(60, TimeUnit.SECONDS)
-            readTimeout(60, TimeUnit.SECONDS)
-            writeTimeout(60, TimeUnit.SECONDS)
             addInterceptor(requestInterceptor)
         }.build()
     }
@@ -55,10 +50,5 @@ object NetworkModule {
     @Provides
     fun provideAuthInterceptor(dataStore: DataStore) : AuthInterceptor {
         return AuthInterceptor(dataStore)
-    }
-
-    @Provides
-    fun provideTokenAuthenticator(dataStore: DataStore): TokenAuthenticator {
-        return TokenAuthenticator(dataStore)
     }
 }

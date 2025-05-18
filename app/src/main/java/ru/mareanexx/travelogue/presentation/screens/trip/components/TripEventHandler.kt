@@ -31,7 +31,7 @@ fun TripEventHandler(
     onRetry: () -> Unit, onNavigateBack: () -> Unit,
     onDateSelected: (Long) -> Unit, onTimeSelected: (Int, Int) -> Unit,
     onUpdateCoordinates: (lat: Double, lng: Double) -> Unit,
-    onAddStep: () -> Unit, onEditMapPoint: () -> Unit
+    onAddStep: () -> Unit, onEditMapPoint: () -> Unit, onClearForm: () -> Unit
 ) {
     val context = LocalContext.current
     val bottomSheetType = remember { mutableStateOf(BottomSheetType.AddStep) }
@@ -54,7 +54,7 @@ fun TripEventHandler(
         ModalBottomSheet(
             containerColor = Color.White,
             sheetState = sheetState,
-            onDismissRequest = { showBottomSheet.value = false }
+            onDismissRequest = { showBottomSheet.value = false; onClearForm() }
         ) {
             when (bottomSheetType.value) {
                 BottomSheetType.AddStep -> {

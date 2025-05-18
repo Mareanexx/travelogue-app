@@ -56,7 +56,7 @@ fun MapPointSheetContent(
         )
 
         LocationBlock(
-            mapPointForm = mapPointForm.value,
+            mapPointForm = mapPointForm,
             onOpenChooseLocationDialog = { viewModel.showTypifiedDialog(DialogType.ChooseLocation) }
         )
 
@@ -88,7 +88,6 @@ fun MapPointSheetContent(
         }
 
         PointPhotosRow(
-            isEditing = isEditing,
             mapPointForm = mapPointForm.value,
             addPhoto = { photo -> viewModel.onAddPhoto(photo) },
             deletePhoto = { photo -> viewModel.onRemovePhoto(photo) },

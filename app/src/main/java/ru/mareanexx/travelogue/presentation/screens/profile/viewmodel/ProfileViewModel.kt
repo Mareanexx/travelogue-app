@@ -52,13 +52,10 @@ class ProfileViewModel @Inject constructor(
             _isRefreshing.value = true
             getUpdatedProfileStatsUseCase()
                 .onStart { setLoading() }
-                .catch { exception -> showToast(exception.message) }
+                .catch { _uiState.value = ProfileUiState.Showing }
                 .collect { baseResult ->
                     when(baseResult) {
-                        is BaseResult.Error -> {
-                            showToast(baseResult.error)
-                            _uiState.value = ProfileUiState.Showing
-                        }
+                        is BaseResult.Error -> { _uiState.value = ProfileUiState.Showing }
                         is BaseResult.Success -> {
                             _profileData.value.copyStats(baseResult.data)
                             _uiState.value = ProfileUiState.Showing

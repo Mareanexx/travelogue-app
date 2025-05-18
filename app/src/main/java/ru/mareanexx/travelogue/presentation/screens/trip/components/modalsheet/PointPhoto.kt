@@ -42,7 +42,6 @@ import java.io.File
 
 @Composable
 fun PointPhotosRow(
-    isEditing: Boolean,
     mapPointForm: MapPointForm,
     addPhoto: (File) -> Unit, deletePhoto: (File) -> Unit,
     onDeleteAndAddToDeleted: (PointPhoto) -> Unit
@@ -63,11 +62,11 @@ fun PointPhotosRow(
         verticalAlignment = Alignment.Bottom
     ) {
         item { AddPointPhotoButton(addPhoto = { launcher.launch("image/*") } ) }
-        items(mapPointForm.photos) { photo ->
-            PointPhotoImage(isEditing, photo = photo, removePhoto = { deletePhoto(photo) })
-        }
         items(mapPointForm.serverPhotos) { photo ->
-            PointPhotoImage(isEditing, photo = null, pointPhoto = photo, removePhoto = { onDeleteAndAddToDeleted(photo) } )
+            PointPhotoImage(photo = null, pointPhoto = photo, removePhoto = { onDeleteAndAddToDeleted(photo) } )
+        }
+        items(mapPointForm.photos) { photo ->
+            PointPhotoImage(photo = photo, removePhoto = { deletePhoto(photo) })
         }
     }
 }
@@ -90,11 +89,11 @@ fun AddPointPhotoButton(addPhoto: () -> Unit) {
 }
 
 @Composable
-fun PointPhotoImage(isEditing: Boolean, photo: File?, pointPhoto: PointPhoto? = null, removePhoto: () -> Unit) {
+fun PointPhotoImage(photo: File?, pointPhoto: PointPhoto? = null, removePhoto: () -> Unit) {
     Box(modifier = Modifier.size(102.dp)) {
         AsyncImage(
             modifier = Modifier.align(Alignment.BottomStart).size(97.dp).clip(Shapes.extraSmall),
-            model = if (!isEditing) photo else "${BuildConfig.API_FILES_URL}${pointPhoto?.filePath}",
+            model = photo ?: "${BuildConfig.API_FILES_URL}${pointPhoto?.filePath}",
             error = painterResource(R.drawable.cover_placeholder),
             placeholder = painterResource(R.drawable.cover_placeholder),
             contentDescription = stringResource(R.string.point_photo_cd),

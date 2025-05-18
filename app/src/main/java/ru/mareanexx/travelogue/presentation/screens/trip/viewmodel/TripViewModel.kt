@@ -102,9 +102,9 @@ class TripViewModel @Inject constructor(
         }
     }
 
-    fun onMapPointFocused(id: Int) {
-        _focusedMapPointId.value = id
-    }
+    fun clearForm() { _mapPointForm.value = MapPointForm() }
+
+    fun onMapPointFocused(id: Int) { _focusedMapPointId.value = id }
 
     fun retry() { getTripWithMapPoints() }
 
@@ -124,6 +124,23 @@ class TripViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    private suspend fun changeEditedMapPointBitmap(data: MapPointWithPhotos) {
+        val prevBitmap = _mapPointBitmaps.value[data.mapPoint.id]
+        val imageUrl = data.photos.firstOrNull()?.filePath?.let { "${BuildConfig.API_FILES_URL}$it" }
+        val bitmap = try {
+            if (imageUrl != null) {
+                withContext(Dispatchers.IO) {
+                    val input = URL(imageUrl).openStream()
+                    val loaded = BitmapFactory.decodeStream(input)
+                    MarkerCreator.createMarkerBitmapFromBitmap(loaded)
+                }
+            } else prevBitmap
+        } catch (_: Exception) { prevBitmap }
+
+        val newBitmaps = _mapPointBitmaps.value.toMutableMap().apply { set(data.mapPoint.id, bitmap!!) }
+        _mapPointBitmaps.value = newBitmaps
     }
 
     suspend fun preloadMapPointBitmaps(context: Context) {
@@ -219,7 +236,7 @@ class TripViewModel @Inject constructor(
                             _tripData.value = _tripData.value?.copy(
                                 mapPoints = (_tripData.value!!.mapPoints + baseResult.data).sortedBy { it.mapPoint.arrivalDate }
                             )
-                            _mapPointForm.value = MapPointForm()
+                            clearForm()
                             _focusedMapPointId.value = baseResult.data.mapPoint.id
                             _mapPointUiState.value = MapPointUiState.Success
                         }
@@ -249,12 +266,13 @@ class TripViewModel @Inject constructor(
                             _mapPointUiState.value = MapPointUiState.Error
                         }
                         is BaseResult.Success -> {
+                            changeEditedMapPointBitmap(baseResult.data)
                             _tripData.value = _tripData.value?.copy(
                                 mapPoints = _tripData.value!!.mapPoints.map {
                                     if (it.mapPoint.id == baseResult.data.mapPoint.id) baseResult.data else it
                                 }.sortedBy { it.mapPoint.arrivalDate }
                             )
-                            _mapPointForm.value = MapPointForm()
+                            clearForm()
                             _mapPointUiState.value = MapPointUiState.Success
                         }
                     }
@@ -281,7 +299,7 @@ class TripViewModel @Inject constructor(
                                 mapPoints = _tripData.value!!.mapPoints.filter { it.mapPoint.id != mapPointId }
                             )
                             _mapPointBitmaps.value = _mapPointBitmaps.value.filterKeys { it != mapPointId }
-                            _mapPointForm.value = MapPointForm()
+                            clearForm()
                             _mapPointUiState.value = MapPointUiState.Success
                         }
                     }

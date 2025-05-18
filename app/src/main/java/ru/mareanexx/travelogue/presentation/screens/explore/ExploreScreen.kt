@@ -164,20 +164,21 @@ fun ExploreLoadedContent(
             )
         }
 
-        items(inspiringTravelers.value.subList(0, 3)) { traveler ->
+        items(inspiringTravelers.value.take(3)) { traveler ->
             InspiringTravelerBigCard(traveler,
                 onStartFollowClick = { viewModel.followUser(traveler) },
                 onUnfollowClick = { viewModel.unfollowUser(traveler) },
                 onNavigateToOthersProfile
             )
         }
-
-        items(inspiringTravelers.value.subList(3, inspiringTravelers.value.size)) { traveler ->
-            InspiringTravelerSmallCard(traveler,
-                onUnfollowClicked = { viewModel.unfollowUser(traveler) },
-                onStartFollowClicked = { viewModel.followUser(traveler) },
-                onNavigateToOthersProfile
-            )
+        if (inspiringTravelers.value.size > 3) {
+            items(inspiringTravelers.value.subList(3, inspiringTravelers.value.size)) { traveler ->
+                InspiringTravelerSmallCard(traveler,
+                    onUnfollowClicked = { viewModel.unfollowUser(traveler) },
+                    onStartFollowClicked = { viewModel.followUser(traveler) },
+                    onNavigateToOthersProfile
+                )
+            }
         }
     }
 }

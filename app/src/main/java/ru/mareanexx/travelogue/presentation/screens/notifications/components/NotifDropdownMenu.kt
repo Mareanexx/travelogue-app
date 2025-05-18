@@ -60,7 +60,7 @@ fun NotificationsDropdownMenuAndButton(
             ) {
                 DropdownMenuItem(
                     text = { Text(text = stringResource(R.string.mark_all_as_read), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold) },
-                    onClick = { TODO("Нужно сделать убирание галочек у всех уведомлений") },
+                    onClick = { }, // TODO("Нужно сделать убирание галочек у всех уведомлений")
                     trailingIcon = { Icon(painter = painterResource(R.drawable.read_notifs), contentDescription = null, tint = primaryText) }
                 )
                 HorizontalDivider(thickness = 2.dp, color = Color.LightGray)

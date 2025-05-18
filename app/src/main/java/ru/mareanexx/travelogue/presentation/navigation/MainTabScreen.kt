@@ -1,5 +1,7 @@
 package ru.mareanexx.travelogue.presentation.navigation
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -59,9 +61,7 @@ fun MainTabScreen(rootNavController: NavHostController) {
             }
         }
     ) { innerPadding ->
-        Box(modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()) {
+        Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
             navItems.forEach { tab ->
                 val navController = navControllers[tab]!!
                 val isSelected = tab == selectedTab
@@ -74,7 +74,11 @@ fun MainTabScreen(rootNavController: NavHostController) {
                     ) {
                         when (tab) {
                             "profile" -> {
-                                composable("profile") {
+                                composable(
+                                    route = "profile",
+                                    enterTransition = { slideInHorizontally(initialOffsetX = { -it }) },
+                                    exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) }
+                                ) {
                                     showBottomNavBar = true
                                     scaffoldContainerColor.value = Color.White
                                     ProfileScreen(
@@ -143,7 +147,9 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                     route = "others-profile/{profileId}",
                                     arguments = listOf(
                                         navArgument("profileId") { type = NavType.IntType }
-                                    )
+                                    ),
+                                    enterTransition = { slideInHorizontally(initialOffsetX = { -it }) },
+                                    exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) }
                                 ) { backStackEntry ->
                                     showBottomNavBar = true
                                     scaffoldContainerColor.value = Color.White
@@ -172,7 +178,11 @@ fun MainTabScreen(rootNavController: NavHostController) {
                             }
 
                             "activity" -> {
-                                composable("activity") {
+                                composable(
+                                    route = "activity",
+                                    enterTransition = { slideInHorizontally(initialOffsetX = { -it }) },
+                                    exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) }
+                                ) {
                                     showBottomNavBar = true
                                     scaffoldContainerColor.value = Color.White
                                     ActivityScreen(
@@ -222,7 +232,9 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                     arguments = listOf(
                                         navArgument("profileId") { type = NavType.StringType },
                                         navArgument("username") { type = NavType.StringType }
-                                    )
+                                    ),
+                                    enterTransition = { slideInHorizontally(initialOffsetX = { -it }) },
+                                    exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) }
                                 ) { backStackEntry ->
                                     showBottomNavBar = true
                                     val profileId = backStackEntry.arguments?.getString("profileId") ?: ""
@@ -265,7 +277,11 @@ fun MainTabScreen(rootNavController: NavHostController) {
                             }
 
                             "explore" -> {
-                                composable("explore") {
+                                composable(
+                                    route = "explore",
+                                    enterTransition = { slideInHorizontally(initialOffsetX = { -it }) },
+                                    exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) }
+                                ) {
                                     showBottomNavBar = true
                                     scaffoldContainerColor.value = Color.White
                                     ExploreScreen(

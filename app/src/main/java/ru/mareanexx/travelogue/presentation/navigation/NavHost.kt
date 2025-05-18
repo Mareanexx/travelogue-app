@@ -8,10 +8,10 @@ import ru.mareanexx.travelogue.presentation.screens.start.StartScreen
 
 
 @Composable
-fun AppNavHost(rootNavController: NavHostController) {
+fun AppNavHost(rootNavController: NavHostController, startDestination: String) {
     NavHost(
         navController = rootNavController,
-        startDestination = "main"
+        startDestination = startDestination
     ) {
         composable("auth") {
             StartScreen(

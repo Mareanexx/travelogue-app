@@ -16,6 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mapbox.geojson.Point
 import com.mapbox.maps.ViewAnnotationAnchor
+import com.mapbox.maps.dsl.cameraOptions
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
@@ -43,8 +46,8 @@ import ru.mareanexx.travelogue.presentation.theme.blueBackground
 import ru.mareanexx.travelogue.presentation.theme.primaryText
 
 @Composable
-fun LocationBlock(onOpenChooseLocationDialog: () -> Unit, mapPointForm: MapPointForm) {
-    if (mapPointForm.latitude == Double.MIN_VALUE && mapPointForm.longitude == Double.MIN_VALUE) {
+fun LocationBlock(onOpenChooseLocationDialog: () -> Unit, mapPointForm: State<MapPointForm>) {
+    if (mapPointForm.value.latitude == Double.MIN_VALUE && mapPointForm.value.longitude == Double.MIN_VALUE) {
         Box(
             modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth().height(205.dp)
                 .clip(Shapes.small).border(2.dp, primaryText, Shapes.small),
@@ -62,22 +65,33 @@ fun LocationBlock(onOpenChooseLocationDialog: () -> Unit, mapPointForm: MapPoint
 }
 
 @Composable
-fun StaticLocationMap(mapPointForm: MapPointForm, onOpenChooseLocationSheet: () -> Unit) {
+fun StaticLocationMap(mapPointForm: State<MapPointForm>, onOpenChooseLocationSheet: () -> Unit) {
     Box(modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth().height(205.dp).clip(Shapes.small)) {
 
-        val point = Point.fromLngLat(mapPointForm.longitude, mapPointForm.latitude)
+        val point = Point.fromLngLat(mapPointForm.value.longitude, mapPointForm.value.latitude)
+
+        val mapViewportState = rememberMapViewportState {
+            setCameraOptions {
+                center(point)
+                zoom(13.0)
+                pitch(0.0)
+                bearing(0.0)
+            }
+        }
+
+        LaunchedEffect(mapPointForm.value.latitude) {
+            mapViewportState.easeTo(
+                cameraOptions {
+                    center(point)
+                    zoom(12.0)
+                }
+            )
+        }
 
         MapboxMap(
             modifier = Modifier.fillMaxWidth().height(205.dp),
             compass = {}, scaleBar = {},
-            mapViewportState = rememberMapViewportState {
-                setCameraOptions {
-                    center(point)
-                    zoom(13.0)
-                    pitch(0.0)
-                    bearing(0.0)
-                }
-            },
+            mapViewportState = mapViewportState,
             mapState = rememberMapState {
                 gesturesSettings = GesturesSettings {
                     scrollEnabled = false

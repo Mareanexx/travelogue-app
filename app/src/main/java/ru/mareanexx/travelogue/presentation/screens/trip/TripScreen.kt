@@ -86,6 +86,7 @@ fun TripScreenLoadedContent(
     TripEventHandler(
         mapPointForm.value,
         tripViewModel.eventFlow, onRetry = { tripViewModel.retry() },
+        onClearForm = { tripViewModel.clearForm() },
         onDateSelected = { date -> tripViewModel.onMapPointArrivalDateChanged(date) },
         onTimeSelected = { hour, min -> tripViewModel.onMapPointArrivalTimeChanged(hour, min) },
         onAddStep = { tripViewModel.createMapPoint() }, onEditMapPoint = { tripViewModel.editMapPoint() },
