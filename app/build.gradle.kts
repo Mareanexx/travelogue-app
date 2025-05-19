@@ -18,8 +18,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/v1/\"")
-        buildConfigField("String", "API_FILES_URL", "\"http://10.0.2.2:8080\"")
     }
 
     buildTypes {
@@ -31,6 +29,25 @@ android {
             )
         }
     }
+
+    flavorDimensions += "version"
+    productFlavors {
+        create("debugLocalServer") {
+            dimension = "version"
+            applicationIdSuffix = ".local"
+            versionNameSuffix = "-local"
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/v1/\"")
+            buildConfigField("String", "API_FILES_URL", "\"http://10.0.2.2:8080\"")
+        }
+        create("debugRemoteServer") {
+            dimension = "version"
+            applicationIdSuffix = ".remote"
+            versionNameSuffix = "-remote"
+            buildConfigField("String", "API_BASE_URL", "\"http://130.193.58.87:8080/api/v1/\"")
+            buildConfigField("String", "API_FILES_URL", "\"http://130.193.58.87:8080\"")
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

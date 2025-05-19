@@ -5,6 +5,9 @@
 <a href="https://developer.android.com/jetpack/androidx/releases/compose?hl=ru"><img src="https://img.shields.io/badge/made_with-Jetpack_Compose-green"></a>
 <a href="https://www.figma.com/design/klfiihq6uZGvwliwDTgps9/TravelogueMobileApp?node-id=550-342&t=6GUmUzh3MxNbUBiW-0"><img src="https://img.shields.io/badge/prototype_in_figma-8A2BE2"></a>
 </p>
+<div align="center" width="100%">
+   <img src="./readme_assets/app_icon.png" width="20%">
+</div>
 
 **Travelogue** — это Android-приложение для ведения журнала путешествий с возможностью прикрепления точек на карте, фотографий и описаний. Приложение позволяет делиться своими поездками с другими пользователями, просматривать чужие путешествия, лайкать, комментировать и подписываться на профили.
 

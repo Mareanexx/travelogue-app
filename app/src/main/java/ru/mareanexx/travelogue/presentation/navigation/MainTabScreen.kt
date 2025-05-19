@@ -162,7 +162,7 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                         navigateToTrip = { tripId, username, avatar ->
                                             navController.navigate(
                                                 "trip/?tripId=$tripId" +
-                                                        "&profileId=me" +
+                                                        "&profileId=$argProfileId" +
                                                         "&username=$username" +
                                                         "&avatar=$avatar"
                                             )
@@ -218,7 +218,7 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                         navigateToTrip = { tripId, username, avatar ->
                                             navController.navigate(
                                                 "trip/?tripId=$tripId" +
-                                                        "&profileId=me" +
+                                                        "&profileId=$argProfileId" +
                                                         "&username=$username" +
                                                         "&avatar=$avatar"
                                             )
@@ -338,7 +338,7 @@ fun MainTabScreen(rootNavController: NavHostController) {
                                         navigateToTrip = { tripId, username, avatar ->
                                             navController.navigate(
                                                 "trip/?tripId=$tripId" +
-                                                        "&profileId=me" +
+                                                        "&profileId=$argProfileId" +
                                                         "&username=$username" +
                                                         "&avatar=$avatar"
                                             )
