@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -119,19 +120,23 @@ fun SearchOverlay(
                 BasicTextField(
                     modifier = Modifier.weight(0.9f).focusRequester(focusRequester),
                     value = state.query,
-                    onValueChange = {
-                        onQueryChanged(it)
-                    },
+                    onValueChange = { onQueryChanged(it) },
                     singleLine = true,
                     textStyle = TextStyle(color = searchText, fontSize = 14.sp,
                         fontWeight = FontWeight.Medium, fontFamily = MontserratFamily, lineHeight = 14.sp),
                 )
                 Button(
+                    modifier = Modifier.width(25.dp),
+                    contentPadding = PaddingValues(0.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                     shape = CircleShape,
                     onClick = onClearQuery
                 ) {
-                    Icon(Icons.Default.Close, contentDescription = "Close")
+                    Icon(
+                        modifier = Modifier.height(20.dp),
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.close)
+                    )
                 }
             }
             TextButton(onClick = onClose, contentPadding = PaddingValues(horizontal = 0.dp)) {

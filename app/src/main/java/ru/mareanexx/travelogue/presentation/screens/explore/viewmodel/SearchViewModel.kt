@@ -1,6 +1,5 @@
 package ru.mareanexx.travelogue.presentation.screens.explore.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +22,7 @@ import ru.mareanexx.travelogue.domain.explore.entity.SearchResult
 import ru.mareanexx.travelogue.domain.explore.usecase.SearchUseCase
 import ru.mareanexx.travelogue.domain.follows.usecase.FollowUserUseCase
 import ru.mareanexx.travelogue.domain.follows.usecase.UnfollowUserUseCase
+import ru.mareanexx.travelogue.presentation.screens.explore.SearchOverlayState
 import ru.mareanexx.travelogue.presentation.screens.explore.viewmodel.event.ExploreEvent
 import ru.mareanexx.travelogue.presentation.screens.explore.viewmodel.state.SearchUiState
 import javax.inject.Inject
@@ -41,7 +41,8 @@ class SearchViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<ExploreEvent>()
     val eventFlow: SharedFlow<ExploreEvent> = _eventFlow.asSharedFlow()
 
-    private val searchQuery = MutableStateFlow("")
+    private val _searchOverlayState = MutableStateFlow(SearchOverlayState())
+    val searchOverlayState get() = _searchOverlayState.asStateFlow()
 
     private val _searchResults = MutableStateFlow(SearchResult(emptyList(), emptyList()))
     val searchResults: StateFlow<SearchResult> = _searchResults.asStateFlow()
@@ -57,45 +58,40 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onQueryChanged(query: String) {
-        searchQuery.value = query
+        _searchOverlayState.value = _searchOverlayState.value.copy(query = query)
         if (query.isBlank()) { setInitState() }
         else { setLoadingState() }
     }
 
     init {
         viewModelScope.launch {
-            searchQuery
+            _searchOverlayState
                 .debounce(500)
                 .distinctUntilChanged()
-                .filter { it.isNotBlank() }
-                .collectLatest { query ->
+                .filter { it.query.isNotBlank() }
+                .collectLatest { overlayState ->
                     try {
-                        searchUseCase(query).collect { baseResult ->
+                        searchUseCase(overlayState.query).collect { baseResult ->
                             when (baseResult) {
                                 is BaseResult.Success -> {
                                     _searchResults.value = baseResult.data
                                     setSuccessState()
                                 }
-                                is BaseResult.Error -> {
-                                    Log.d("SEARCH_ERROR", "query = '$query' ${baseResult.error}")
-                                    setErrorState()
-                                }
+                                is BaseResult.Error -> { setErrorState() }
                             }
                         }
-                    } catch (e: Exception) {
-                        Log.d("SEARCH_EXCEPTION", "query = '$query'  ${e.message ?: "what"}")
-                        e.printStackTrace()
-                        setErrorState()
-                    }
+                    } catch (e: Exception) { setErrorState() }
                 }
         }
     }
 
     fun clearQuery() {
-        searchQuery.value = ""
+        _searchOverlayState.value = _searchOverlayState.value.copy(query = "")
         _searchResults.value = SearchResult(emptyList(), emptyList())
         setInitState()
     }
+
+    fun onToggleSearchOverlay(isOpen: Boolean) { _searchOverlayState.value = _searchOverlayState.value.copy(isActive = isOpen) }
 
     fun followUser(profile: SearchProfile) {
         viewModelScope.launch {

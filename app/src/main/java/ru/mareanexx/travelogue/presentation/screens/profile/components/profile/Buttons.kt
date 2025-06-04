@@ -38,9 +38,10 @@ import ru.mareanexx.travelogue.presentation.theme.primaryText
 fun ProfileButtonsRow(onOpenModalSheet: (ProfileBottomSheetType) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         ProfileButton(
+            weightModifier = Modifier.weight(2.5f),
             icon = R.drawable.plus_icon,
             text = R.string.add_trip,
             containerColor = primaryText,
@@ -48,32 +49,31 @@ fun ProfileButtonsRow(onOpenModalSheet: (ProfileBottomSheetType) -> Unit) {
             onClick = { onOpenModalSheet(ProfileBottomSheetType.TripType) }
         )
         ProfileButton(
+            weightModifier = Modifier.weight(2.5f),
             icon = R.drawable.stats_icon,
             text = R.string.travel_stats,
-            horizontalPadding = 34,
             borderColor = Color(0xFFE2E2E2)
         ) { } // TODO("Сделать toast с надписью нереализовано еще")
-        SettingsButton(onOpenModalSheet)
+        SettingsButton(Modifier.weight(0.5f), onOpenModalSheet)
     }
 }
 
 @Composable
 fun ProfileButton(
+    weightModifier: Modifier = Modifier,
     @DrawableRes icon: Int? = null,
     @StringRes text: Int,
     containerColor: Color = Color.White,
     contentColor: Color = primaryText,
     borderColor: Color = containerColor,
-    horizontalPadding: Int = 43,
     onClick: () -> Unit
 ) {
     Button(
-        modifier = Modifier.height(34.dp),
+        modifier = weightModifier.height(34.dp),
         shape = Shapes.small,
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(contentColor = contentColor, containerColor = containerColor),
-        border = BorderStroke(width = 2.dp, color = borderColor),
-        contentPadding = PaddingValues(horizontal = horizontalPadding.dp, vertical = 0.dp)
+        border = BorderStroke(width = 2.dp, color = borderColor)
     ) {
         if (icon != null) Icon(painter = painterResource(icon), contentDescription = null)
         Text(
@@ -87,14 +87,17 @@ fun ProfileButton(
 }
 
 @Composable
-fun SettingsButton(onOpenModalSheet: (ProfileBottomSheetType) -> Unit) {
+fun SettingsButton(
+    weightModifier: Modifier,
+    onOpenModalSheet: (ProfileBottomSheetType) -> Unit
+) {
     val expandedMenu = remember { mutableStateOf(false) }
 
-    Box {
+    Box(modifier = weightModifier) {
         Button(
             modifier = Modifier.size(34.dp),
             shape = Shapes.small,
-            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
+            contentPadding = PaddingValues(0.dp),
             colors = ButtonDefaults.buttonColors(contentColor = primaryText, containerColor = Color.White),
             border = BorderStroke(width = 2.dp, color = Color(0xFFE2E2E2)),
             onClick = { expandedMenu.value = !expandedMenu.value }

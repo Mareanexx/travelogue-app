@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.data.profile.remote.dto.ProfileDto
+import ru.mareanexx.travelogue.presentation.screens.othersprofile.viewmodel.state.FollowingState
 import ru.mareanexx.travelogue.presentation.screens.profile.components.profile.ProfileButton
 import ru.mareanexx.travelogue.presentation.screens.profile.components.profile.ProfileStatisticsBlock
 import ru.mareanexx.travelogue.presentation.theme.Shapes
@@ -29,7 +30,7 @@ import ru.mareanexx.travelogue.presentation.theme.primaryText
 @Composable
 fun OthersProfileFollowersAndButtons(
     profileData: ProfileDto,
-    isFollowing: State<Boolean>,
+    isFollowing: State<FollowingState>,
     navigateToFollows: (String, String) -> Unit,
     onFollowClicked: () -> Unit, onUnfollowClicked: () -> Unit,
     onShowNotImplementedToast: () -> Unit
@@ -39,6 +40,7 @@ fun OthersProfileFollowersAndButtons(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         ProfileStatisticsBlock(
+            isFollowing = isFollowing,
             tripsNumber = profileData.tripsNumber,
             followersNumber = profileData.followersNumber,
             followingsNumber = profileData.followingNumber,
@@ -47,7 +49,7 @@ fun OthersProfileFollowersAndButtons(
 
         Column(modifier = Modifier.padding(horizontal = 15.dp)) {
             OthersProfileButtonsRow(
-                isFollowing,
+                isFollowing = isFollowing,
                 onFollowClicked = onFollowClicked,
                 onUnfollowClicked = onUnfollowClicked,
                 onShowNotImplementedToast = onShowNotImplementedToast
@@ -58,36 +60,39 @@ fun OthersProfileFollowersAndButtons(
 
 @Composable
 fun OthersProfileButtonsRow(
-    isFollowing: State<Boolean>, onFollowClicked: () -> Unit,
+    isFollowing: State<FollowingState>, onFollowClicked: () -> Unit,
     onUnfollowClicked: () -> Unit,
     onShowNotImplementedToast: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         ProfileButton(
-            text = if (isFollowing.value) R.string.following_btn else R.string.follow_btn,
-            containerColor = if (isFollowing.value) disabledButtonContainer else primaryText,
-            contentColor = if (isFollowing.value) disabledButtonContent else Color.White,
-            horizontalPadding = 55,
-            onClick = { if (isFollowing.value) onUnfollowClicked() else onFollowClicked() }
+            weightModifier = Modifier.weight(2.5f),
+            text = if (isFollowing.value.isAuthorFollowing) R.string.following_btn else R.string.follow_btn,
+            containerColor = if (isFollowing.value.isAuthorFollowing) disabledButtonContainer else primaryText,
+            contentColor = if (isFollowing.value.isAuthorFollowing) disabledButtonContent else Color.White,
+            onClick = { if (isFollowing.value.isAuthorFollowing) onUnfollowClicked() else onFollowClicked() }
         )
 
         ProfileButton(
+            weightModifier = Modifier.weight(2.5f),
             icon = R.drawable.stats_icon,
             text = R.string.travel_stats,
-            horizontalPadding = 34,
             borderColor = Color(0xFFE2E2E2)
         ) { onShowNotImplementedToast() }
-        OthersProfileSettingsButton(onShowNotImplementedToast)
+        OthersProfileSettingsButton(Modifier.weight(0.5f), onShowNotImplementedToast)
     }
 }
 
 @Composable
-fun OthersProfileSettingsButton(onClick: () -> Unit) {
+fun OthersProfileSettingsButton(
+    weightModifier: Modifier,
+    onClick: () -> Unit
+) {
     Button(
-        modifier = Modifier.size(34.dp),
+        modifier = weightModifier.size(34.dp),
         shape = Shapes.small,
         contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
         colors = ButtonDefaults.buttonColors(contentColor = primaryText, containerColor = Color.White),

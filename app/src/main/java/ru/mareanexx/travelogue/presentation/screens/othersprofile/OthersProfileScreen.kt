@@ -122,7 +122,7 @@ fun OthersProfileLoadedContent(
             item {
                 OthersProfileFollowersAndButtons(
                     profileData = profileWithTrips.profile,
-                    isFollowing,
+                    isFollowing = isFollowing,
                     navigateToFollows = navigateToFollows,
                     onFollowClicked = { viewModel.followUser(profileWithTrips.profile.id) },
                     onUnfollowClicked = { viewModel.unfollowUser(profileWithTrips.profile.id) },

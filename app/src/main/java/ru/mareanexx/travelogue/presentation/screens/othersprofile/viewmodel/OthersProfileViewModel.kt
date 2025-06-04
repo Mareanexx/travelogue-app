@@ -1,6 +1,5 @@
 package ru.mareanexx.travelogue.presentation.screens.othersprofile.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,6 +18,7 @@ import ru.mareanexx.travelogue.domain.profile.entity.ProfileWithTrips
 import ru.mareanexx.travelogue.domain.profile.usecase.GetOthersProfileUseCase
 import ru.mareanexx.travelogue.domain.report.usecase.CreateReportUseCase
 import ru.mareanexx.travelogue.presentation.screens.othersprofile.viewmodel.event.OthersProfileEvent
+import ru.mareanexx.travelogue.presentation.screens.othersprofile.viewmodel.state.FollowingState
 import ru.mareanexx.travelogue.presentation.screens.othersprofile.viewmodel.state.OthersProfileUiState
 import javax.inject.Inject
 
@@ -32,7 +32,7 @@ class OthersProfileViewModel @Inject constructor(
 ) : ViewModel() {
     private val profileId = savedStateHandle["profileId"] ?: -1
 
-    private val _isFollowing = MutableStateFlow(false)
+    private val _isFollowing = MutableStateFlow(FollowingState())
     val isFollowing = _isFollowing.asStateFlow()
 
     private val _uiState = MutableStateFlow<OthersProfileUiState>(OthersProfileUiState.Loading)
@@ -69,16 +69,16 @@ class OthersProfileViewModel @Inject constructor(
         viewModelScope.launch {
             getOthersProfileUseCase(profileId)
                 .onStart { setLoadingState() }
-                .catch { exception ->
-                    Log.d("PROFILE_EXCEPTION", "Получили exception в loadProfile, message = '${exception.message}'")
-                    setErrorState()
-                }
+                .catch { setErrorState() }
                 .collect { baseResult ->
                     when(baseResult) {
                         is BaseResult.Error -> { setErrorState() }
                         is BaseResult.Success -> {
+                            _isFollowing.value = FollowingState(
+                                isAuthorFollowing = baseResult.data.profile.isFollowing,
+                                followersCounter = baseResult.data.profile.followersNumber
+                            )
                             setSuccessState(baseResult.data)
-                            _isFollowing.value = baseResult.data.profile.isFollowing
                         }
                     }
                 }
@@ -92,7 +92,12 @@ class OthersProfileViewModel @Inject constructor(
                 .collect { baseResult ->
                     when(baseResult) {
                         is BaseResult.Error -> { showToast(baseResult.error) }
-                        is BaseResult.Success -> { _isFollowing.value = true }
+                        is BaseResult.Success -> {
+                            _isFollowing.value = FollowingState(
+                                isAuthorFollowing = true,
+                                followersCounter = _isFollowing.value.followersCounter + 1
+                            )
+                        }
                     }
                 }
         }
@@ -105,7 +110,12 @@ class OthersProfileViewModel @Inject constructor(
                 .collect { baseResult ->
                     when(baseResult) {
                         is BaseResult.Error -> { showToast(baseResult.error) }
-                        is BaseResult.Success -> { _isFollowing.value = false }
+                        is BaseResult.Success -> {
+                            _isFollowing.value = FollowingState(
+                                isAuthorFollowing = false,
+                                followersCounter = _isFollowing.value.followersCounter - 1
+                            )
+                        }
                     }
                 }
         }

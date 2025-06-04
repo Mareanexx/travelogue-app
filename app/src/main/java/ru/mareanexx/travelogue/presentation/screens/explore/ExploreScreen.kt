@@ -19,8 +19,6 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -61,7 +59,7 @@ fun ExploreScreen(
 ) {
     val uiState = exploreViewModel.uiState.collectAsState()
     val isRefreshing = exploreViewModel.isRefreshing.collectAsState()
-    val searchOverlayState = remember { mutableStateOf(SearchOverlayState()) }
+    val searchOverlayState = searchViewModel.searchOverlayState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState.value) {
@@ -74,9 +72,7 @@ fun ExploreScreen(
                 ) {
                     ExploreLoadedContent(
                         exploreViewModel,
-                        onSearchBarClick = {
-                            searchOverlayState.value = searchOverlayState.value.copy(isActive = true)
-                        },
+                        onSearchBarClick = { searchViewModel.onToggleSearchOverlay(true) },
                         onNavigateToTagScreen, onNavigateToTrip, onNavigateToOthersProfile
                     )
                 }
@@ -86,15 +82,9 @@ fun ExploreScreen(
         if (searchOverlayState.value.isActive) {
             SearchOverlay(
                 state = searchOverlayState.value,
-                onQueryChanged = { query ->
-                    searchOverlayState.value = searchOverlayState.value.copy(query = query)
-                    searchViewModel.onQueryChanged(query)
-                },
+                onQueryChanged = { query -> searchViewModel.onQueryChanged(query) },
                 onClearQuery = { searchViewModel.clearQuery() },
-                onClose = {
-                    searchOverlayState.value = SearchOverlayState()
-                    searchViewModel.clearQuery()
-                },
+                onClose = { searchViewModel.onToggleSearchOverlay(false); searchViewModel.clearQuery() },
                 onNavigateToOthersProfile = onNavigateToOthersProfile,
                 onNavigateToTrip = onNavigateToTrip,
                 searchViewModel = searchViewModel

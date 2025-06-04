@@ -14,11 +14,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.mareanexx.travelogue.R
+import ru.mareanexx.travelogue.presentation.screens.othersprofile.viewmodel.state.FollowingState
 import ru.mareanexx.travelogue.presentation.theme.profilePrimaryText
 import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 
@@ -26,8 +28,11 @@ import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 @Composable
 fun ProfileStatisticsBlock(
     tripsNumber: Int, followersNumber: Int, followingsNumber: Int,
-    navigateToFollows: () -> Unit
+    navigateToFollows: () -> Unit,
+    isFollowing: State<FollowingState>? = null
 ) {
+    val resultFollowersNumber = isFollowing?.value?.followersCounter ?: followersNumber
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,7 +45,10 @@ fun ProfileStatisticsBlock(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         OneProfileStatsColumn(tripsNumber, R.string.trips)
-        OneProfileStatsColumn(followersNumber, R.string.followers) { VerticalDivider() }
+        OneProfileStatsColumn(
+            value = resultFollowersNumber,
+            descriptionRes = R.string.followers
+        ) { VerticalDivider() }
         OneProfileStatsColumn(followingsNumber, R.string.followings) { VerticalDivider() }
     }
 }
