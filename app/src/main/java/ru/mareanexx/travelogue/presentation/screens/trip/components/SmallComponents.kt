@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -189,7 +190,8 @@ fun InteractableLikesStatButton(mapPointData: MapPointWithPhotos, onAddNewLike: 
 
     Row(
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp),
-        modifier = Modifier.clickable(remember { MutableInteractionSource() }, null) {
+        modifier = Modifier.widthIn(min = 32.dp, max = 35.dp)
+            .clickable(remember { MutableInteractionSource() }, null) {
             mapPointData.mapPoint.run {
                 if (isLiked) onRemoveLike(id) else onAddNewLike(id)
             }

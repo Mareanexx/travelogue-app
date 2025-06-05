@@ -117,11 +117,9 @@ fun ExpandedMapPointCard(
                         isDragged.value = false
                     },
                     onDragEnd = {
-                        if (offsetY.floatValue > 90f) {
+                        if (offsetY.floatValue > 150f) {
                             isDragged.value = false
                             onDismiss()
-                        } else {
-                            offsetY.floatValue = 0f
                         }
                     }
                 )

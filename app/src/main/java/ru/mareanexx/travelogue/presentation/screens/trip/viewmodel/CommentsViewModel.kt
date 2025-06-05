@@ -74,8 +74,11 @@ class CommentsViewModel @Inject constructor(
         }
     }
 
+    private fun validateSending() = _commentMessage.value.isNotBlank()
+
     fun addNewComment() {
         viewModelScope.launch {
+            if (!validateSending()) return@launch
             addNewCommentUseCase(NewCommentRequest(mapPointId = _mapPointId.value, text = _commentMessage.value, sendDate = OffsetDateTime.now()))
                 .catch { setErrorState() }
                 .collect { baseResult ->

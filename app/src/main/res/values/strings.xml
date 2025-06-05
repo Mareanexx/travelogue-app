@@ -44,7 +44,7 @@
     <string name="travel_stats">Travel stats</string>
     <string name="cd_cover_photo">User\'s profile cover photo</string>
     <string name="cd_avatar_photo">User\'s profile avatar photo</string>
-    <string name="no_trips_yet">This user has no trips yet!</string>
+    <string name="no_trips_yet">This user doesn\'t have any public trips!</string>
     <string name="no_trips_small_text"> Follow him/her to get notifications on uploads!</string>
 
     <!--Trip card-->

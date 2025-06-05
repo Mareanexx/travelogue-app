@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,10 +40,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
+import ru.mareanexx.travelogue.presentation.components.CustomOutlinedTextField
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.ProfileViewModel
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 import ru.mareanexx.travelogue.presentation.screens.start.components.CheckFieldsButton
-import ru.mareanexx.travelogue.presentation.components.CustomOutlinedTextField
 import ru.mareanexx.travelogue.presentation.screens.start.components.SupportingText
 import ru.mareanexx.travelogue.presentation.theme.Shapes
 import ru.mareanexx.travelogue.presentation.theme.primaryText
@@ -72,7 +74,11 @@ fun EditProfileSheetContent(viewModel: ProfileViewModel = hiltViewModel()) {
         }
     }
 
-    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp)) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 15.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         Text(
             modifier = Modifier.fillMaxWidth().padding(bottom = 25.dp),
             text = stringResource(R.string.profile_settings),
@@ -83,9 +89,7 @@ fun EditProfileSheetContent(viewModel: ProfileViewModel = hiltViewModel()) {
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
-            ) {
-                coverLauncher.launch("image/*")
-            }
+            ) { coverLauncher.launch("image/*") }
         ) {
             AsyncImage(
                 modifier = Modifier.fillMaxWidth().height(170.dp).clip(Shapes.medium),
