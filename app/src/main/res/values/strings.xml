@@ -44,6 +44,8 @@
     <string name="travel_stats">Travel stats</string>
     <string name="cd_cover_photo">User\'s profile cover photo</string>
     <string name="cd_avatar_photo">User\'s profile avatar photo</string>
+    <string name="no_trips_yet">This user has no trips yet!</string>
+    <string name="no_trips_small_text"> Follow him/her to get notifications on uploads!</string>
 
     <!--Trip card-->
     <string name="cd_trip_cover_photo">User\'s trip cover photo</string>
@@ -132,6 +134,10 @@
     <string name="following_btn">Following</string>
     <string name="retry_btn">Retry</string>
     <string name="retry_description">Content could not be loaded. Try again now or later!</string>
+    <string name="no_followers_title">You don\'t have any followers yet</string>
+    <string name="no_followers_small_text">Start inviting friends and family now!</string>
+    <string name="no_followings_title">You have no followings yet!</string>
+    <string name="no_followings_small_text">Start finding friends and exploring content now!</string>
 
     <!--Explore Screen-->
     <string name="explore_search_description">Search people &amp; trips</string>
@@ -139,6 +145,9 @@
     <string name="trending_trips_label">Trending trips</string>
     <string name="inspiring_travelers_label">Inspiring travelers</string>
     <string name="searching_process">Searching…</string>
+    <string name="search_bar_is_empty_img">Empty search bar image</string>
+    <string name="search_empty_title">Start exploring now!</string>
+    <string name="search_empty_description">Tap the search bar at the top to find trips that interest you.</string>
 
     <!--Report Menu-->
     <string name="report_trip">Report trip</string>

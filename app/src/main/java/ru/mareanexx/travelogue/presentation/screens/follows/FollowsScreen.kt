@@ -28,6 +28,7 @@ import ru.mareanexx.travelogue.presentation.screens.follows.components.OneFollow
 import ru.mareanexx.travelogue.presentation.screens.follows.viewmodel.FollowsEvent
 import ru.mareanexx.travelogue.presentation.screens.follows.viewmodel.FollowsUiState
 import ru.mareanexx.travelogue.presentation.screens.follows.viewmodel.FollowsViewModel
+import ru.mareanexx.travelogue.presentation.screens.othersprofile.components.NoTripsPlaceholder
 
 @Composable
 fun FollowsScreen(
@@ -89,23 +90,42 @@ fun FollowsLoadedContent(
 
             when(tabIndex.intValue) {
                 0 -> {
-                    items(followsData.value.followers) { follower ->
-                        OneFollowsCard(
-                            follow = follower,
-                            onStartFollowClicked = { viewModel.followUser(follower) },
-                            onUnfollowClicked = { viewModel.unfollowUser(follower) },
-                            onNavigateToOthersProfile = onNavigateToOthersProfile,
-                        )
+                    if (followsData.value.followers.isEmpty()) {
+                        item {
+                            NoTripsPlaceholder(
+                                image = R.drawable.no_followers_placeholder,
+                                title = R.string.no_followers_title,
+                                smallText = R.string.no_followers_small_text
+                            )
+                        }
+                    } else {
+                        items(followsData.value.followers) { follower ->
+                            OneFollowsCard(
+                                follow = follower,
+                                onStartFollowClicked = { viewModel.followUser(follower) },
+                                onUnfollowClicked = { viewModel.unfollowUser(follower) },
+                                onNavigateToOthersProfile = onNavigateToOthersProfile,
+                            )
+                        }
                     }
                 }
                 1 -> {
-                    items(followsData.value.followings) { following ->
-                        OneFollowsCard(
-                            follow = following,
-                            onStartFollowClicked = { viewModel.followUser(following) },
-                            onUnfollowClicked = { viewModel.unfollowUser(following) },
-                            onNavigateToOthersProfile = onNavigateToOthersProfile
-                        )
+                    if (followsData.value.followings.isEmpty()) {
+                        item {
+                            NoTripsPlaceholder(
+                                title = R.string.no_followings_title,
+                                smallText = R.string.no_followings_small_text
+                            )
+                        }
+                    } else {
+                        items(followsData.value.followings) { following ->
+                            OneFollowsCard(
+                                follow = following,
+                                onStartFollowClicked = { viewModel.followUser(following) },
+                                onUnfollowClicked = { viewModel.unfollowUser(following) },
+                                onNavigateToOthersProfile = onNavigateToOthersProfile
+                            )
+                        }
                     }
                 }
             }

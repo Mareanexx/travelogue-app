@@ -33,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
@@ -53,7 +54,7 @@ fun TrendingTripsRow(
     Text(
         modifier = Modifier.padding(horizontal = 15.dp),
         text = stringResource(R.string.trending_trips_label),
-        style = MaterialTheme.typography.labelMedium, color = primaryText
+        style = MaterialTheme.typography.labelMedium.copy(fontSize = 20.sp), color = primaryText
     )
 
     LazyRow(

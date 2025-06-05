@@ -61,7 +61,7 @@ fun SearchResultsTabs(
         }
 
         when (searchUiState) {
-            is SearchUiState.Init -> {}
+            is SearchUiState.Init -> { InitialSearchPlaceholder() }
             is SearchUiState.Loading -> SearchLoading()
             is SearchUiState.Success -> {
                 when (selectedTab.intValue) {

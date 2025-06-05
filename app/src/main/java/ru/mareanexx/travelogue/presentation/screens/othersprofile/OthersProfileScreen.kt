@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.domain.profile.entity.ProfileWithTrips
 import ru.mareanexx.travelogue.presentation.components.ErrorLoadingContent
+import ru.mareanexx.travelogue.presentation.screens.othersprofile.components.NoTripsPlaceholder
 import ru.mareanexx.travelogue.presentation.screens.othersprofile.components.OthersProfileEventHandler
 import ru.mareanexx.travelogue.presentation.screens.othersprofile.components.OthersProfileFollowersAndButtons
 import ru.mareanexx.travelogue.presentation.screens.othersprofile.components.OthersProfileSkeleton
@@ -88,7 +89,9 @@ fun OthersProfileLoadedContent(
     val showHeader = remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
 
     PullToRefreshBox(
-        modifier = Modifier.fillMaxSize().background(color = Color.White),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White),
         isRefreshing = isRefreshing.value,
         onRefresh = { viewModel.refresh() }
     ) {
@@ -129,12 +132,22 @@ fun OthersProfileLoadedContent(
                     onShowNotImplementedToast = { viewModel.showNotImplementedToast() },
                 )
             }
-            items(profileWithTrips.trips) { trip ->
-                TripCard(
-                    whose = "others", trip,
-                    navigateToTrip = { navigateToTrip(trip.id, profileWithTrips.profile.username, profileWithTrips.profile.avatar ?: "") },
-                    onSendReport = { viewModel.createReport(trip.id) }
-                )
+            if (profileWithTrips.trips.isEmpty()) {
+                item {
+                    NoTripsPlaceholder(
+                        image = R.drawable.no_content_placeholder,
+                        title = R.string.no_trips_yet,
+                        smallText = R.string.no_trips_small_text
+                    )
+                }
+            } else {
+                items(profileWithTrips.trips) { trip ->
+                    TripCard(
+                        whose = "others", trip,
+                        navigateToTrip = { navigateToTrip(trip.id, profileWithTrips.profile.username, profileWithTrips.profile.avatar ?: "") },
+                        onSendReport = { viewModel.createReport(trip.id) }
+                    )
+                }
             }
         }
     }

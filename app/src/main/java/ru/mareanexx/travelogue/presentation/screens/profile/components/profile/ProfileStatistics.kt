@@ -16,11 +16,15 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.presentation.screens.othersprofile.viewmodel.state.FollowingState
+import ru.mareanexx.travelogue.presentation.theme.disabledButtonContainer
 import ru.mareanexx.travelogue.presentation.theme.profilePrimaryText
 import ru.mareanexx.travelogue.presentation.theme.profileSecondaryText
 
@@ -37,7 +41,7 @@ fun ProfileStatisticsBlock(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .padding(horizontal = 42.dp)
+            .padding(end = 60.dp, start = 20.dp)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
@@ -48,8 +52,8 @@ fun ProfileStatisticsBlock(
         OneProfileStatsColumn(
             value = resultFollowersNumber,
             descriptionRes = R.string.followers
-        ) { VerticalDivider() }
-        OneProfileStatsColumn(followingsNumber, R.string.followings) { VerticalDivider() }
+        ) { VerticalDivider(color = disabledButtonContainer) }
+        OneProfileStatsColumn(followingsNumber, R.string.followings) { VerticalDivider(color = disabledButtonContainer) }
     }
 }
 
@@ -59,18 +63,18 @@ fun OneProfileStatsColumn(
     @StringRes descriptionRes: Int,
     prefixDivider: @Composable (() -> Unit)? = null
 ) {
-    Row(horizontalArrangement = Arrangement.spacedBy(15.dp)) {
+    Row(horizontalArrangement = Arrangement.spacedBy(15.dp), verticalAlignment = Alignment.CenterVertically) {
         if (prefixDivider != null) prefixDivider()
 
         Column {
             Text(
                 text = "$value",
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.SemiBold),
                 color = profilePrimaryText
             )
             Text(
                 text = stringResource(descriptionRes),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal, fontSize = 11.sp),
                 color = profileSecondaryText
             )
         }

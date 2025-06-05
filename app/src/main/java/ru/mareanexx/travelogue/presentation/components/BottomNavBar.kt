@@ -2,8 +2,9 @@ package ru.mareanexx.travelogue.presentation.components
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,7 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,19 +41,19 @@ fun BottomNavBar(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().background(Color.White).padding(bottom = 20.dp)
-            .padding(vertical = 8.dp, horizontal = 20.dp),
+            .padding(vertical = 8.dp, horizontal = 30.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        NavItem("profile", R.drawable.my_profile_icon, R.string.my_profile, selectedTab == "profile") {
+        NavItem(R.drawable.my_profile_icon, R.string.my_profile, selectedTab == "profile") {
             onTabSelected("profile")
         }
-        NavItem("activity", R.drawable.group_icon, R.string.activity, selectedTab == "activity") {
+        NavItem(R.drawable.group_icon, R.string.activity, selectedTab == "activity") {
             onTabSelected("activity")
         }
-        NavItem("notifications", R.drawable.notifs_icon, R.string.notifications, selectedTab == "notifications") {
+        NavItem(R.drawable.notifs_icon, R.string.notifications, selectedTab == "notifications") {
             onTabSelected("notifications")
         }
-        NavItem("explore", R.drawable.explore_icon, R.string.explore, selectedTab == "explore") {
+        NavItem(R.drawable.explore_icon, R.string.explore, selectedTab == "explore") {
             onTabSelected("explore")
         }
     }
@@ -60,20 +61,27 @@ fun BottomNavBar(
 
 @Composable
 fun NavItem(
-    route: String,
     @DrawableRes icon: Int,
     @StringRes label: Int,
     selected: Boolean,
     navigateTo: () -> Unit
 ) {
-    val scale by animateFloatAsState(
-        targetValue = if (selected) 1.1f else 1f,
-        animationSpec = tween(
-            durationMillis = 200,
-            easing = FastOutSlowInEasing
-        ),
-        label = "NavItemScale"
-    )
+    val scale = remember { Animatable(1f) }
+
+    LaunchedEffect(selected) {
+        if (selected) {
+            scale.snapTo(1f)
+            scale.animateTo(
+                targetValue = 1.2f,
+                animationSpec = tween(durationMillis = 100, easing = LinearOutSlowInEasing)
+            )
+            scale.animateTo(
+                targetValue = 1.05f,
+                animationSpec = tween(durationMillis = 100, easing = FastOutLinearInEasing)
+            )
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -82,13 +90,13 @@ fun NavItem(
                 indication = null
             ) { navigateTo() }
             .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
+                scaleX = scale.value
+                scaleY = scale.value
             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            modifier = Modifier.size(35.dp),
+            modifier = Modifier.size(30.dp),
             painter = painterResource(icon),
             contentDescription = stringResource(label),
             tint = if (selected) enabledButtonContainer else unfocusedNavBarItem
@@ -97,9 +105,10 @@ fun NavItem(
             text = stringResource(label),
             color = if (selected) Color.Black else unfocusedNavBarItem,
             fontFamily = MontserratFamily,
-            fontSize = 10.sp,
+            fontSize = 9.sp,
             lineHeight = 11.sp,
-            fontWeight = FontWeight.SemiBold
+            letterSpacing = 0.3.sp,
+            fontWeight = FontWeight.Medium
         )
     }
 }

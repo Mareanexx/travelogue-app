@@ -2,8 +2,10 @@ package ru.mareanexx.travelogue.presentation.screens.notifications
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.presentation.components.AreYouSureDialog
+import ru.mareanexx.travelogue.presentation.components.ErrorLoadingContent
 import ru.mareanexx.travelogue.presentation.screens.notifications.components.NotificationsScreenContent
 import ru.mareanexx.travelogue.presentation.screens.notifications.components.skeleton.NotificationsScreenSkeleton
 import ru.mareanexx.travelogue.presentation.screens.notifications.viewmodel.NotificationsViewModel
@@ -71,7 +74,14 @@ fun NotificationsScreen(viewModel: NotificationsViewModel = hiltViewModel()) {
                 onDeleteNotifications = { viewModel.onDeleteVariantClicked() },
                 onRefresh = { viewModel.refresh() }
             )
-            is NotificationsUiState.Error -> {} // TODO() реализовать показ диалога
+            is NotificationsUiState.Error -> {
+                Box(modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp)) {
+                    ErrorLoadingContent(
+                        message = R.string.retry_description,
+                        onRetry = { viewModel.refresh() }
+                    )
+                }
+            }
         }
     }
 }

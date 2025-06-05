@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,6 +41,7 @@ import ru.mareanexx.travelogue.presentation.screens.explore.viewmodel.ExploreVie
 import ru.mareanexx.travelogue.presentation.screens.explore.viewmodel.SearchViewModel
 import ru.mareanexx.travelogue.presentation.screens.explore.viewmodel.event.ExploreEvent
 import ru.mareanexx.travelogue.presentation.screens.explore.viewmodel.state.ExploreUiState
+import ru.mareanexx.travelogue.presentation.theme.mapPointsRowBack
 import ru.mareanexx.travelogue.presentation.theme.primaryText
 
 
@@ -140,15 +142,17 @@ fun ExploreLoadedContent(
         item { TrendingTagsGrid(trendingTags.value, onNavigateToTagScreen = onNavigateToTagScreen) }
 
         item {
-            TrendingTripsRow(trendingTrips.value,
-                onSendReport = { tripId -> viewModel.createReport(tripId) },
-                onNavigateToTrip
-            )
+            Column(modifier = Modifier.background(mapPointsRowBack).padding(top = 30.dp)) {
+                TrendingTripsRow(trendingTrips.value,
+                    onSendReport = { tripId -> viewModel.createReport(tripId) },
+                    onNavigateToTrip
+                )
+            }
         }
 
         item {
             Text(
-                modifier = Modifier.padding(horizontal = 15.dp).padding(bottom = 15.dp),
+                modifier = Modifier.padding(horizontal = 15.dp).padding(bottom = 15.dp, top = 25.dp),
                 text = stringResource(R.string.inspiring_travelers_label),
                 style = MaterialTheme.typography.labelMedium, color = primaryText
             )

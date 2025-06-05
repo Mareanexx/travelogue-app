@@ -135,6 +135,7 @@ fun SearchOverlay(
                     Icon(
                         modifier = Modifier.height(20.dp),
                         imageVector = Icons.Default.Close,
+                        tint = primaryText,
                         contentDescription = stringResource(R.string.close)
                     )
                 }

@@ -50,12 +50,12 @@ fun ProfileCoverPhoto(profileData: ProfileDto?) {
 
 @Composable
 fun ProfileHeaderBlock(profileData: ProfileDto?, visible: Boolean) {
-    val avatarAnimSize by animateDpAsState(if (visible) 50.dp else 80.dp, label = "avatarAnimSize")
+    val avatarAnimSize by animateDpAsState(if (visible) 50.dp else 70.dp, label = "avatarAnimSize")
     val horizPaddingAnim by animateDpAsState(if (visible) 15.dp else 5.dp, label = "paddingAnim")
 
     Row(
         modifier = Modifier.fillMaxWidth().background(Color.White)
-            .padding(start = 25.dp, top = horizPaddingAnim, bottom = horizPaddingAnim),
+            .padding(start = 15.dp, top = horizPaddingAnim, bottom = horizPaddingAnim),
         horizontalArrangement = Arrangement.spacedBy(15.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
