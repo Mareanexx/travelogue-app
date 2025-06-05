@@ -32,7 +32,7 @@ val deleteText = Color(0xFFDE0202)
 
 val selectedVariant = Color(0xFF2D83B4)
 
-val searchBackground = Color(0xFFE8ECF2)
+val searchBackground = Color(0xFFD9DCE1)
 val searchText = Color(0xFF797A7F)
 
 val blueBackground = Color(0xFF04A4F0)

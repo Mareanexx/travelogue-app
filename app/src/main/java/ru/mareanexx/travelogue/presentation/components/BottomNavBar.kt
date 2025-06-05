@@ -40,7 +40,9 @@ fun BottomNavBar(
     onTabSelected: (String) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().background(Color.White).padding(bottom = 20.dp)
+        modifier = Modifier.fillMaxWidth()
+            .outerShadow(Color.Black.copy(0.1f), spread = 2.dp, blurRadius = 10.dp)
+            .background(Color.White).padding(bottom = 20.dp)
             .padding(vertical = 8.dp, horizontal = 30.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

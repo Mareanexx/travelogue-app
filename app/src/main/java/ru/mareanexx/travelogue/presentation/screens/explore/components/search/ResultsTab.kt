@@ -1,6 +1,7 @@
 package ru.mareanexx.travelogue.presentation.screens.explore.components.search
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -33,7 +34,7 @@ fun SearchResultsTabs(
     val searchResults = searchViewModel.searchResults.collectAsState()
     val tabs = listOf(R.string.people_tab, R.string.trips_tab)
 
-    Column {
+    Column(modifier = Modifier.fillMaxSize()) {
         TabRow(
             containerColor = Color.White,
             contentColor = primaryText,

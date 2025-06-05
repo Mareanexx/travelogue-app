@@ -56,7 +56,7 @@ fun NotificationsScreenContent(
             EmptyNotificationsTexts()
         } else {
             LazyColumn(
-                contentPadding = PaddingValues(top = 20.dp, bottom = 10.dp),
+                contentPadding = PaddingValues(top = 10.dp, bottom = 10.dp),
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {

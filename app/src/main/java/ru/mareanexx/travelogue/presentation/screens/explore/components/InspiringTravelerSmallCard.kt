@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -44,13 +46,13 @@ fun InspiringTravelerSmallCard(
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp).padding(bottom = 15.dp)
             .shadow(elevation = 3.dp, Shapes.small, ambientColor = Color.Black.copy(alpha = 0.3f), spotColor = Color.Black.copy(alpha = 0.2f))
-            .background(Color.White, Shapes.small).padding(horizontal = 10.dp, vertical = 7.dp)
+            .background(Color.White, Shapes.small).padding(horizontal = 15.dp, vertical = 10.dp)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
             ) { onNavigateToOthersProfile(inspiringProfile.id) },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -71,12 +73,13 @@ fun InspiringTravelerSmallCard(
                     color = profilePrimaryText, fontSize = 14.sp
                 )
                 Text(
-                    text = inspiringProfile.bio,
+                    text = inspiringProfile.bio, overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodySmall,
                     color = profileSecondaryText, fontSize = 11.sp
                 )
             }
         }
+        Spacer(Modifier.weight(1f))
         if (inspiringProfile.isFollowing) {
             UnfollowButton(onUnfollowClicked = onUnfollowClicked)
         } else {

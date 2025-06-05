@@ -101,7 +101,7 @@ fun FollowsTab(
         onClick = { tabIndex.intValue = curIndex }
     ) {
         Text(
-            modifier = Modifier.padding(bottom = 10.dp, top = 10.dp),
+            modifier = Modifier.padding(bottom = 15.dp, top = 10.dp),
             text = "$value ${stringResource(tabTitle)}",
             style = MaterialTheme.typography.labelSmall,
             color = profilePrimaryText

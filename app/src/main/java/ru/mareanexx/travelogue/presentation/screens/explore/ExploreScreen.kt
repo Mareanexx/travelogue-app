@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -43,6 +44,7 @@ import ru.mareanexx.travelogue.presentation.screens.explore.viewmodel.event.Expl
 import ru.mareanexx.travelogue.presentation.screens.explore.viewmodel.state.ExploreUiState
 import ru.mareanexx.travelogue.presentation.theme.mapPointsRowBack
 import ru.mareanexx.travelogue.presentation.theme.primaryText
+import ru.mareanexx.travelogue.presentation.theme.searchBackground
 
 
 data class SearchOverlayState(
@@ -126,12 +128,12 @@ fun ExploreLoadedContent(
     ExploreEventHandler(viewModel.eventFlow)
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize().background(Color.White)
+        modifier = Modifier.fillMaxSize().background(mapPointsRowBack)
             .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
     ) {
         stickyHeader {
             Text(
-                modifier = Modifier.fillMaxWidth().background(Color.White).padding(top = 10.dp, bottom = 15.dp, start = 15.dp, end = 15.dp),
+                modifier = Modifier.fillMaxWidth().background(mapPointsRowBack).padding(top = 10.dp, bottom = 15.dp, start = 15.dp, end = 15.dp),
                 text = stringResource(R.string.explore),
                 style = MaterialTheme.typography.titleMedium
             )
@@ -142,11 +144,13 @@ fun ExploreLoadedContent(
         item { TrendingTagsGrid(trendingTags.value, onNavigateToTagScreen = onNavigateToTagScreen) }
 
         item {
-            Column(modifier = Modifier.background(mapPointsRowBack).padding(top = 30.dp)) {
+            Column(modifier = Modifier.background(Color.White)) {
+                HorizontalDivider(modifier = Modifier.padding(bottom = 30.dp), color = searchBackground, thickness = 1.dp)
                 TrendingTripsRow(trendingTrips.value,
                     onSendReport = { tripId -> viewModel.createReport(tripId) },
                     onNavigateToTrip
                 )
+                HorizontalDivider(color = searchBackground, thickness = 1.dp)
             }
         }
 

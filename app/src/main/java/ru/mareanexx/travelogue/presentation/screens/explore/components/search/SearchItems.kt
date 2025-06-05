@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -49,7 +50,7 @@ fun ProfileSearchItem(
                 onClick = onNavigateToOthersProfile
             ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -70,12 +71,13 @@ fun ProfileSearchItem(
                     color = profilePrimaryText, fontSize = 14.sp
                 )
                 Text(
-                    profile.bio,
+                    profile.bio, overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodySmall,
                     color = profileSecondaryText, fontSize = 11.sp
                 )
             }
         }
+        Spacer(Modifier.weight(1f))
         if (profile.isFollowing) {
             UnfollowButton(onUnfollowClicked = unfollowUser)
         } else {

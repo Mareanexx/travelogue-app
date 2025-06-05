@@ -123,7 +123,7 @@ fun SearchOverlay(
                     onValueChange = { onQueryChanged(it) },
                     singleLine = true,
                     textStyle = TextStyle(color = searchText, fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium, fontFamily = MontserratFamily, lineHeight = 14.sp),
+                        fontWeight = FontWeight.SemiBold, fontFamily = MontserratFamily, lineHeight = 14.sp),
                 )
                 Button(
                     modifier = Modifier.width(25.dp),

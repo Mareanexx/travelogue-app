@@ -90,7 +90,7 @@ fun ProfileFollowersAndButtons(
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp),
-        verticalArrangement = Arrangement.spacedBy(15.dp)
+        verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         ProfileStatisticsBlock(
             tripsNumber = profileData.value!!.tripsNumber,
