@@ -125,14 +125,15 @@ fun TripScreenLoadedContent(
         if (expandedMapPoint.value != null) {
             Box(modifier = Modifier.align(Alignment.BottomCenter)) {
                 ExpandedMapPointCard(
-                    profileId,
+                    profileId = profileId,
                     mapPointData = expandedMapPoint,
                     onDismiss = { expandedMapPoint.value = null },
                     onOpenEditSheet = {
                         tripViewModel.onFillEditForm(expandedMapPoint.value!!)
                         tripViewModel.showBottomSheet(BottomSheetType.EditStep)
                     },
-                    onAddLike = { id -> tripViewModel.likeMapPoint(id) }, onRemoveLike = { id -> tripViewModel.removeLike(id) }
+                    onAddLike = { id -> tripViewModel.likeMapPoint(id) }, onRemoveLike = { id -> tripViewModel.removeLike(id) },
+                    onNavigateToOthersProfile = onNavigateToOthersProfile
                 )
             }
         }

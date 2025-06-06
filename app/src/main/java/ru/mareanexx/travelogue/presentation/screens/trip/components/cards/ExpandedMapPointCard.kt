@@ -68,7 +68,8 @@ fun ExpandedMapPointCard(
     mapPointData: MutableState<MapPointWithPhotos?>,
     onDismiss: () -> Unit, onOpenEditSheet: () -> Unit,
     commentsViewModel: CommentsViewModel = hiltViewModel(),
-    onAddLike: (Int) -> Unit, onRemoveLike: (Int) -> Unit
+    onAddLike: (Int) -> Unit, onRemoveLike: (Int) -> Unit,
+    onNavigateToOthersProfile: (Int) -> Unit
 ) {
     val commentsData = commentsViewModel.commentsData.collectAsState()
     val commentsUiState = commentsViewModel.uiState.collectAsState()
@@ -185,7 +186,13 @@ fun ExpandedMapPointCard(
                     CommentsUiState.Loading -> { item { CommentsSkeleton() } }
                     CommentsUiState.Success -> {
                         items(commentsData.value) { comment ->
-                            OneCommentRow(comment)
+                            OneCommentRow(
+                                comment = comment,
+                                onNavigateToOthersProfile = {
+                                    if (commentsViewModel.onCheckIfCommentIsOthers(comment.senderProfileId))
+                                        onNavigateToOthersProfile(comment.senderProfileId)
+                                }
+                            )
                             Spacer(Modifier.height(20.dp))
                         }
                     }

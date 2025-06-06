@@ -26,6 +26,7 @@ class CommentsViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _mapPointId = MutableStateFlow(-1)
+
     private val _authorData = MutableStateFlow(AuthorCommentSender())
     val authorData = _authorData.asStateFlow()
 
@@ -46,6 +47,8 @@ class CommentsViewModel @Inject constructor(
     private fun setErrorState() { _uiState.value = CommentsUiState.Error }
 
     fun onCommentTextChanged(newValue: String) { _commentMessage.value = newValue }
+
+    fun onCheckIfCommentIsOthers(senderProfileId: Int) = senderProfileId != _authorData.value.id
 
     fun retry() {
         viewModelScope.launch {

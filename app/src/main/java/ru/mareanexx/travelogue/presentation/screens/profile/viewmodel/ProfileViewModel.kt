@@ -58,7 +58,7 @@ class ProfileViewModel @Inject constructor(
                     when(baseResult) {
                         is BaseResult.Error -> { _uiState.value = ProfileUiState.Showing }
                         is BaseResult.Success -> {
-                            _profileData.value.copyStats(baseResult.data)
+                            _profileData.value = _profileData.value.copyStats(baseResult.data)
                             _uiState.value = ProfileUiState.Showing
                         }
                     }

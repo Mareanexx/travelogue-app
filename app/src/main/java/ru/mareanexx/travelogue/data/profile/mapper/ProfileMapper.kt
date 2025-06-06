@@ -71,6 +71,7 @@ fun ProfileDto?.copyStats(updatedStats: UpdatedProfileStatsResponse) = this?.cop
 )
 
 fun ProfileEntity.toCommentSender() = AuthorCommentSender(
+    id = id,
     username = username,
     avatar = avatar
 )
