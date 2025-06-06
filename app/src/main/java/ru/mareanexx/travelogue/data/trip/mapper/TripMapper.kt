@@ -15,20 +15,6 @@ import java.time.OffsetDateTime
 import java.time.Period
 import java.time.ZoneId
 
-fun AuthorTrip.toEntity(profileId: Int) = TripEntity(
-    id = id,
-    name = name,
-    description = description,
-    startDate = startDate,
-    endDate = endDate,
-    stepsNumber = stepsNumber,
-    daysNumber = daysNumber,
-    type = type,
-    status = status,
-    coverPhoto = coverPhoto,
-    profileId = profileId
-)
-
 fun Trip.toEntity() = TripEntity(
     id = id,
     name = name,

@@ -24,6 +24,7 @@ import ru.mareanexx.travelogue.domain.trip.usecase.DeleteTripUseCase
 import ru.mareanexx.travelogue.domain.trip.usecase.GetAuthorsTripsUseCase
 import ru.mareanexx.travelogue.domain.trip.usecase.GetUpdatedTripStats
 import ru.mareanexx.travelogue.domain.trip.usecase.UpdateTripUseCase
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.TripTypifiedDialog
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.TripsEvent
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.form.TripForm
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
@@ -62,6 +63,15 @@ class TripsViewModel @Inject constructor(
     private fun showToast(message: String?) {
         viewModelScope.launch {
             _eventFlow.emit(TripsEvent.ShowToast(message ?: "Unknown error"))
+        }
+    }
+
+    fun onShowTypifiedDialog(tripId: Int = -1, type: TripTypifiedDialog) {
+        viewModelScope.launch {
+            if (type == TripTypifiedDialog.CreateTag) {
+                if (_formState.value.tagList.size == 3) _eventFlow.emit(TripsEvent.ShowToast("No more tags can be added"))
+            }
+            _eventFlow.emit(TripsEvent.ShowTypifiedDialog(tripId, type))
         }
     }
 
@@ -117,17 +127,14 @@ class TripsViewModel @Inject constructor(
         _formState.value = _formState.value.copy(tagList = newList)
     }
 
-    fun addNewTag(tag: String = "") {
-        val tempList = _formState.value.tagList
-        if (tempList.size >= 3) return
-        _formState.value = _formState.value.copy(tagList = tempList + tag)
+    fun addNewTag() {
+        _formState.value = _formState.value.let {
+            it.copy(tagList = it.tagList + it.newTagName, newTagName = "")
+        }
     }
 
-    fun onConcreteTagNameChanged(requiredIndex: Int, newVal: String) {
-        val newList = _formState.value.tagList.mapIndexed { index, prevVal ->
-            if (index == requiredIndex) newVal else prevVal
-        }
-        _formState.value = _formState.value.copy(tagList = newList)
+    fun onNewTagNameChanged(newValue: String) {
+        _formState.value = _formState.value.copy(newTagName = newValue)
     }
 
     fun onTripNameChanged(value: String) {
@@ -171,10 +178,6 @@ class TripsViewModel @Inject constructor(
                     }
                 }
         }
-    }
-
-    fun onDeleteClicked(tripId: Int) {
-        viewModelScope.launch { _eventFlow.emit(TripsEvent.ShowDeleteDialog(tripId)) }
     }
 
     fun deleteTrip(tripId: Int) {

@@ -30,6 +30,7 @@ import ru.mareanexx.travelogue.presentation.screens.profile.components.trips.Tri
 import ru.mareanexx.travelogue.presentation.screens.profile.components.trips.TripsEventHandler
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.ProfileViewModel
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.TripsViewModel
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.TripTypifiedDialog
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -41,11 +42,15 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel = hiltViewModel(),
     tripsViewModel: TripsViewModel = hiltViewModel()
 ) {
+    val formState = tripsViewModel.formState.collectAsState()
     val listState = rememberLazyListState()
 
     TripsEventHandler(
         eventFlow = tripsViewModel.eventFlow,
-        onDeleteConfirmed = { tripId -> tripsViewModel.deleteTrip(tripId) }
+        onDeleteConfirmed = { tripId -> tripsViewModel.deleteTrip(tripId) },
+        enteredTagName = formState.value.newTagName,
+        onTagNameChanged = { tripsViewModel.onNewTagNameChanged(it) },
+        onAddTagClicked = { tripsViewModel.addNewTag() },
     )
 
     ProfileEventHandler(
@@ -107,7 +112,7 @@ fun ProfileScreen(
                             TripCard(
                                 trip = trip,
                                 navigateToTrip = { navigateToTrip(trip.id, profileData.value!!.username, profileData.value!!.avatar.toString()) },
-                                onDeleteTrip = { tripsViewModel.onDeleteClicked(trip.id) },
+                                onDeleteTrip = { tripsViewModel.onShowTypifiedDialog(trip.id, TripTypifiedDialog.Delete) },
                                 onEditTrip = { tripsViewModel.onEditPanelOpen(trip) }
                             )
                         }

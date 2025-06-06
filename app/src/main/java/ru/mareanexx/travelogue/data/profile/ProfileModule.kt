@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 import ru.mareanexx.travelogue.data.profile.local.dao.ProfileDao
 import ru.mareanexx.travelogue.data.profile.remote.api.ProfileApi
 import ru.mareanexx.travelogue.data.profile.repository.ProfileRepositoryImpl
+import ru.mareanexx.travelogue.data.tag.local.dao.TagDao
 import ru.mareanexx.travelogue.data.trip.local.dao.TripDao
 import ru.mareanexx.travelogue.domain.profile.ProfileRepository
 import ru.mareanexx.travelogue.utils.UserSessionManager
@@ -29,8 +30,9 @@ object ProfileModule {
         userSession: UserSessionManager,
         profileApi: ProfileApi,
         profileDao: ProfileDao,
-        tripDao: TripDao
+        tripDao: TripDao,
+        tagDao: TagDao
     ): ProfileRepository {
-        return ProfileRepositoryImpl(userSession, profileApi, profileDao, tripDao)
+        return ProfileRepositoryImpl(userSession, profileApi, profileDao, tripDao, tagDao)
     }
 }

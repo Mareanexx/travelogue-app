@@ -55,6 +55,7 @@ import ru.mareanexx.travelogue.presentation.screens.profile.components.trips.Con
 import ru.mareanexx.travelogue.presentation.screens.profile.components.trips.CoverPhotoChooserBox
 import ru.mareanexx.travelogue.presentation.screens.profile.components.trips.CoverPhotoImage
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.TripsViewModel
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.TripTypifiedDialog
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.TripsEvent
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 import ru.mareanexx.travelogue.presentation.screens.start.components.CheckFieldsButton
@@ -75,7 +76,6 @@ fun TripSheetContent(
     onAction: (TripsViewModel) -> Unit,
     viewModel: TripsViewModel = hiltViewModel()
 ) {
-
     val tripUiState by viewModel.uiState.collectAsState()
     val tripForm by viewModel.formState.collectAsState()
     val bottomSheetState = remember { mutableStateOf(false) }
@@ -149,11 +149,11 @@ fun TripSheetContent(
         )
         LazyRow(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
             item {
-                AddTagButton { viewModel.addNewTag() }
+                AddTagButton { viewModel.onShowTypifiedDialog(type = TripTypifiedDialog.CreateTag) }
             }
-            itemsIndexed(tripForm.tagList) { index, value ->
-                ConcreteTag(value,
-                    onValueChanged = { newVal -> viewModel.onConcreteTagNameChanged(index, newVal) },
+            itemsIndexed(tripForm.tagList) { index, tagName ->
+                ConcreteTag(
+                    tagName = tagName,
                     onTagDelete = { viewModel.onConcreteTagDelete(index) }
                 )
             }

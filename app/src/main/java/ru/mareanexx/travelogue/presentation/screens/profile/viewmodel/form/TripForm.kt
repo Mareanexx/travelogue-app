@@ -15,6 +15,8 @@ data class TripForm(
     val status: TripTimeStatus = TripTimeStatus.Current,
     val coverPhoto: File? = null,
     val coverPhotoPath: String? = null,
+
+    val newTagName: String = "",
     val tagList: List<String> = emptyList(),
 
     val buttonEnabled: Boolean = false

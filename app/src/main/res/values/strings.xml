@@ -117,6 +117,8 @@
     <string name="start_date">Start date</string>
     <string name="end_date">End date</string>
     <string name="trip_dates">Trip dates</string>
+    <string name="enter_tag_name_title">Come up with tag name</string>
+    <string name="tf_label_enter_tag_name">Enter tag name</string>
 
     <!--Are you sure Dialog-->
     <string name="cancel_btn">Cancel</string>

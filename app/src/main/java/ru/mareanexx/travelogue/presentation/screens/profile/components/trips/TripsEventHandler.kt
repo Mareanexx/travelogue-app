@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.presentation.components.AreYouSureDialog
 import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.TripSheetContent
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.TripTypifiedDialog
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.TripsEvent
 
 
@@ -25,9 +26,12 @@ import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.Trip
 fun TripsEventHandler(
     eventFlow: Flow<TripsEvent>,
     onDeleteConfirmed: (Int) -> Unit,
+    enteredTagName: String,
+    onTagNameChanged: (String) -> Unit, onAddTagClicked: () -> Unit
 ) {
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
+    val dialogType = remember { mutableStateOf(TripTypifiedDialog.Delete) }
     val deletedTrip = remember { mutableIntStateOf(-1) }
     var showEditTripSheet by remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -38,8 +42,9 @@ fun TripsEventHandler(
                 is TripsEvent.ShowToast -> {
                     Toast.makeText(context, tripsEvent.message, Toast.LENGTH_SHORT).show()
                 }
-                is TripsEvent.ShowDeleteDialog -> {
+                is TripsEvent.ShowTypifiedDialog -> {
                     deletedTrip.intValue = tripsEvent.id
+                    dialogType.value = tripsEvent.type
                     showDialog = true
                 }
                 is TripsEvent.ShowEditBottomSheet -> { showEditTripSheet = tripsEvent.showing }
@@ -48,14 +53,26 @@ fun TripsEventHandler(
     }
 
     if (showDialog) {
-        AreYouSureDialog(
-            additional = R.string.this_trip_variant_del,
-            onCancelClicked = { showDialog = false },
-            onDeleteClicked = {
-                onDeleteConfirmed(deletedTrip.intValue)
-                showDialog = false
-            },
-        )
+        when(dialogType.value) {
+            TripTypifiedDialog.Delete -> {
+                AreYouSureDialog(
+                    additional = R.string.this_trip_variant_del,
+                    onCancelClicked = { showDialog = false },
+                    onDeleteClicked = {
+                        onDeleteConfirmed(deletedTrip.intValue)
+                        showDialog = false
+                    },
+                )
+            }
+            TripTypifiedDialog.CreateTag -> {
+                CreateTagDialog(
+                    enteredTagName = enteredTagName,
+                    onTagNameChanged = onTagNameChanged,
+                    onCancelClicked = { showDialog = false },
+                    onAddTagClicked = onAddTagClicked
+                )
+            }
+        }
     }
 
     if (showEditTripSheet) {

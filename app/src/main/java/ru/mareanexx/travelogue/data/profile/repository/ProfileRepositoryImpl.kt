@@ -16,6 +16,8 @@ import ru.mareanexx.travelogue.data.profile.remote.dto.NewProfileRequest
 import ru.mareanexx.travelogue.data.profile.remote.dto.ProfileDto
 import ru.mareanexx.travelogue.data.profile.remote.dto.UpdateProfileRequest
 import ru.mareanexx.travelogue.data.profile.remote.dto.UpdatedProfileStatsResponse
+import ru.mareanexx.travelogue.data.tag.local.dao.TagDao
+import ru.mareanexx.travelogue.data.tag.mapper.toEntity
 import ru.mareanexx.travelogue.data.trip.local.dao.TripDao
 import ru.mareanexx.travelogue.data.trip.mapper.toEntity
 import ru.mareanexx.travelogue.domain.common.BaseResult
@@ -30,7 +32,8 @@ class ProfileRepositoryImpl @Inject constructor(
     private val userSession: UserSessionManager,
     private val profileApi: ProfileApi,
     private val profileDao: ProfileDao,
-    private val tripDao: TripDao
+    private val tripDao: TripDao,
+    private val tagDao: TagDao
 ): ProfileRepository {
     override suspend fun uploadProfile(newProfile: NewProfileRequest, avatar: File?): Flow<BaseResult<Profile, String>> {
         return flow {
@@ -70,7 +73,10 @@ class ProfileRepositoryImpl @Inject constructor(
                     when(result) {
                         is BaseResult.Success -> {
                             profileDao.insert(result.data.profile.toEntity(userSession.getSession().userUuid!!))
-                            tripDao.insertTrips(result.data.trips.map { it.toEntity(result.data.profile.id) })
+                            tripDao.insertTrips(result.data.trips.map { it.toEntity() })
+                            tagDao.insertTags(
+                                result.data.trips.flatMap { trips -> trips.tagList?.map { it.toEntity(trips.id) } ?: emptyList() }
+                            )
                             userSession.saveProfileId(result.data.profile.id)
                             emit(BaseResult.Success(result.data.profile))
                         }
