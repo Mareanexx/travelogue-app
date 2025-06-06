@@ -13,10 +13,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -30,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.domain.profile.entity.ProfileWithTrips
+import ru.mareanexx.travelogue.presentation.components.CustomPullToRefreshBox
 import ru.mareanexx.travelogue.presentation.components.ErrorLoadingContent
 import ru.mareanexx.travelogue.presentation.screens.othersprofile.components.NoTripsPlaceholder
 import ru.mareanexx.travelogue.presentation.screens.othersprofile.components.OthersProfileEventHandler
@@ -73,7 +72,7 @@ fun OthersProfileScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OthersProfileLoadedContent(
     profileWithTrips: ProfileWithTrips,
@@ -88,10 +87,8 @@ fun OthersProfileLoadedContent(
 
     val showHeader = remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
 
-    PullToRefreshBox(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White),
+    CustomPullToRefreshBox(
+        modifier = Modifier.fillMaxSize().background(color = Color.White),
         isRefreshing = isRefreshing.value,
         onRefresh = { viewModel.refresh() }
     ) {

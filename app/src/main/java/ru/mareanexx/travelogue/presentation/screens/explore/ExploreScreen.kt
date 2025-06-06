@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.flow.SharedFlow
 import ru.mareanexx.travelogue.R
+import ru.mareanexx.travelogue.presentation.components.CustomPullToRefreshBox
 import ru.mareanexx.travelogue.presentation.screens.explore.components.ErrorRetryBlock
 import ru.mareanexx.travelogue.presentation.screens.explore.components.InspiringTravelerBigCard
 import ru.mareanexx.travelogue.presentation.screens.explore.components.InspiringTravelerSmallCard
@@ -52,7 +51,6 @@ data class SearchOverlayState(
     val query: String = ""
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreScreen(
     onNavigateToTagScreen: (Int, String) -> Unit,
@@ -70,7 +68,7 @@ fun ExploreScreen(
             is ExploreUiState.Error -> { ErrorRetryBlock(onRetry = { exploreViewModel.refresh() }) }
             ExploreUiState.Loading -> { ExploreSkeleton() }
             ExploreUiState.Showing -> {
-                PullToRefreshBox(
+                CustomPullToRefreshBox(
                     isRefreshing = isRefreshing.value,
                     onRefresh = { exploreViewModel.refresh() }
                 ) {

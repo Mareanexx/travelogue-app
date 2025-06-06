@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -21,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.travelogue.R
+import ru.mareanexx.travelogue.presentation.components.CustomPullToRefreshBox
 import ru.mareanexx.travelogue.presentation.screens.follows.components.ErrorRetry
 import ru.mareanexx.travelogue.presentation.screens.follows.components.FollowsHeader
 import ru.mareanexx.travelogue.presentation.screens.follows.components.FollowsSkeleton
@@ -62,7 +61,7 @@ fun FollowsScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FollowsLoadedContent(
     profileUsername: String,
@@ -76,7 +75,7 @@ fun FollowsLoadedContent(
     val tabIndex = remember { mutableIntStateOf(0) }
     val tabs = listOf(R.string.followers, R.string.followings)
 
-    PullToRefreshBox(
+    CustomPullToRefreshBox(
         modifier = Modifier.fillMaxSize().background(Color.White).systemBarsPadding(),
         isRefreshing = isRefreshing.value,
         onRefresh = { viewModel.retry() },

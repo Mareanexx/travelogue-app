@@ -14,10 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.flow.Flow
 import ru.mareanexx.travelogue.R
+import ru.mareanexx.travelogue.presentation.components.AreYouSureDialog
 import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.AccountSettingsSheetContent
 import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.EditProfileSheetContent
 import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.TripSheetContent
 import ru.mareanexx.travelogue.presentation.screens.profile.components.modalsheet.TripTypeSheetContent
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.DeletedType
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
 
 enum class ProfileBottomSheetType {
@@ -28,12 +30,14 @@ enum class ProfileBottomSheetType {
 @Composable
 fun ProfileEventHandler(
     eventFlow: Flow<ProfileEvent>,
-    navigateToStartScreen: () -> Unit
+    navigateToStartScreen: () -> Unit,
+    onDeleteImageConfirmed: (DeletedType) -> Unit
 ) {
     val context = LocalContext.current
     val bottomSheetType = remember { mutableStateOf(ProfileBottomSheetType.None) }
     var showBottomSheet by remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val showDialog = remember { mutableStateOf<DeletedType?>(null) }
 
     LaunchedEffect(Unit) {
         eventFlow.collect { profileEvent ->
@@ -45,8 +49,19 @@ fun ProfileEventHandler(
                     bottomSheetType.value = profileEvent.type
                     showBottomSheet = profileEvent.showing
                 }
+                is ProfileEvent.ShowDeleteDialog -> {
+                    showDialog.value = profileEvent.deletedType
+                }
             }
         }
+    }
+
+    showDialog.value?.let {
+        AreYouSureDialog(
+            additional = it.text,
+            onCancelClicked = { showDialog.value = null },
+            onDeleteClicked = { onDeleteImageConfirmed(it); showDialog.value = null },
+        )
     }
 
     if (showBottomSheet) {

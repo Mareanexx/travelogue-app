@@ -126,6 +126,8 @@
     <string name="all_notifications_variant_del">all notifications?</string>
     <string name="this_trip_variant_del">this trip?</string>
     <string name="account_variant_del">your account?</string>
+    <string name="your_avatar_variant_del">your avatar?</string>
+    <string name="your_cover_variant_del">your cover photo?</string>
 
     <!--Follows Screen-->
     <string name="get_back_cd">Get back to previous screen</string>

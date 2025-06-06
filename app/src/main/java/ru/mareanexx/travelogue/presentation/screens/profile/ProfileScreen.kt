@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -21,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import ru.mareanexx.travelogue.presentation.components.CustomPullToRefreshBox
 import ru.mareanexx.travelogue.presentation.screens.profile.components.profile.ProfileCoverPhoto
 import ru.mareanexx.travelogue.presentation.screens.profile.components.profile.ProfileEventHandler
 import ru.mareanexx.travelogue.presentation.screens.profile.components.profile.ProfileFollowersAndButtons
@@ -33,7 +32,7 @@ import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.ProfileVie
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.TripsViewModel
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
     navigateToFollows: (String, String) -> Unit,
@@ -52,6 +51,7 @@ fun ProfileScreen(
     ProfileEventHandler(
         eventFlow = profileViewModel.eventFlow,
         navigateToStartScreen = navigateToStartScreen,
+        onDeleteImageConfirmed = { profileViewModel.onDeleteImageConfirmed(it) }
     )
 
     val profileUiState = profileViewModel.uiState.collectAsState()
@@ -64,7 +64,7 @@ fun ProfileScreen(
     val showHeader = remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
     var canShowTrips by remember { mutableStateOf(false) }
 
-    PullToRefreshBox(
+    CustomPullToRefreshBox(
         modifier = Modifier.fillMaxSize().background(color = Color.White),
         isRefreshing = profileIsRefreshing.value && tripIsRefreshing.value,
         onRefresh = {

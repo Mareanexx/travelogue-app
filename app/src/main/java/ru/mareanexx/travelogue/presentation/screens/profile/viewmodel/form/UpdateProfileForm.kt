@@ -8,7 +8,9 @@ data class UpdateProfileForm(
     val bio: String = "",
 
     val avatar: File? = null,
-    val coverPhoto: File? = null,
+    val wasAvatarReuploaded: Boolean = false,
+    val newCoverPhoto: File? = null,
+    val wasCoverReuploaded: Boolean = false,
 
     val buttonEnabled: Boolean = false,
 

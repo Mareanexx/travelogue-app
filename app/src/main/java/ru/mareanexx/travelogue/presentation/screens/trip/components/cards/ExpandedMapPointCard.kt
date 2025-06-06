@@ -22,8 +22,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -47,6 +45,7 @@ import coil3.compose.AsyncImage
 import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.data.mappoint.remote.dto.MapPointWithPhotos
+import ru.mareanexx.travelogue.presentation.components.CustomPullToRefreshBox
 import ru.mareanexx.travelogue.presentation.components.ErrorLoadingContent
 import ru.mareanexx.travelogue.presentation.screens.trip.components.cards.components.CommentsSkeleton
 import ru.mareanexx.travelogue.presentation.screens.trip.components.cards.components.DescriptionAndStatsBlock
@@ -63,7 +62,6 @@ import java.util.Locale
 val dateTextFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH)
 val timeTextFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpandedMapPointCard(
     profileId: String,
@@ -129,7 +127,7 @@ fun ExpandedMapPointCard(
 
         ExpandedMapPointCardHeader(alphaFloat, mapPointData)
 
-        PullToRefreshBox(
+        CustomPullToRefreshBox(
             isRefreshing = isRefreshing.value,
             onRefresh = { commentsViewModel.retry() },
             modifier = Modifier.fillMaxWidth().weight(1f),

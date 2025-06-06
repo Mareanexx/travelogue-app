@@ -3,6 +3,7 @@ package ru.mareanexx.travelogue.presentation.screens.profile.components.modalshe
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -35,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
@@ -42,6 +45,7 @@ import ru.mareanexx.travelogue.BuildConfig
 import ru.mareanexx.travelogue.R
 import ru.mareanexx.travelogue.presentation.components.CustomOutlinedTextField
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.ProfileViewModel
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.DeletedType
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
 import ru.mareanexx.travelogue.presentation.screens.start.components.CheckFieldsButton
 import ru.mareanexx.travelogue.presentation.screens.start.components.SupportingText
@@ -85,48 +89,58 @@ fun EditProfileSheetContent(viewModel: ProfileViewModel = hiltViewModel()) {
             style = MaterialTheme.typography.displaySmall,
             color = profilePrimaryText, textAlign = TextAlign.Center
         )
-        Box(modifier = Modifier.fillMaxWidth()
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) { coverLauncher.launch("image/*") }
-        ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
             AsyncImage(
                 modifier = Modifier.fillMaxWidth().height(170.dp).clip(Shapes.medium),
-                model = if (updatedProfileData.value.coverPhoto == null) "${BuildConfig.API_FILES_URL}${profileData.value!!.coverPhoto}" else updatedProfileData.value.coverPhoto,
+                model = if (updatedProfileData.value.wasCoverReuploaded) updatedProfileData.value.newCoverPhoto else "${BuildConfig.API_FILES_URL}${profileData.value!!.coverPhoto}",
                 placeholder = painterResource(R.drawable.cover_placeholder),
                 error = painterResource(R.drawable.cover_placeholder),
                 contentDescription = stringResource(R.string.cd_cover_photo),
                 contentScale = ContentScale.Crop
             )
-            Icon(
-                modifier = Modifier.align(Alignment.Center).size(50.dp)
-                    .background(Color.Black.copy(alpha = 0.4f), shape = Shapes.medium)
-                    .padding(10.dp),
-                painter = painterResource(R.drawable.add_photo_icon), contentDescription = null,
-                tint = Color.White
-            )
+            Row(Modifier.align(Alignment.Center), horizontalArrangement = Arrangement.spacedBy(15.dp)) {
+                ImageActionIconButton(
+                    icon = R.drawable.add_photo_icon,
+                    onClick = { coverLauncher.launch("image/*") }
+                )
+                if ((updatedProfileData.value.newCoverPhoto != null || !updatedProfileData.value.wasCoverReuploaded)
+                        || updatedProfileData.value.newCoverPhoto != null) {
+                    ImageActionIconButton(
+                        icon = R.drawable.delete_icon,
+                        onClick = { viewModel.showDeleteDialog(DeletedType.Cover) }
+                    )
+                }
+            }
         }
         Row(
-            modifier = Modifier.padding(vertical = 15.dp)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) {
-                    avatarLauncher.launch("image/*")
-                },
+            modifier = Modifier.padding(vertical = 15.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            AsyncImage(
-                modifier = Modifier.size(80.dp).clip(CircleShape),
-                model = if(updatedProfileData.value.avatar == null) "${BuildConfig.API_FILES_URL}${profileData.value!!.avatar}" else updatedProfileData.value.avatar,
-                contentDescription = stringResource(R.string.cd_avatar_photo),
-                placeholder = painterResource(R.drawable.avatar_placeholder),
-                error = painterResource(R.drawable.avatar_placeholder),
-                contentScale = ContentScale.Crop
-            )
+            Box(contentAlignment = Alignment.TopEnd) {
+                AsyncImage(
+                    modifier = Modifier.size(80.dp).clip(CircleShape),
+                    model = if(updatedProfileData.value.wasAvatarReuploaded) updatedProfileData.value.avatar else "${BuildConfig.API_FILES_URL}${profileData.value!!.avatar}",
+                    contentDescription = stringResource(R.string.cd_avatar_photo),
+                    placeholder = painterResource(R.drawable.avatar_placeholder),
+                    error = painterResource(R.drawable.avatar_placeholder),
+                    contentScale = ContentScale.Crop
+                )
+                if ((updatedProfileData.value.avatar != null || !updatedProfileData.value.wasAvatarReuploaded)
+                    || updatedProfileData.value.avatar != null) {
+                    ImageActionIconButton(
+                        size = 30.dp, innerPadding = 4.dp, backgroundColor = primaryText,
+                        icon = R.drawable.delete_icon, backgroundShape = Shapes.extraSmall,
+                        onClick = { viewModel.showDeleteDialog(DeletedType.Avatar) }
+                    )
+                }
+            }
             Text(
+                modifier = Modifier.padding(vertical = 15.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { avatarLauncher.launch("image/*") },
                 text = stringResource(R.string.hint_change_avatar),
                 style = MaterialTheme.typography.labelMedium, color = primaryText
             )
@@ -162,4 +176,27 @@ fun EditProfileSheetContent(viewModel: ProfileViewModel = hiltViewModel()) {
         ) { viewModel.updateProfile() }
         Spacer(modifier = Modifier.height(30.dp))
     }
+}
+
+@Composable
+fun ImageActionIconButton(
+    backgroundColor: Color = Color.Black.copy(alpha = 0.4f),
+    backgroundShape: Shape = Shapes.medium,
+    size: Dp = 50.dp,
+    innerPadding: Dp = 10.dp,
+    @DrawableRes icon: Int,
+    onClick: () -> Unit
+) {
+    Icon(
+        modifier = Modifier.size(size)
+            .background(color = backgroundColor, shape = backgroundShape)
+            .padding(innerPadding)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            ),
+        painter = painterResource(icon), contentDescription = null,
+        tint = Color.White
+    )
 }

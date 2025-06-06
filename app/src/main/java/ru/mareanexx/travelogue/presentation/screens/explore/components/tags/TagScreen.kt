@@ -15,11 +15,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -30,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.travelogue.R
+import ru.mareanexx.travelogue.presentation.components.CustomPullToRefreshBox
 import ru.mareanexx.travelogue.presentation.components.ErrorLoadingContent
 import ru.mareanexx.travelogue.presentation.components.TripCardBigUsername
 import ru.mareanexx.travelogue.presentation.screens.explore.components.TagBackgroundsDB
@@ -39,7 +38,7 @@ import ru.mareanexx.travelogue.presentation.screens.explore.viewmodel.state.Tagg
 import ru.mareanexx.travelogue.presentation.theme.Shapes
 import ru.mareanexx.travelogue.presentation.theme.mapPointsRowBack
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TagScreen(
     tagName: String, imgIndex: Int,
@@ -52,7 +51,7 @@ fun TagScreen(
     val isRefreshing = tagViewModel.isRefreshing.collectAsState()
     val uiState = tagViewModel.uiState.collectAsState()
 
-    PullToRefreshBox(
+    CustomPullToRefreshBox(
         modifier = Modifier.fillMaxSize().background(mapPointsRowBack),
         isRefreshing = isRefreshing.value,
         onRefresh = { tagViewModel.loadTrips() }

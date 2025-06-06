@@ -20,6 +20,7 @@ import ru.mareanexx.travelogue.domain.profile.usecase.GetProfileWithTripsUseCase
 import ru.mareanexx.travelogue.domain.profile.usecase.GetUpdatedProfileStatsUseCase
 import ru.mareanexx.travelogue.domain.profile.usecase.UpdateProfileUseCase
 import ru.mareanexx.travelogue.presentation.screens.profile.components.profile.ProfileBottomSheetType
+import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.DeletedType
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.event.ProfileEvent
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.form.UpdateProfileForm
 import ru.mareanexx.travelogue.presentation.screens.profile.viewmodel.state.ProfileUiState
@@ -72,6 +73,10 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun showDeleteDialog(deletedType: DeletedType) {
+        viewModelScope.launch { _eventFlow.emit(ProfileEvent.ShowDeleteDialog(deletedType)) }
+    }
+
     fun changeBottomSheetType(newType: ProfileBottomSheetType, showing: Boolean) {
         viewModelScope.launch {
             _eventFlow.emit(ProfileEvent.ShowTypifiedBottomSheet(newType, showing))
@@ -110,7 +115,6 @@ class ProfileViewModel @Inject constructor(
     private fun onCheckButtonEnable() {
         _updatedProfileData.value = _updatedProfileData.value.copy(
             buttonEnabled = _updatedProfileData.value.isUsernameValid || _updatedProfileData.value.isFullnameValid
-                    || _updatedProfileData.value.avatar != null || _updatedProfileData.value.coverPhoto != null
         )
     }
 
@@ -145,15 +149,17 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun onAvatarSelected(newAvatar: File) {
-        _updatedProfileData.value = _updatedProfileData.value.copy(avatar = newAvatar)
+    fun onAvatarSelected(newAvatar: File?) {
+        _updatedProfileData.value = _updatedProfileData.value.copy(avatar = newAvatar, wasAvatarReuploaded = true)
         onCheckButtonEnable()
     }
 
-    fun onCoverPhotoSelected(newCover: File) {
-        _updatedProfileData.value = _updatedProfileData.value.copy(coverPhoto = newCover)
+    fun onCoverPhotoSelected(newCover: File?) {
+        _updatedProfileData.value = _updatedProfileData.value.copy(newCoverPhoto = newCover, wasCoverReuploaded = true)
         onCheckButtonEnable()
     }
+
+    fun onDeleteImageConfirmed(deletedType: DeletedType) { if (deletedType == DeletedType.Cover) onCoverPhotoSelected(null) else onAvatarSelected(null) }
 
     fun updateProfile() {
         val updateProfileRequest = UpdateProfileRequest(
@@ -164,7 +170,7 @@ class ProfileViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            updateProfile(updateProfileRequest, _updatedProfileData.value.avatar, _updatedProfileData.value.coverPhoto)
+            updateProfile(updateProfileRequest, _updatedProfileData.value.avatar, _updatedProfileData.value.newCoverPhoto)
                 .onStart { setLoading() }
                 .catch { exception -> showToast(exception.message) }
                 .collect { result ->
