@@ -1,0 +1,16 @@
+<resources>
+    <!--Notifications Screen-->
+    <string name="no_notifications">No Notifications Yet!</string>
+    <string name="empty_notifications_list">You have no notifications right now. Come back later</string>
+    <string name="mark_all_as_read">Mark all as read</string>
+    <string name="clear_all_notifications">Clear all</string>
+    <string name="followed_you">followed you</string>
+    <string name="liked_your">liked your</string>
+    <string name="commented_on_your">commented on your</string>
+    <string name="posted_a_new">posted a new</string>
+    <string name="trip">trip</string>
+    <string name="added_a_new">added a new</string>
+    <string name="map_point">map point</string>
+    <string name="new_indicator">New</string>
+    <string name="all_notifications_variant_del">all notifications?</string>
+</resources>

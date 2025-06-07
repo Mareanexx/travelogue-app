@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Travelogue</string>
+
+    <string name="continue_button_text">Continue</string>
+
+    <!--TextField Requirements-->
+    <string name="username_requirement">Username should be at least 3 characters long</string>
+    <string name="fullname_requirement">Fullname should be your firstname and lastname</string>
+    <string name="unavailable_email">This e-mail is already in use</string>
+    <string name="email_tf_label">Email*</string>
+    <string name="cd_cover_photo">User\'s profile cover photo</string>
+    <string name="cd_avatar_photo">User\'s profile avatar photo</string>
+    <string name="cd_points_settings">Clickable trip settings</string>
+    <string name="retry_description">Content could not be loaded. Try again now or later!</string>
+    <string name="close">Close</string>
+    <string name="ok_btn">OK</string>
+    <string name="back_to_prev_btn">Back</string>
+    <string name="get_back_cd">Get back to previous screen</string>
+
+    <string name="trips">Trips</string>
+    <string name="followers">Followers</string>
+    <string name="followings">Followings</string>
+    <string name="follow_btn">Follow</string>
+    <string name="following_btn">Following</string>
+
+    <string name="save_changes">Save changes</string>
+
+    <!--Profile Settings-->
+    <string name="profile_settings">Profile settings</string>
+    <string name="hint_change_avatar">Tap to change your avatar</string>
+    <string name="fullname">Fullname</string>
+    <string name="username">Username</string>
+    <string name="bio">Bio</string>
+
+    <!--Trip card-->
+    <string name="cd_trip_cover_photo">User\'s trip cover photo</string>
+    <string name="now_on_a_trip">NOW ON A TRIP</string>
+    <string name="days">DAYS</string>
+    <string name="kilometers">KILOMETERS</string>
+    <string name="steps">STEPS</string>
+    <string name="cd_trip_visibility">Trip visibility type</string>
+
+    <!--Error loading-->
+    <string name="retry_btn">Retry</string>
+    <string name="error_loading_others_profile">Something went wrong! Can\'t load user\'s profile</string>
+
+    <!--Report Menu-->
+    <string name="report_trip">Report trip</string>
+    <string name="success_report">Thank you, your report has been received!</string>
+
+    <!--Are you sure Dialog-->
+    <string name="cancel_btn">Cancel</string>
+    <string name="are_you_sure_text">Are you sure you want to delete</string>
+    <string name="delete_btn">Delete</string>
+    <string name="cant_revert_changes">You can\'t revert changes in future</string>
+
+    <!--Navigation Bottom Bar-->
+    <string name="my_profile">My Profile</string>
+    <string name="activity">Activity</string>
+    <string name="notifications">Notifications</string>
+    <string name="explore">Explore</string>
+
+    <!--Not implemented feature Toast-->
+    <string name="not_implemented">This feature isn\'t implemented yet!</string>
+</resources>

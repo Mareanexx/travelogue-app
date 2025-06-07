@@ -18,8 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.mareanexx.travelogue.presentation.navigation.AppNavHost
-import ru.mareanexx.travelogue.presentation.theme.TravelogueTheme
-import ru.mareanexx.travelogue.utils.UserSessionManager
+import ru.mareanexx.common.ui.theme.TravelogueTheme
+import ru.mareanexx.common.utils.UserSessionManager
 import javax.inject.Inject
 
 @AndroidEntryPoint

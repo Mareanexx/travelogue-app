@@ -20,16 +20,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import ru.mareanexx.travelogue.presentation.components.BottomNavBar
-import ru.mareanexx.travelogue.presentation.screens.activity.ActivityScreen
-import ru.mareanexx.travelogue.presentation.screens.explore.ExploreScreen
-import ru.mareanexx.travelogue.presentation.screens.explore.components.tags.TagScreen
-import ru.mareanexx.travelogue.presentation.screens.follows.FollowsScreen
-import ru.mareanexx.travelogue.presentation.screens.notifications.NotificationsScreen
-import ru.mareanexx.travelogue.presentation.screens.othersprofile.OthersProfileScreen
-import ru.mareanexx.travelogue.presentation.screens.profile.ProfileScreen
-import ru.mareanexx.travelogue.presentation.screens.trip.TripScreen
-import ru.mareanexx.travelogue.presentation.theme.mapBoxBackground
+import ru.mareanexx.common.ui.bottombar.BottomNavBar
+import ru.mareanexx.common.ui.theme.mapBoxBackground
+import ru.mareanexx.feature_explore.presentation.screens.ExploreScreen
+import ru.mareanexx.feature_explore.presentation.screens.TagScreen
+import ru.mareanexx.feature_notifications.presentation.screen.NotificationsScreen
+import ru.mareanexx.feature_profiles.presentation.screens.activity.ActivityScreen
+import ru.mareanexx.feature_profiles.presentation.screens.follows.FollowsScreen
+import ru.mareanexx.feature_profiles.presentation.screens.others_profile.OthersProfileScreen
+import ru.mareanexx.feature_profiles.presentation.screens.profile.ProfileScreen
+import ru.mareanexx.feature_profiles.presentation.screens.trip.TripScreen
 
 @Composable
 fun MainTabScreen(rootNavController: NavHostController) {

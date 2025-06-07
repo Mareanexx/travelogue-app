@@ -1,0 +1,87 @@
+<resources>
+
+    <string name="this_trip_variant_del">this trip?</string>
+    <string name="account_variant_del">your account?</string>
+    <string name="your_avatar_variant_del">your avatar?</string>
+    <string name="your_cover_variant_del">your cover photo?</string>
+
+    <!--Add trip Bottom Sheet-->
+    <string name="kind_of_trip_label">What kind of trip do you want to add?</string>
+    <string name="create_trip">Create trip</string>
+    <string name="current_travel">I’m currently travelling</string>
+    <string name="past_trip">I want to add a past trip</string>
+    <string name="new_trip_title">New trip</string>
+    <string name="pick_a_cover_photo">Pick a cover photo</string>
+    <string name="name_your_trip">Name your trip*</string>
+    <string name="add_a_short_description">Add a short description*</string>
+    <string name="add_up_to_three_tags">Add up to 3 tags (optional)</string>
+    <string name="add_tag">Add tag</string>
+    <string name="trip_visibility">Who can see this trip?</string>
+    <string name="trip_visibility_only_me">Only me</string>
+    <string name="trip_visibility_only_me_desc">This trip, including all details like your current location, is only visible to you</string>
+    <string name="trip_visibility_everyone">Everyone</string>
+    <string name="trip_visibility_everyone_desc">This trip and all related content will be visible to anyone, anywhere</string>
+    <string name="start_date">Start date</string>
+    <string name="end_date">End date</string>
+    <string name="trip_dates">Trip dates</string>
+    <string name="enter_tag_name_title">Come up with tag name</string>
+    <string name="tf_label_enter_tag_name">Enter tag name</string>
+
+    <!--Map Point CRUD Bottom Sheet-->
+    <string name="choose_location">Choose location</string>
+    <string name="add_map_point_title">Add step</string>
+    <string name="edit_map_point_title">Edit step</string>
+    <string name="step_name_tf_label">Step name*</string>
+    <string name="what_have_you_been_up_to_tf_label">What have you been up to?</string>
+    <string name="point_photo_cd">Added point photo</string>
+    <string name="date_picker_cd">Calendar date picker</string>
+    <string name="time_picker_cd">Clock time picker</string>
+    <string name="arrival_date_tf_label">Arrival date</string>
+    <string name="arrival_time_tf_label">Arrival time</string>
+    <string name="confirm_location">Confirm</string>
+    <string name="current_location_va">You</string>
+    <string name="chosen_location">Chosen location</string>
+    <string name="select_arrival_date">Select map point arrival date</string>
+    <string name="write_a_comment">Write a comment…</string>
+    <string name="send_comment_btn">Send input comment to selected map point</string>
+    <string name="cant_load_comments">Something went wrong! Can\'t load comments now</string>
+    <string name="delete_map_point">Delete step</string>
+
+    <!--Trip Screen-->
+    <string name="swipe_cd">Swipe</string>
+    <string name="add_first_step_btn">Add your first step</string>
+    <string name="not_finished_yet">Not finished yet</string>
+    <string name="no_map_points_yet">No map points yet</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="error_dialog_content">Sorry! Can\'t load this trip now</string>
+
+    <!--Follows Screen-->
+    <string name="search_follows_cd">Search for follows</string>
+    <string name="no_followers_title">You don\'t have any followers yet</string>
+    <string name="no_followers_small_text">Start inviting friends and family now!</string>
+    <string name="no_followings_title">You have no followings yet!</string>
+    <string name="no_followings_small_text">Start finding friends and exploring content now!</string>
+
+    <!--Activity Screen-->
+    <string name="no_followers_yet">You’re not following any travellers yet!</string>
+    <string name="search_for_friends_btn">Search for friends</string>
+    <string name="cant_load_activity">Something went wrong! Can\'t load activity now</string>
+
+    <!--Profile Screen-->
+    <string name="user_profile_avatar">Profile avatar</string>
+    <string name="add_trip">Add trip</string>
+    <string name="travel_stats">Travel stats</string>
+    <string name="no_trips_yet">This user doesn\'t have any public trips!</string>
+    <string name="no_trips_small_text"> Follow him/her to get notifications on uploads!</string>
+
+    <!--Profile settings Dropdown Menu-->
+    <string name="edit_profile">Edit profile</string>
+    <string name="account">Account</string>
+    <string name="edit_trip">Edit trip</string>
+    <string name="delete_trip">Delete trip</string>
+
+    <!--Account Settings-->
+    <string name="account_settings">Account settings</string>
+    <string name="log_out">Log out</string>
+    <string name="delete_account">Delete account</string>
+</resources>

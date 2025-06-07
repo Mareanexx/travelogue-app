@@ -1,12 +1,7 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
+        google()
         mavenCentral()
         gradlePluginPortal()
     }
@@ -23,5 +18,14 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Travelogue"
-include(":app")
- 
+include(
+    ":app",
+    ":core",
+    ":core:network",
+    ":core:common",
+    ":core:data",
+    ":feature-auth",
+    ":feature-profiles",
+    ":feature-notifications",
+    ":feature-explore"
+)

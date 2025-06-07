@@ -1,0 +1,16 @@
+<resources>
+    <!--Explore Screen-->
+    <string name="explore_search_description">Search people &amp; trips</string>
+    <string name="trending_tags_label">Trending tags</string>
+    <string name="trending_trips_label">Trending trips</string>
+    <string name="inspiring_travelers_label">Inspiring travelers</string>
+    <string name="searching_process">Searching…</string>
+    <string name="search_bar_is_empty_img">Empty search bar image</string>
+    <string name="search_empty_title">Start exploring now!</string>
+    <string name="search_empty_description">Tap the search bar at the top to find trips that interest you.</string>
+    <string name="trips_tab">Trips</string>
+    <string name="people_tab">People</string>
+    <string name="no_results">No results for this query</string>
+    <string name="error_loading_search_results">Error loading search results</string>
+    <string name="cant_load_trips_by_tag">Something went wrong! Can\'t load trips by this tag</string>
+</resources>
