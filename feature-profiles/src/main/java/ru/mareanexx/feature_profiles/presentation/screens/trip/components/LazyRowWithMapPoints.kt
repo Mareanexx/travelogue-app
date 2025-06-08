@@ -38,7 +38,8 @@ fun LazyRowWithMapPoints(
     expandedMapPoint: MutableState<MapPointWithPhotos?>,
     onAddStep: () -> Unit,
     onSetDateConstraints: (DateConstraints) -> Unit,
-    tripViewModel: TripViewModel
+    tripViewModel: TripViewModel,
+    onNavigateToConcreteTagScreen: (tagName: String, imgIndex: Int) -> Unit
 ) {
     val tripData by tripViewModel.tripData.collectAsState()
     val listState = rememberLazyListState()
@@ -71,7 +72,7 @@ fun LazyRowWithMapPoints(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        item { TripDescriptionStartBlock(tripData!!) }
+        item { TripDescriptionStartBlock(tripData!!, onNavigateToConcreteTagScreen) }
         item { StartFinishIcon(tripData!!.trip.startDate, paddingStart = 25.dp, paddingEnd = 0.dp, R.drawable.home_icon) }
         if (tripData!!.mapPoints.isEmpty()) {
             if (profileId == "me") {

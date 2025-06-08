@@ -30,7 +30,10 @@ import ru.mareanexx.feature_profiles.data.trip.remote.dto.TripWithMapPoints
 import ru.mareanexx.feature_profiles.presentation.screens.trip.components.TagGrid
 
 @Composable
-fun TripDescriptionStartBlock(tripData: TripWithMapPoints) {
+fun TripDescriptionStartBlock(
+    tripData: TripWithMapPoints,
+    onNavigateToConcreteTagScreen: (tagName: String, imgIndex: Int) -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxHeight().widthIn(min = 250.dp, max = 300.dp).background(
             primaryText
@@ -55,7 +58,7 @@ fun TripDescriptionStartBlock(tripData: TripWithMapPoints) {
             }
         }
 
-        TagGrid(tripData)
+        TagGrid(tripData, onNavigateToConcreteTagScreen)
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(5.dp),

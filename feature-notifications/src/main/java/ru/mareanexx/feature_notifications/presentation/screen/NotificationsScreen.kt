@@ -36,7 +36,11 @@ import ru.mareanexx.feature_notifications.presentation.viewmodel.state.Notificat
 
 
 @Composable
-fun NotificationsScreen(viewModel: NotificationsViewModel = hiltViewModel()) {
+fun NotificationsScreen(
+    viewModel: NotificationsViewModel = hiltViewModel(),
+    onNavigateToOthersProfile: (Int) -> Unit,
+    onNavigateToTrip: (Int, String, String, String) -> Unit
+) {
     val uiState = viewModel.uiState.collectAsState()
     val isRefreshing = viewModel.isRefreshing.collectAsState()
     val context = LocalContext.current
@@ -64,8 +68,14 @@ fun NotificationsScreen(viewModel: NotificationsViewModel = hiltViewModel()) {
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().background(color = mapPointsRowBack)
-        .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = mapPointsRowBack)
+            .padding(
+                top = WindowInsets.systemBars
+                    .asPaddingValues()
+                    .calculateTopPadding()
+            )
             .padding(start = 15.dp, end = 15.dp, top = 10.dp)
     ) {
         Text(
@@ -76,14 +86,20 @@ fun NotificationsScreen(viewModel: NotificationsViewModel = hiltViewModel()) {
 
         when(val state = uiState.value) {
             NotificationsUiState.Loading -> NotificationsScreenSkeleton()
-            is NotificationsUiState.Success -> NotificationsScreenContent(
-                notifications = state.notifications,
-                isRefreshing = isRefreshing.value,
-                onDeleteNotifications = { viewModel.onDeleteVariantClicked() },
-                onRefresh = { viewModel.refresh() }
-            )
+            is NotificationsUiState.Success -> {
+                NotificationsScreenContent(
+                    notifications = state.notifications,
+                    isRefreshing = isRefreshing.value,
+                    onDeleteNotifications = { viewModel.onDeleteVariantClicked() },
+                    onRefresh = { viewModel.refresh() },
+                    onNavigateToOthersProfile = onNavigateToOthersProfile,
+                    onNavigateToTrip = onNavigateToTrip
+                )
+            }
             is NotificationsUiState.Error -> {
-                Box(modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp)) {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 40.dp)) {
                     ErrorLoadingContent(
                         message = ru.mareanexx.core.common.R.string.retry_description,
                         onRetry = { viewModel.refresh() }

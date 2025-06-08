@@ -30,7 +30,9 @@ fun NotificationsScreenContent(
     isRefreshing: Boolean,
     notifications: List<Notification>,
     onDeleteNotifications: () -> Unit,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    onNavigateToOthersProfile: (Int) -> Unit,
+    onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit
 ) {
     CustomPullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
@@ -49,7 +51,11 @@ fun NotificationsScreenContent(
                     NotificationsDropdownMenuAndButton(onDeleteNotifications = onDeleteNotifications)
                 }
                 items(notifications) { notification ->
-                    NotificationCard(notification)
+                    NotificationCard(
+                        notificationData = notification,
+                        onNavigateToOthersProfile,
+                        onNavigateToTrip
+                    )
                 }
             }
         }

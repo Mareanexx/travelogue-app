@@ -22,7 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -113,25 +113,30 @@ fun StartFinishIcon(
 }
 
 @Composable
-fun TagGrid(tripData: TripWithMapPoints) {
+fun TagGrid(
+    tripData: TripWithMapPoints,
+    onNavigateToConcreteTagScreen: (tagName: String, imgIndex: Int) -> Unit
+) {
     LazyHorizontalGrid(
         modifier = Modifier.height(70.dp),
         rows = GridCells.FixedSize(25.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        items(tripData.trip.tagList ?: emptyList()) { tag ->
-            TagItem(tag)
+        itemsIndexed(tripData.trip.tagList ?: emptyList()) { index, tag ->
+            TagItem(tag, onNavigateToConcreteTagScreen = { onNavigateToConcreteTagScreen(tag.name, index) })
         }
     }
 }
 
 @Composable
-fun TagItem(tag: NewTagResponse) {
+fun TagItem(tag: NewTagResponse, onNavigateToConcreteTagScreen: () -> Unit) {
     Row(
         modifier = Modifier
+            .clip(Shapes.medium)
             .background(color = Color.White.copy(alpha = 0.3f), shape = Shapes.medium)
-            .padding(start = 5.dp, end = 8.dp, top = 2.dp, bottom = 2.dp),
+            .padding(start = 5.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
+            .clickable(onClick = onNavigateToConcreteTagScreen),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {

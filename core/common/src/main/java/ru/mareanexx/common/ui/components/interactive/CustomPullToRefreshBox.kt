@@ -1,5 +1,6 @@
 package ru.mareanexx.common.ui.components.interactive
 
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
@@ -16,13 +17,14 @@ fun CustomPullToRefreshBox(
     modifier: Modifier = Modifier,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable (BoxScope.() -> Unit)
 ) {
     val state = rememberPullToRefreshState()
 
     PullToRefreshBox(
         modifier = modifier,
         isRefreshing = isRefreshing,
+        state = state,
         indicator = {
             Indicator(
                 modifier = Modifier.align(Alignment.TopCenter),

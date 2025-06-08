@@ -2,6 +2,7 @@ package ru.mareanexx.feature_notifications.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,19 +35,36 @@ import ru.mareanexx.common.ui.theme.unreadNotificationIndicator
 import ru.mareanexx.common.utils.ApiConfig
 import ru.mareanexx.common.utils.TimeAgoResolver
 import ru.mareanexx.feature_notifications.R
+import ru.mareanexx.feature_notifications.data.type.isNavigateToProfile
 import ru.mareanexx.feature_notifications.domain.entity.Notification
 import ru.mareanexx.feature_notifications.presentation.components.helper.resolveNotificationType
 
 
 @Composable
-fun NotificationCard(notificationData: Notification) {
+fun NotificationCard(
+    notificationData: Notification,
+    onNavigateToOthersProfile: (Int) -> Unit,
+    onNavigateToTrip: (tripId: Int, profileId: String, username: String, avatar: String) -> Unit
+) {
     val notificationTypeRelatedContent = resolveNotificationType(notificationData.type)
     val timeAgoResolver = TimeAgoResolver
 
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().clip(Shapes.large)
             .shadow(elevation = 7.dp, shape = Shapes.large, ambientColor = Color.Black.copy(alpha = 0.3f), spotColor = Color.Black.copy(alpha = 0.2f))
             .background(Color.White, Shapes.large)
+            .clickable {
+                if (notificationData.type.isNavigateToProfile()) {
+                    onNavigateToOthersProfile(notificationData.senderId)
+                } else {
+                    onNavigateToTrip(
+                        notificationData.relatedTripId ?: -1,
+                        "${notificationData.senderId}",
+                        notificationData.username,
+                        notificationData.avatar ?: ""
+                    )
+                }
+            }
             .padding(vertical = 10.dp, horizontal = 15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically

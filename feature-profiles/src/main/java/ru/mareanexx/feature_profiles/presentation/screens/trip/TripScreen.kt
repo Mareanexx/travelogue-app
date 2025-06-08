@@ -37,6 +37,7 @@ fun TripScreen(
     profileId: String, tripId: Int,
     username: String, userAvatar: String,
     onNavigateToOthersProfile: (Int) -> Unit,
+    onNavigateToConcreteTagScreen: (String, Int) -> Unit,
     navigateBack: () -> Unit,
     tripViewModel: TripViewModel = hiltViewModel()
 ) {
@@ -63,7 +64,8 @@ fun TripScreen(
         TripUiState.Showing -> {
             TripScreenLoadedContent(
                 profileId, username, userAvatar,
-                tripViewModel, navigateBack, onNavigateToOthersProfile
+                tripViewModel, navigateBack, onNavigateToOthersProfile,
+                onNavigateToConcreteTagScreen
             )
         }
     }
@@ -75,7 +77,8 @@ fun TripScreenLoadedContent(
     username: String, avatar: String,
     tripViewModel: TripViewModel,
     navigateBack: () -> Unit,
-    onNavigateToOthersProfile: (Int) -> Unit
+    onNavigateToOthersProfile: (Int) -> Unit,
+    onNavigateToConcreteTagScreen: (String, Int) -> Unit
 ) {
     val mapPointForm = tripViewModel.mapPointForm.collectAsState()
     val tripData = tripViewModel.tripData.collectAsState()
@@ -118,7 +121,7 @@ fun TripScreenLoadedContent(
                 profileId, expandedMapPoint,
                 onAddStep = { tripViewModel.showBottomSheet(BottomSheetType.AddStep) },
                 onSetDateConstraints = { tripViewModel.setDateConstraints(it) },
-                tripViewModel
+                tripViewModel, onNavigateToConcreteTagScreen
             )
         }
 
