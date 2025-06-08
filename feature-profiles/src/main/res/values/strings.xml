@@ -1,4 +1,5 @@
 <resources>
+    <string name="refresh">Refresh data, fetch from internet</string>
 
     <string name="this_trip_variant_del">this trip?</string>
     <string name="account_variant_del">your account?</string>

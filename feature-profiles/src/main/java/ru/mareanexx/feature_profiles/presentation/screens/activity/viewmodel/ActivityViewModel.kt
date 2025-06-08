@@ -35,6 +35,9 @@ class ActivityViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<ActivityUiState>(ActivityUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     private val _eventFlow = MutableSharedFlow<ActivityEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -50,6 +53,14 @@ class ActivityViewModel @Inject constructor(
     private fun showToast(message: String?) {
         viewModelScope.launch {
             _eventFlow.emit(ActivityEvent.ShowToast(message ?: "Unknown error"))
+        }
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            loadActivity()
+            _isRefreshing.value = false
         }
     }
 

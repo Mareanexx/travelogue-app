@@ -6,19 +6,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
@@ -90,6 +93,7 @@ fun ActivityScreen(
 ) {
     val bitmaps = activityViewModel.mapPointBitmaps.collectAsState()
     val uiState = activityViewModel.uiState.collectAsState()
+    val isRefreshing = activityViewModel.isRefreshing.collectAsState()
     val sheetState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.PartiallyExpanded
@@ -108,26 +112,29 @@ fun ActivityScreen(
         }
     }
 
-//    val offset = remember {
-//        derivedStateOf {
-//            try { val offset = sheetState.bottomSheetState.requireOffset()
-//                offset
-//            } catch (e: IllegalStateException) {
-//                0f
-//            }
-//        }
-//    }
-
     Box(modifier = Modifier.fillMaxSize()) {
 
         Box(modifier = Modifier.fillMaxWidth().height(650.dp)) {
             StaticMap(mapState, mapViewportState, uiState.value, bitmaps.value, onNavigateToTrip)
             MapBlockInnerShadow(Modifier.align(Alignment.TopCenter))
-            Text(
-                modifier = Modifier.systemBarsPadding().padding(start = 15.dp),
-                text = stringResource(ru.mareanexx.core.common.R.string.activity),
-                color = Color.White, style = MaterialTheme.typography.titleMedium
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 15.dp, start = 15.dp, end = 5.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(ru.mareanexx.core.common.R.string.activity),
+                    color = Color.White, style = MaterialTheme.typography.titleMedium
+                )
+                IconButton(onClick = { activityViewModel.refresh() }) {
+                    Icon(
+                        modifier = Modifier.size(30.dp),
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = stringResource(R.string.refresh),
+                        tint = Color.White
+                    )
+                }
+            }
         }
 
         BottomSheetScaffold(
@@ -265,7 +272,9 @@ fun NoFollowingsMessageBlock(onNavigateToSearch: () -> Unit) {
             onClick = { onNavigateToSearch() }
         ) {
             Icon(
-                modifier = Modifier.size(24.dp).padding(end = 5.dp),
+                modifier = Modifier
+                    .size(24.dp)
+                    .padding(end = 5.dp),
                 painter = painterResource(ru.mareanexx.core.common.R.drawable.search_icon), tint = Color.White,
                 contentDescription = stringResource(R.string.search_follows_cd)
             )
