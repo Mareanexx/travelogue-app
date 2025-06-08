@@ -8,7 +8,5 @@ data class CreateProfileForm(
     val fullname: String = "",
     val bio: String = "",
 
-    val isUsernameValid: Boolean = false,
-    val isFullnameValid: Boolean = false,
-    val buttonEnabled: Boolean = false
+    val fieldsError: Map<ProfileField, ValidationErrorType> = emptyMap()
 )

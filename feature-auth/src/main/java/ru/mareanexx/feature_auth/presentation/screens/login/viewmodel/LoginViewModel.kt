@@ -3,14 +3,17 @@ package ru.mareanexx.feature_auth.presentation.screens.login.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import ru.mareanexx.common.ui.state.UiState
+import ru.mareanexx.common.ui.state.AuthUiState
 import ru.mareanexx.feature_auth.data.login.remote.dto.LoginRequest
 import ru.mareanexx.feature_auth.domain.login.usecase.LoginUseCase
+import ru.mareanexx.feature_auth.presentation.screens.event.AuthEvent
 import ru.mareanexx.feature_auth.presentation.screens.login.viewmodel.form.LoginFormState
 import ru.mareanexx.network.utils.data.BaseResult
 import javax.inject.Inject
@@ -19,8 +22,11 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase
 ): ViewModel() {
-    private val _loginState = MutableStateFlow<UiState>(UiState.Init)
-    val loginState: StateFlow<UiState> get() = _loginState
+    private val _loginState = MutableStateFlow<AuthUiState>(AuthUiState.Init)
+    val loginState: StateFlow<AuthUiState> get() = _loginState
+
+    private val _eventFlow = MutableSharedFlow<AuthEvent>()
+    val eventFlow get() = _eventFlow.asSharedFlow()
 
     private val _formState = MutableStateFlow(LoginFormState())
     val formState: StateFlow<LoginFormState> get() = _formState
@@ -29,17 +35,19 @@ class LoginViewModel @Inject constructor(
     val loadingState: StateFlow<Boolean> get() = _loadingState
 
     fun onEmailChanged(value: String) {
-        _loginState.value = UiState.Init
+        _loginState.value = AuthUiState.Init
         _formState.value = _formState.value.copy(
             email = value,
         )
+        onCheckButtonEnable()
     }
 
     fun onPasswordChanged(value: String) {
-        _loginState.value = UiState.Init
+        _loginState.value = AuthUiState.Init
         _formState.value = _formState.value.copy(
             password = value
         )
+        onCheckButtonEnable()
     }
 
     fun onCheckButtonEnable() {
@@ -48,10 +56,14 @@ class LoginViewModel @Inject constructor(
         )
     }
 
+    private fun setError() { _loginState.value = AuthUiState.Error }
+    private fun setSuccess() { _loginState.value = AuthUiState.Success }
     private fun setLoading(setValue: Boolean) { _loadingState.value = setValue }
 
-    private fun showToast(message: String) {
-        _loginState.value = UiState.ShowToast(message)
+    private fun showToast(message: String?) {
+        viewModelScope.launch {
+            _eventFlow.emit(AuthEvent.ShowToast(message ?: "Unknown message"))
+        }
     }
 
     fun login() {
@@ -59,18 +71,16 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             loginUseCase(loginRequest)
-                .onStart {
-                    setLoading(true)
-                }
+                .onStart { setLoading(true) }
                 .catch { exception ->
                     setLoading(false)
-                    showToast(exception.message.toString())
+                    showToast(exception.message)
                 }
                 .collect { baseResult ->
                     setLoading(false)
                     when(baseResult) {
-                        is BaseResult.Error -> _loginState.value = UiState.Error
-                        is BaseResult.Success -> _loginState.value = UiState.Success
+                        is BaseResult.Error -> setError()
+                        is BaseResult.Success -> setSuccess()
                     }
                 }
         }

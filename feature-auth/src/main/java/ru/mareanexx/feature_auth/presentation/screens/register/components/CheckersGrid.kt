@@ -32,7 +32,7 @@ import ru.mareanexx.feature_auth.presentation.screens.register.viewmodel.form.Re
 fun CheckersGrid(formState: State<RegisterFormState>) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(start = 15.dp, end = 15.dp, bottom = 15.dp),
+        contentPadding = PaddingValues(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 30.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalArrangement = Arrangement.spacedBy(3.dp)
     ) {

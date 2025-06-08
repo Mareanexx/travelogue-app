@@ -5,7 +5,7 @@
 
     <!--TextField Requirements-->
     <string name="username_requirement">Username should be at least 3 characters long</string>
-    <string name="fullname_requirement">Fullname should be your firstname and lastname</string>
+    <string name="fullname_requirement">Fullname should be at least 2 words</string>
     <string name="unavailable_email">This e-mail is already in use</string>
     <string name="email_tf_label">Email*</string>
     <string name="cd_cover_photo">User\'s profile cover photo</string>

@@ -1,6 +1,5 @@
 package ru.mareanexx.feature_auth.presentation.screens.login.components
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +12,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -25,8 +23,9 @@ import ru.mareanexx.common.ui.components.SupportingText
 import ru.mareanexx.common.ui.components.interactive.CheckFieldsButton
 import ru.mareanexx.common.ui.components.interactive.CustomOutlinedTextField
 import ru.mareanexx.common.ui.components.interactive.TrailingIcon
-import ru.mareanexx.common.ui.state.UiState
+import ru.mareanexx.common.ui.state.AuthUiState
 import ru.mareanexx.feature_auth.R
+import ru.mareanexx.feature_auth.presentation.components.AuthEventHandler
 import ru.mareanexx.feature_auth.presentation.components.ForgotPassword
 import ru.mareanexx.feature_auth.presentation.screens.login.viewmodel.LoginViewModel
 
@@ -41,13 +40,12 @@ fun LoginForm(
     val loadingState = viewModel.loadingState.collectAsState()
     val passwordVisible = remember { mutableStateOf(false) }
 
+    AuthEventHandler(viewModel.eventFlow)
+
     when(loginState.value) {
-        is UiState.Init -> {}
-        is UiState.ShowToast -> {
-            Toast.makeText(LocalContext.current, (loginState.value as UiState.ShowToast).message, Toast.LENGTH_SHORT).show()
-        }
-        is UiState.Success -> { onLoginSuccess() }
-        is UiState.Error -> { viewModel.onCheckButtonEnable() }
+        is AuthUiState.Init -> {}
+        is AuthUiState.Success -> { onLoginSuccess() }
+        is AuthUiState.Error -> { viewModel.onCheckButtonEnable() }
     }
 
     Column(
@@ -65,11 +63,8 @@ fun LoginForm(
         CustomOutlinedTextField(
             textRes = ru.mareanexx.core.common.R.string.email_tf_label,
             value = formState.value.email,
-            onValueChanged = {
-                viewModel.onEmailChanged(it)
-                viewModel.onCheckButtonEnable()
-            },
-            uiState = loginState,
+            onValueChanged = { viewModel.onEmailChanged(it) },
+            isError = loginState.value == AuthUiState.Error,
             imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Email
         )
@@ -77,17 +72,14 @@ fun LoginForm(
         CustomOutlinedTextField(
             textRes = R.string.password_tf_label,
             value = formState.value.password,
-            onValueChanged = {
-                viewModel.onPasswordChanged(it)
-                viewModel.onCheckButtonEnable()
-            },
-            uiState = loginState,
+            onValueChanged = { viewModel.onPasswordChanged(it) },
+            isError = loginState.value == AuthUiState.Error,
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Password,
             trailingIcon = { TrailingIcon(passwordVisible) },
             visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
             supportingText = {
-                if (loginState.value == UiState.Error) {
+                if (loginState.value == AuthUiState.Error) {
                     SupportingText(R.string.incorrect_credentials)
                 }
             }

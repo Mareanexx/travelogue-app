@@ -1,7 +1,6 @@
 package ru.mareanexx.feature_auth.presentation.screens.create_profile.components
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -25,10 +24,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import ru.mareanexx.common.ui.components.SupportingText
 import ru.mareanexx.common.ui.components.interactive.CheckFieldsButton
 import ru.mareanexx.common.ui.components.interactive.CustomOutlinedTextField
-import ru.mareanexx.common.ui.state.UiState
+import ru.mareanexx.common.ui.state.AuthUiState
 import ru.mareanexx.common.utils.FileUtils.uriToFile
 import ru.mareanexx.feature_auth.R
+import ru.mareanexx.feature_auth.presentation.components.AuthEventHandler
 import ru.mareanexx.feature_auth.presentation.screens.create_profile.viewmodel.CreateProfileViewModel
+import ru.mareanexx.feature_auth.presentation.screens.create_profile.viewmodel.form.ProfileField
 
 @Composable
 fun ProfileForm(
@@ -40,13 +41,15 @@ fun ProfileForm(
     val profileUiState = viewModel.profileState.collectAsState()
     val loadingState = viewModel.loadingState.collectAsState()
 
+    val usernameError = formState.value.fieldsError[ProfileField.Username]
+    val fullnameError = formState.value.fieldsError[ProfileField.Fullname]
+
+    AuthEventHandler(viewModel.eventFlow)
+
     when(profileUiState.value) {
-        UiState.Init -> {}
-        UiState.Error -> {}
-        is UiState.ShowToast -> {
-            Toast.makeText(LocalContext.current, (profileUiState.value as UiState.ShowToast).message, Toast.LENGTH_SHORT).show()
-        }
-        UiState.Success -> { onSuccessfulProfileCreation() }
+        AuthUiState.Init -> {}
+        AuthUiState.Error -> {}
+        AuthUiState.Success -> { onSuccessfulProfileCreation() }
     }
 
     val launcher = rememberLauncherForActivityResult(
@@ -75,27 +78,26 @@ fun ProfileForm(
             textRes = R.string.username_tf_label,
             value = formState.value.username,
             onValueChanged = { viewModel.onUsernameChanged(it) },
-            uiState = profileUiState,
+            isError = usernameError != null,
             imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Text,
-            supportingText = { SupportingText(ru.mareanexx.core.common.R.string.username_requirement) }
+            supportingText = { usernameError?.let { SupportingText(it.errorText) } }
         )
 
         CustomOutlinedTextField(
             textRes = R.string.fullname_tf_label,
             value = formState.value.fullname,
             onValueChanged = { viewModel.onFullnameChanged(it) },
-            uiState = profileUiState,
+            isError = fullnameError != null,
             imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Text,
-            supportingText = { SupportingText(ru.mareanexx.core.common.R.string.fullname_requirement) }
+            supportingText = { fullnameError?.let { SupportingText(it.errorText) } }
         )
 
         CustomOutlinedTextField(
             textRes = R.string.bio_tf_label,
             value = formState.value.bio,
             onValueChanged = { viewModel.onBioChanged(it) },
-            uiState = profileUiState,
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Text
         )
@@ -104,7 +106,6 @@ fun ProfileForm(
 
         CheckFieldsButton(
             textRes = R.string.finish_button_text,
-            enabled = formState.value.buttonEnabled,
             showLoading = loadingState.value,
             onClick = { viewModel.createProfile() }
         )

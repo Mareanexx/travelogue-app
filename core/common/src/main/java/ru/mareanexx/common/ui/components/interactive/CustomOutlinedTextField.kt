@@ -17,7 +17,6 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,7 +26,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import ru.mareanexx.common.ui.state.UiState
 import ru.mareanexx.common.ui.theme.blueSmallText
 import ru.mareanexx.common.ui.theme.focusedTextField
 import ru.mareanexx.common.ui.theme.textFieldText
@@ -54,7 +52,7 @@ fun authTextFieldColors(
 fun CustomOutlinedTextField(
     @StringRes textRes: Int, value: String,
     onValueChanged: (String) -> Unit,
-    uiState: State<UiState>? = null,
+    isError: Boolean = false,
     imeAction: ImeAction, keyboardType: KeyboardType,
     visualTransformation: VisualTransformation? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -66,7 +64,7 @@ fun CustomOutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = value,
         onValueChange = { onValueChanged(it) },
-        isError = if(uiState == null) false else uiState.value == UiState.Error,
+        isError = isError,
         keyboardOptions = KeyboardOptions(imeAction = imeAction, keyboardType = keyboardType),
         label = { Text(text = stringResource(textRes)) },
         textStyle = MaterialTheme.typography.bodyMedium,
