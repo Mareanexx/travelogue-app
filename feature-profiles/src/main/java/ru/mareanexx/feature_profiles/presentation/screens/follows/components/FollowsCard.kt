@@ -5,7 +5,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -47,6 +46,7 @@ fun OneFollowsCard(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Row(
+            modifier = Modifier.weight(1f),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -58,21 +58,23 @@ fun OneFollowsCard(
                 contentDescription = stringResource(R.string.cd_avatar_photo),
                 contentScale = ContentScale.Crop
             )
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
                 Text(
                     text = follow.username,
                     style = MaterialTheme.typography.titleSmall,
                     color = profilePrimaryText, fontSize = 14.sp
                 )
                 Text(
-                    text = follow.bio,
+                    text = follow.bio, maxLines = 2,
                     style = MaterialTheme.typography.bodySmall,
                     color = profileSecondaryText, fontSize = 11.sp,
                     overflow = TextOverflow.Ellipsis
                 )
             }
         }
-        Spacer(Modifier.weight(1f))
         if (follow.isFollowing) {
             UnfollowButton(onUnfollowClicked = onUnfollowClicked)
         } else {

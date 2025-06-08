@@ -31,7 +31,8 @@ fun StartFollowButton(onStartFollowClicked: () -> Unit) {
         Text(
             text = stringResource(R.string.follow_btn),
             style = MaterialTheme.typography.bodySmall,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            maxLines = 1
         )
     }
 }
@@ -48,7 +49,8 @@ fun UnfollowButton(onUnfollowClicked: () -> Unit) {
         Text(
             text = stringResource(R.string.following_btn),
             style = MaterialTheme.typography.bodySmall,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            maxLines = 1
         )
     }
 }

@@ -6,7 +6,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,12 +28,12 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import ru.mareanexx.common.ui.components.StartFollowButton
 import ru.mareanexx.common.ui.components.UnfollowButton
-import ru.mareanexx.feature_explore.domain.entity.InspiringProfile
 import ru.mareanexx.common.ui.theme.Shapes
 import ru.mareanexx.common.ui.theme.profilePrimaryText
 import ru.mareanexx.common.ui.theme.profileSecondaryText
 import ru.mareanexx.common.utils.ApiConfig
 import ru.mareanexx.core.common.R
+import ru.mareanexx.feature_explore.domain.entity.InspiringProfile
 
 @Composable
 fun InspiringTravelerSmallCard(
@@ -55,6 +54,7 @@ fun InspiringTravelerSmallCard(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Row(
+            modifier = Modifier.weight(1f),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -66,7 +66,10 @@ fun InspiringTravelerSmallCard(
                 contentDescription = stringResource(R.string.cd_avatar_photo),
                 contentScale = ContentScale.Crop
             )
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
                 Text(
                     text = inspiringProfile.username,
                     style = MaterialTheme.typography.titleSmall,
@@ -75,11 +78,11 @@ fun InspiringTravelerSmallCard(
                 Text(
                     text = inspiringProfile.bio, overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodySmall,
-                    color = profileSecondaryText, fontSize = 11.sp
+                    color = profileSecondaryText, fontSize = 11.sp,
+                    maxLines = 2
                 )
             }
         }
-        Spacer(Modifier.weight(1f))
         if (inspiringProfile.isFollowing) {
             UnfollowButton(onUnfollowClicked = onUnfollowClicked)
         } else {
