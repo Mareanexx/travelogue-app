@@ -29,6 +29,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ru.mareanexx.common.ui.bottombar.routes.MainTabs
+import ru.mareanexx.common.ui.bottombar.routes.MainTabs.Activity
+import ru.mareanexx.common.ui.bottombar.routes.MainTabs.Explore
+import ru.mareanexx.common.ui.bottombar.routes.MainTabs.Notifications
+import ru.mareanexx.common.ui.bottombar.routes.MainTabs.Profile
 import ru.mareanexx.common.ui.components.outerShadow
 import ru.mareanexx.common.ui.theme.MontserratFamily
 import ru.mareanexx.common.ui.theme.enabledButtonContainer
@@ -37,8 +42,8 @@ import ru.mareanexx.core.common.R
 
 @Composable
 fun BottomNavBar(
-    selectedTab: String,
-    onTabSelected: (String) -> Unit
+    selectedTab: MainTabs,
+    onTabSelected: (MainTabs) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth()
@@ -47,17 +52,17 @@ fun BottomNavBar(
             .padding(vertical = 8.dp, horizontal = 30.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        NavItem(R.drawable.my_profile_icon, R.string.my_profile, selectedTab == "profile") {
-            onTabSelected("profile")
+        NavItem(R.drawable.my_profile_icon, R.string.my_profile, selectedTab == Profile) {
+            onTabSelected(Profile)
         }
-        NavItem(R.drawable.group_icon, R.string.activity, selectedTab == "activity") {
-            onTabSelected("activity")
+        NavItem(R.drawable.group_icon, R.string.activity, selectedTab == Activity) {
+            onTabSelected(Activity)
         }
-        NavItem(R.drawable.notifs_icon, R.string.notifications, selectedTab == "notifications") {
-            onTabSelected("notifications")
+        NavItem(R.drawable.notifs_icon, R.string.notifications, selectedTab == Notifications) {
+            onTabSelected(Notifications)
         }
-        NavItem(R.drawable.explore_icon, R.string.explore, selectedTab == "explore") {
-            onTabSelected("explore")
+        NavItem(R.drawable.explore_icon, R.string.explore, selectedTab == Explore) {
+            onTabSelected(Explore)
         }
     }
 }
